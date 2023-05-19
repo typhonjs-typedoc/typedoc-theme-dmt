@@ -1,2 +1,2 @@
-# dmt-theme
-Provides a modern augmentation of the default TypeDoc theme. 
+# typedoc-theme-dmt
+Provides a modern and customizable UX augmentation to the default TypeDoc theme.

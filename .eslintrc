@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "@typhonjs-config/eslint-config/esm/2022/node"
+  ],
+
+  "overrides": [
+    {
+      "files": ["**/*.mjs"]
+    }
+  ]
+}

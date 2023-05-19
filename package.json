@@ -1,0 +1,48 @@
+{
+  "name": "@typhonjs-typedoc/typedoc-theme-dmt",
+  "version": "0.0.0",
+  "description": "Provides a modern and customizable UX augmentation to the default TypeDoc theme.",
+  "license": "MPL-2.0",
+  "type": "commonjs",
+  "author": "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)",
+  "contributors": [
+    "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)"
+  ],
+  "sideEffects": false,
+  "imports": {
+    "#utils": "./src/utils.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index-plugin.d.mts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs" : "^25.0.0",
+    "@rollup/plugin-node-resolve" : "^15.0.2",
+    "@rollup/plugin-terser": "^0.4.2",
+    "@typhonjs-build-test/node": "^0.0.9",
+    "cheerio": "^1.0.0-rc.12",
+    "cssnano": "^6.0.1",
+    "postcss": "^8.4.23",
+    "postcss-cli": "^10.1.0",
+    "postcss-preset-env": "^8.3.2",
+    "rollup-plugin-svelte": "^7.1.4",
+    "sass": "^1.62.1",
+    "svelte": "^3.59.1",
+    "svelte-preprocess" : "^5.0.3"
+  },
+  "peerDependencies" : {
+    "typedoc": ">=0.24.x"
+  },
+  "files": [
+    "/dist",
+    "/types"
+  ],
+  "browserslist": [">5%", "not IE 11"],
+  "scripts": {
+    "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/dmt-theme.css && postcss ./dist/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/dmt-theme.css",
+    "eslint": "eslint ."
+  }
+}

@@ -1,0 +1,181 @@
+:root {
+  --dmt-container-border-radius: 8px;
+  --dmt-container-padding: 1em;
+}
+
+
+:root[data-theme="dark"] {
+  --dmt-container-background: rgba(0, 0, 0, 0.1);
+  --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="light"] {
+  --dmt-container-background: rgba(0, 0, 0, 0.05);
+  --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dmt-container-background: rgba(0, 0, 0, 0.1);
+    --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --dmt-container-background: rgba(0, 0, 0, 0.05);
+    --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* MDN layout ------------------------------------------------------------------------------------------------------- */
+
+// .tsd-page-title h1 is wrapped with this div. Allowing additional elements to be added right aligned.
+.dmt-title-header-flex {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  h1 {
+    margin-right: auto;
+  }
+}
+
+// This expands the space of the anchor icon allowing additional elements to be added right aligned.
+.tsd-panel.tsd-member .tsd-anchor-link .tsd-anchor-icon {
+  margin-right: auto;
+}
+
+/* Container Queries ------------------------------------------------------------------------------------------------ */
+
+.col-content {
+  container: col-content / inline-size;
+}
+
+.container-main {
+  container: container-main / inline-size;
+}
+
+.site-menu {
+  container: site-menu / inline-size;
+}
+
+/* CQ Content ------------------------------------------------------------------------------------------------------- */
+
+@container col-content (min-width: 0) {
+  .tsd-page-title h1 {
+    font-size: clamp(1rem, 4cqi, 3rem);
+  }
+
+  .tsd-kind-icon ~ span {
+    font-size: clamp(0.8rem, 2.5cqi, 1rem);
+  }
+
+  h5 {
+    font-size: clamp(0.8rem, 2.5cqi, 1rem);
+  }
+}
+
+@container container-main (min-width: 0) {
+  // Controls right side page-menu relative to the main container.
+  .page-menu .tsd-kind-icon ~ span {
+    font-size: clamp(0.8rem, 5cqi, 1rem);
+  }
+}
+
+@container site-menu (min-width: 0) {
+  .tsd-kind-icon ~ span {
+    font-size: clamp(0.8rem, 5cqi, 1rem);
+  }
+}
+
+/* Content ---------------------------------------------------------------------------------------------------------- */
+
+// `Index` details element
+.tsd-panel-group.tsd-index-group details {
+  border: var(--dmt-container-border);
+  padding: var(--dmt-container-padding);
+  background: var(--dmt-container-background);
+  border-radius: var(--dmt-container-border-radius);
+
+  .tsd-index-heading {
+    margin: 0
+  }
+
+  .tsd-accordion-details section:not(:last-child) {
+    margin-bottom: 15px;
+  }
+}
+
+/* Main Container --------------------------------------------------------------------------------------------------- */
+
+.container {
+  padding: 0 1rem;
+  margin: 0 auto;
+}
+
+/* Sidebar ---------------------------------------------------------------------------------------------------------- */
+
+// Hide `On This Page` when col-sidebar becomes activated and moves content to the left.
+@media (width < 1200px) {
+  .tsd-index-accordion.tsd-page-navigation {
+    display: none;
+  }
+
+  .page-menu {
+    padding-right: 1rem;
+  }
+}
+
+.site-menu {
+  margin-top: 0;
+}
+
+.page-menu {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+
+  padding-left: 0.25rem;
+  max-height: calc(100vh - 52px); // Header bar + 10px bottom margin space for `On This Page`.
+  overflow: revert;
+
+  /* Styling for sidebar `Settings` */
+  .tsd-navigation.settings {
+    border: var(--dmt-container-border);
+    background: var(--dmt-container-background);
+    border-radius: var(--dmt-container-border-radius);
+    padding: var(--dmt-container-padding);
+
+    margin-top: 10px;
+
+    .tsd-filter-visibility h4 {
+      padding-top: 0;
+    }
+  }
+
+  /* Styling for sidebar `On This Page` */
+  .tsd-index-accordion.tsd-page-navigation {
+    border: var(--dmt-container-border);
+    padding: var(--dmt-container-padding) 0 0 var(--dmt-container-padding);
+    background: var(--dmt-container-background);
+    border-radius: var(--dmt-container-border-radius);
+    overflow: hidden;
+
+    ul {
+      padding-left: 0.5rem;
+    }
+
+    // Make the details content overflow / scrollbars.
+    .tsd-accordion-details {
+      overflow: auto;
+      height: 100%;
+    }
+  }
+
+  // All accordions
+  details[open] .tsd-accordion-summary {
+    padding-bottom: 10px;
+    border-bottom: var(--dmt-container-border);
+  }
+}
