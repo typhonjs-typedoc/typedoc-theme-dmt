@@ -10,10 +10,15 @@ export default [
    {
       input: 'src/plugin/index.mjs',
       external: [
+         '@rollup/plugin-node-resolve',
+         '@rollup/plugin-terser',
+         '@rollup/plugin-virtual',
          'cheerio',
          'node:fs',
          'node:path',
          'node:url',
+         'rollup',
+         'svelte/compiler',
          'typedoc'
       ],
       output: {
@@ -29,7 +34,7 @@ export default [
 
    {
       input: 'src/web-components/index.mjs',
-      external: ['./main.js'],   // `main.js` is loaded from this bundle.
+      external: ['./main.js', './dmt-nav-web-component.js'],   // `main.js` is loaded from this bundle.
       output: {
          file: 'dist/dmt-web-components.js',
          format: 'es',
