@@ -7,6 +7,7 @@ import {
 import {
    Converter,
    PageEvent,
+   ReflectionKind,
    RendererEvent }         from 'typedoc';
 
 import { load }            from 'cheerio';
@@ -17,6 +18,8 @@ export class PageRenderer
 {
    /** @type {import('typedoc').Application} */
    #app;
+
+   #navContent;
 
    /** @type {DMTOptions} */
    #options = {
@@ -74,11 +77,12 @@ export class PageRenderer
     */
    #augmentGlobal($)
    {
-      // On load set opacity to 0 on the body as there is a DOMContentLoaded handler in `index.js` for the
-      // `dmt-web-components` bundle that on rAF makes the body visible. This allows the default theme deferred
-      // `main.js` script to load before display along with the DMT web components providing a seamless load.
+      // On load set opacity to 0 on the body as there is a DOMContentLoaded handler in the `dmt-nav-web-component`
+      // bundle that on first rAF makes the body visible. This allows the default theme `main.js` script to load before
+      // display along with the DMT web components providing a seamless load with no flicker.
       $('body').prop('style', 'opacity: 0');
 
+      // TODO: wrapping test / remove.
       $('.tsd-navigation.settings').wrap(`<wc-dmt-wrap></wc-dmt-wrap>`);
 
       // Wrap the title header in a flex box to allow additional elements to be added right aligned.
@@ -91,6 +95,12 @@ export class PageRenderer
    #handlePageEnd(page)
    {
       const $ = load(page.contents);
+
+      // Remove the `main.js` script as it is loaded after the DOM is loaded in the navigation web component bundle.
+      $('script[src*="/main.js"]').remove();
+
+      // Replace standard navigation with the `NavigationSite` web component.
+      $('nav.tsd-navigation').empty().append($('<wc-dmt-nav></wc-dmt-nav>'));
 
       // Append scripts to load web components and adhoc global MDNLinks. The loaded links are returned.
       this.#addAssets($, page);
