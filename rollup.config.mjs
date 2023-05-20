@@ -1,4 +1,3 @@
-import commonjs   from '@rollup/plugin-commonjs';
 import resolve    from '@rollup/plugin-node-resolve';
 import terser     from '@rollup/plugin-terser';
 import svelte     from 'rollup-plugin-svelte';
@@ -10,7 +9,8 @@ import preprocess from 'svelte-preprocess';
 export default [
    {
       input: 'src/plugin/index.mjs',
-      external: [ // Note `cheerio` is bundled intentionally.
+      external: [
+         'cheerio',
          'node:fs',
          'node:path',
          'node:url',
@@ -20,18 +20,16 @@ export default [
          file: 'dist/index.cjs',
          format: 'cjs',
          generatedCode: { constBindings: true },
-         plugins: [terser()],
          sourcemap: false
       },
       plugins: [
-         commonjs(),
          resolve()
       ]
    },
 
    {
       input: 'src/web-components/index.mjs',
-      treeshake: false,
+      external: ['./main.js'],   // `main.js` is loaded from this bundle.
       output: {
          file: 'dist/dmt-web-components.js',
          format: 'es',
@@ -40,12 +38,7 @@ export default [
          sourcemap: true
       },
       plugins: [
-         // image(),
-
          svelte({
-            compilerOptions: {
-               customElement: true
-            },
             preprocess: preprocess()
          }),
 
