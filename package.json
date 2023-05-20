@@ -22,6 +22,7 @@
     "cheerio": "^1.0.0-rc.12",
     "@rollup/plugin-node-resolve" : ">=15.x.x",
     "@rollup/plugin-terser": ">=0.4.x",
+    "@rollup/plugin-virtual" : ">=3.x.x <4.0.0",
     "rollup" : ">=3.x.x <4.0.0",
     "rollup-plugin-svelte": ">=7.x.x <8.0.0",
     "svelte": ">=3.x.x <4.0.0",
