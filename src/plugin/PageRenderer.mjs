@@ -5,7 +5,6 @@ import {
    URL }                      from 'node:url';
 
 import {
-   Converter,
    PageEvent,
    ReflectionKind,
    RendererEvent }            from 'typedoc';
