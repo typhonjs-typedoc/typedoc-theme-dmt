@@ -19,14 +19,12 @@
     }
   },
   "dependencies" : {
-    "cheerio": "^1.0.0-rc.12",
     "@rollup/plugin-node-resolve" : ">=15.x.x",
     "@rollup/plugin-terser": ">=0.4.x",
     "@rollup/plugin-virtual" : ">=3.x.x <4.0.0",
+    "cheerio": "^1.0.0-rc.12",
     "rollup" : ">=3.x.x <4.0.0",
-    "rollup-plugin-svelte": ">=7.x.x <8.0.0",
     "svelte": ">=3.x.x <4.0.0",
-    "svelte-preprocess" : ">=5.x.x <6.0.0",
     "svelte-tag": ">=1.x.x"
   },
   "devDependencies": {
@@ -34,7 +32,9 @@
     "postcss": "^8.4.23",
     "postcss-cli": "^10.1.0",
     "postcss-preset-env": "^8.3.2",
-    "sass": "^1.62.1"
+    "rollup-plugin-svelte": "^7.1.4",
+    "sass": "^1.62.1",
+    "svelte-preprocess" : "^5.0.3"
   },
   "peerDependencies" : {
     "typedoc": ">=0.24.x"
