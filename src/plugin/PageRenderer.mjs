@@ -56,7 +56,7 @@ export class PageRenderer
          this.#app.logger.verbose(`[typedoc-theme-default-modern] Generating nav web component bundle.`);
 
          return compileNavBundle(`${output.outputDirectory}/assets/dmt-nav-web-component.js`, this.#navContent);
-      })
+      });
    }
 
    /**
@@ -202,7 +202,7 @@ export class PageRenderer
             }
             else
             {
-               const faviconPath = path.resolve(dmtFavicon)
+               const faviconPath = path.resolve(dmtFavicon);
 
                fs.accessSync(faviconPath, fs.constants.R_OK);
 

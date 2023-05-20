@@ -136,7 +136,7 @@ const navComponentScript = `
 
          for (const category of reflectionCategories)
          {
-            const categoryReplacement = '../' +category +'/\';
+            const categoryReplacement = '../' +category +'/';
             const categoryAnchors = globalThis.document.querySelectorAll('wc-dmt-nav a[href^="' +category +'"]');
 
             for (let cntr = categoryAnchors.length; --cntr >= 0;)
