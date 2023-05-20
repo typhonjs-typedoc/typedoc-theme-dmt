@@ -1,12 +1,7 @@
-<!-- Svelte option to indicate this component is a web component -->
-<svelte:options tag=wc-dmt-wrap />
-
 <script>
    import { unescapeAttr } from '#utils';
 
    export let data = void 0;
-
-   let slotEl;
 
    $: if (data)
    {
@@ -22,11 +17,11 @@
 </script>
 
 <div class=wrap-test>
-  <slot bind:this={slotEl} />
+  <slot />
 </div>
 
 <style>
-  div {
-     color: red;
-  }
+  /*div {*/
+  /*   color: red;*/
+  /*}*/
 </style>
