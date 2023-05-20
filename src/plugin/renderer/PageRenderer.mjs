@@ -7,12 +7,11 @@ import {
 import {
    Converter,
    PageEvent,
-   ReflectionKind,
    RendererEvent }         from 'typedoc';
 
 import { load }            from 'cheerio';
 
-// import { escapeAttr }      from '#utils';
+import { escapeAttr }      from '#utils';
 
 export class PageRenderer
 {
@@ -99,8 +98,9 @@ export class PageRenderer
       // Remove the `main.js` script as it is loaded after the DOM is loaded in the navigation web component bundle.
       $('script[src*="/main.js"]').remove();
 
-      // Replace standard navigation with the `NavigationSite` web component.
-      $('nav.tsd-navigation').empty().append($('<wc-dmt-nav></wc-dmt-nav>'));
+      // Replace standard navigation with the `NavigationSite` web component. Send page url to select current
+      // active anchor.
+      $('nav.tsd-navigation').empty().append($(`<wc-dmt-nav pageurl="${escapeAttr(page.url)}"></wc-dmt-nav>`));
 
       // Append scripts to load web components and adhoc global MDNLinks. The loaded links are returned.
       this.#addAssets($, page);

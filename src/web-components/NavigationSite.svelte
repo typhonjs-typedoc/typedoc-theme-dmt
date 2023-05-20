@@ -1,18 +1,53 @@
 <script>
-   // export let assetUrl = void 0;
-   import { onMount } from 'svelte';
+   import { onMount }      from 'svelte';
 
-   const baseURL = import.meta.url.replace(/assets\/dmt-web-components.js/, '');
-   const pathURL = globalThis.location.href.replace(baseURL, '');
+   import { unescapeAttr } from "#utils";
 
-   const depth = (pathURL.match(/\//) ?? []).length;
-   const match = pathURL.match(/(.*)\//);
+   /**
+    * The `page.url` from the associated PageEvent. Used to set the "current" class.
+    */
+   export let pageurl = void 0;
 
-   const reflectionCategories = new Set(['classes', 'enums', 'functions', 'interfaces', 'modules', 'types',
-    'variables']);
+   let pageURL;
+
+   $: if (pageurl)
+   {
+      try
+      {
+         pageURL = unescapeAttr(pageurl)
+      }
+      catch (err)
+      {
+         console.warn(`[typedoc-theme-dmt] Navigation WC - Failure to deserialize pageurl: `, pageurl);
+      }
+   }
+
 
    onMount(() =>
    {
+      // Set current active anchor -----------------------------------------------------------------------------------
+
+      if (typeof pageURL === 'string')
+      {
+         const activeAnchor = globalThis.document.querySelector(`wc-dmt-nav a[href$="${pageURL}"]`);
+         if (activeAnchor) { activeAnchor.classList.add('current'); }
+      }
+      else
+      {
+         console.warn(`[typedoc-theme-dmt] Navigation WC - 'pageURL' not set in 'onMount'.`);
+      }
+
+      // Process all anchors in navigation ---------------------------------------------------------------------------
+
+      const baseURL = import.meta.url.replace(/assets\/dmt-web-components.js/, '');
+      const pathURL = globalThis.location.href.replace(baseURL, '');
+
+      const depth = (pathURL.match(/\//) ?? []).length;
+      const match = pathURL.match(/(.*)\//);
+
+      const reflectionCategories = new Set(['classes', 'enums', 'functions', 'interfaces', 'modules', 'types',
+         'variables']);
+
       // All URLS in the navigation content need to potentially be rewritten if we are at a depth of 1. The URLs in the
       // generated template below are from the documentation root path.
       if (depth === 1 && match)
@@ -48,6 +83,7 @@
    })
 </script>
 
+<!-- Currently this is static test data for the TS ES2023 docs -->
 <a href="modules.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4-path"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)" id="icon-4-text"></path></svg><span>Typescript <wbr>Library <wbr>Declarations (ES2023)</span></a>
 <ul class="tsd-small-nested-navigation">
    <li>
