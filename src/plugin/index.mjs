@@ -1,4 +1,5 @@
 import {
+   Converter,
    DefaultTheme,
    DefaultThemeRenderContext,
    ParameterType }            from 'typedoc';
@@ -14,40 +15,47 @@ export function load(app)
 {
    app.options.addDeclaration({
       name: 'dmtFavicon',
-      help: '[dmt-theme] Specify the file path of the favicon file.',
+      help: '[typedoc-theme-default-modern] Specify the file path of the favicon file.',
       type: ParameterType.String,
       defaultValue: null
+   });
+
+   app.converter.once(Converter.EVENT_BEGIN, () =>
+   {
+      // Initialize the PageRenderer in the Converter event begin to parse options before conversion.
+      if ('default-modern' === app.options.getValue('theme')) { new PageRenderer(app); }
    });
 
    app.renderer.defineTheme('default-modern', DefaultModernTheme);
 }
 
+/**
+ * DefaultTheme override to initialize PageRenderer and control the sidebar navigation generation. After the initial
+ * render of the Project / index.html the navigation is cached and dynamically controlled by a web component. The
+ * extra `stopNavigationGeneration` removes the navigation render callback.
+ */
 class DefaultModernTheme extends DefaultTheme
 {
    #renderContext;
 
    /**
-    * @param {import('typedoc').Renderer} renderer -
-    */
-   constructor(renderer)
-   {
-      super(renderer);
-
-      new PageRenderer(this.application);
-   }
-
-   /**
     * @param {import('typedoc').PageEvent<import('typedoc').Reflection>}   pageEvent -
     *
-    * @returns {DefaultThemeRenderContext}
+    * @returns {DefaultThemeRenderContext} Cached render context.
     * @override
     */
    getRenderContext(pageEvent)
    {
       if (!this.#renderContext)
       {
-         this.#renderContext = new DefaultThemeRenderContext(this, pageEvent, this.application.options)
+         this.#renderContext = new DefaultThemeRenderContext(this, pageEvent, this.application.options);
       }
+      else
+      {
+         // Must update the page reference! Things subtly break otherwise like `On This Page` not rendering.
+         this.#renderContext.page = pageEvent;
+      }
+
       return this.#renderContext;
    }
 
@@ -63,7 +71,7 @@ class DefaultModernTheme extends DefaultTheme
       else
       {
          this.application.logger.error(
-          `[typedoc-theme-dmt] 'stopNavigationGeneration' invoked with no active render context.`);
+          `[typedoc-theme-default-modern] 'stopNavigationGeneration' invoked with no active render context.`);
       }
    }
 }

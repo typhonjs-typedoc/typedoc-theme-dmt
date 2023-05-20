@@ -1,24 +1,31 @@
-import fs                  from 'node:fs';
-import path                from 'node:path';
+import fs                     from 'node:fs';
+import path                   from 'node:path';
 import {
    fileURLToPath,
-   URL }                   from 'node:url';
+   URL }                      from 'node:url';
 
 import {
    Converter,
-   PageEvent, ReflectionKind,
-   RendererEvent
-} from 'typedoc';
+   PageEvent,
+   ReflectionKind,
+   RendererEvent }            from 'typedoc';
 
-import { load }            from 'cheerio';
+import { load }               from 'cheerio';
 
-import { escapeAttr }      from '#utils';
+import { escapeAttr }         from '#utils';
+
+import { compileNavBundle }   from './compileNavBundle.mjs';
 
 export class PageRenderer
 {
    /** @type {import('typedoc').Application} */
    #app;
 
+   /**
+    * Caches the initial Project / index.html navigation sidebar content.
+    *
+    * @type {string}
+    */
    #navContent;
 
    /** @type {DMTOptions} */
@@ -32,9 +39,25 @@ export class PageRenderer
    {
       this.#app = app;
 
-      this.#app.converter.once(Converter.EVENT_BEGIN, this.#parseOptions, this);
+      this.#parseOptions();
+
+      // this.#app.converter.once(Converter.EVENT_BEGIN, this.#parseOptions, this);
       this.#app.renderer.on(PageEvent.END, this.#handlePageEnd, this);
+
+      // this.#app.renderer.once(RendererEvent.BEGIN, this.#parseOptions, this);
       this.#app.renderer.once(RendererEvent.END, this.#handleRendererEnd, this);
+
+      // At the end of rendering dynamically generate a Svelte web component with the static navigation data from the
+      // Project / `index.html` reflection. There is logic in the component to select the associated anchor link and
+      // rewrite all the anchor hrefs for the appropriate category location. This is usually the 2nd page rendered and
+      // has the quality of containing all the SVG data for the navigation sidebar where the default "modules.html"
+      // does not.
+      this.#app.renderer.postRenderAsyncJobs.push(async (output) =>
+      {
+         this.#app.logger.verbose(`[typedoc-theme-default-modern] Generating nav web component bundle.`);
+
+         return compileNavBundle(`${output.outputDirectory}/assets/dmt-nav-web-component.js`, this.#navContent);
+      })
    }
 
    /**
@@ -96,14 +119,23 @@ export class PageRenderer
    {
       const $ = load(page.contents);
 
-      // Remove the `main.js` script as it is loaded after the DOM is loaded in the navigation web component bundle.
+      // Remove the `main.js` script as it is loaded after the DOM is loaded in the web components bundle.
       $('script[src*="/main.js"]').remove();
 
       const siteMenu = $('div.site-menu');
 
+      // Save the navigation sidebar content for the main index.html page. This is used to create the dynamic
+      // navigation web component. This occurs as the ~2nd page generated.
       if (page.model.kind === ReflectionKind.Project && page.url === 'index.html')
       {
+         // Remove the currently selected value as this data is cached and dynamically set on load.
+         siteMenu.find('a.current').removeClass('current');
+
+         // Store the HTML content of the index.html navigation sidebar to load into nav web component.
          this.#navContent = siteMenu.html();
+
+         // Stop all further generation of the navigation sidebar. This is where the magic goes down regarding the
+         // 90% output disk space utilization and 80% speed up over the default theme.
          this.#app.renderer.theme.stopNavigationGeneration();
       }
 
@@ -111,9 +143,11 @@ export class PageRenderer
       // active anchor.
       siteMenu.empty().append($(`<wc-dmt-nav pageurl="${escapeAttr(page.url)}"></wc-dmt-nav>`));
 
-      // Append scripts to load web components and adhoc global MDNLinks. The loaded links are returned.
+      // Append scripts to load web components.
       this.#addAssets($, page);
 
+      // A few global modifications tweaks like the favicon and slight modifications to layout to allow right aligning
+      // of additional elements in flexbox layouts.
       this.#augmentGlobal($);
 
       page.contents = $.html();
@@ -131,17 +165,18 @@ export class PageRenderer
 
       if (this.#options?.favicon?.filepath && this.#options?.favicon?.filename)
       {
-         this.#app.logger.verbose(`[dmt-theme] Copying 'dmtFavicon' to output directory.`);
+         this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmtFavicon' to output directory.`);
 
          fs.copyFileSync(this.#options.favicon.filepath, `${outDocs}${path.sep}${this.#options.favicon.filename}`);
       }
 
-      this.#app.logger.verbose(`[dmt-theme] Copying 'dmt-theme.css' to output assets directory.`);
+      this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmt-theme.css' to output assets directory.`);
 
       fs.copyFileSync(`${localDir}${path.sep}dmt-theme.css`, `${outAssets}${path.sep}dmt-theme.css`);
       fs.copyFileSync(`${localDir}${path.sep}dmt-theme.css.map`, `${outAssets}${path.sep}dmt-theme.css.map`);
 
-      this.#app.logger.verbose(`[dmt-theme] Copying 'dmt-web-components.js' to output assets directory.`);
+      this.#app.logger.verbose(
+       `[typedoc-theme-default-modern] Copying 'dmt-web-components.js' to output assets directory.`);
 
       fs.copyFileSync(`${localDir}${path.sep}dmt-web-components.js`, `${outAssets}${path.sep}dmt-web-components.js`);
       fs.copyFileSync(`${localDir}${path.sep}dmt-web-components.js.map`,
@@ -180,7 +215,7 @@ export class PageRenderer
          }
          catch (err)
          {
-            this.#app.logger.warn(`[dmt-theme] 'dmtFavicon' path did not resolve: ${dmtFavicon}`);
+            this.#app.logger.warn(`[typedoc-theme-default-modern] 'dmtFavicon' path did not resolve: ${dmtFavicon}`);
          }
       }
    }

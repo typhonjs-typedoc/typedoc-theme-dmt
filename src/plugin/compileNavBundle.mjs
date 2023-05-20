@@ -7,6 +7,9 @@ import terser     from '@rollup/plugin-terser';
 import virtual    from '@rollup/plugin-virtual';
 
 /**
+ * Dynamically create the NavigationSite web component with the cached site navigation HTML. It is dynamically compiled
+ * then rolled up and minified. This component is loaded from the main web components bundle.
+ *
  * @param {string}   filepath - Output file path.
  *
  * @param {string}   navContent - Generated navigation content.
@@ -34,7 +37,7 @@ export async function compileNavBundle(filepath, navContent)
       file: filepath,
       format: 'es',
       generatedCode: { constBindings: true },
-      // plugins: [terser()],
+      plugins: [terser()],
       sourcemap: true
    };
 
@@ -43,6 +46,14 @@ export async function compileNavBundle(filepath, navContent)
    await bundle.close();
 }
 
+/**
+ * Defines the script portion of the NavigationSite web component. The static Project reflection / `index.html`
+ * navigation data is merged with this script section. Given Page reflection URL that is passed in the correct
+ * navigation anchor receives the `current` class on load. Additionally, all the anchor hrefs are rewritten based
+ * on the category location of the current page.
+ *
+ * @type {string}
+ */
 const navComponentScript = `
 <script>
    import { onMount }      from 'svelte';
@@ -140,6 +151,12 @@ const navComponentScript = `
 <!-- Generated Navigation Below -->
 `;
 
+/**
+ * Defines the index / wrapping of the NavigationSite component to create a non-shadow DOM custom element via
+ * `svelte-tag`.
+ *
+ * @type {string}
+ */
 const indexJS = `
 import Component        from 'svelte-tag';
 

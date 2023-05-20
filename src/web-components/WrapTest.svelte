@@ -11,7 +11,7 @@
       }
       catch (err)
       {
-         console.warn(`[dmt-theme] Wrap WC - Failure to deserialize link data: `, data);
+         console.warn(`[typedoc-theme-default-modern] Wrap WC - Failure to deserialize link data: `, data);
       }
    }
 </script>
