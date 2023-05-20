@@ -6,8 +6,9 @@ import {
 
 import {
    Converter,
-   PageEvent,
-   RendererEvent }         from 'typedoc';
+   PageEvent, ReflectionKind,
+   RendererEvent
+} from 'typedoc';
 
 import { load }            from 'cheerio';
 
@@ -98,9 +99,17 @@ export class PageRenderer
       // Remove the `main.js` script as it is loaded after the DOM is loaded in the navigation web component bundle.
       $('script[src*="/main.js"]').remove();
 
+      const siteMenu = $('div.site-menu');
+
+      if (page.model.kind === ReflectionKind.Project && page.url === 'index.html')
+      {
+         this.#navContent = siteMenu.html();
+         this.#app.renderer.theme.stopNavigationGeneration();
+      }
+
       // Replace standard navigation with the `NavigationSite` web component. Send page url to select current
       // active anchor.
-      $('nav.tsd-navigation').empty().append($(`<wc-dmt-nav pageurl="${escapeAttr(page.url)}"></wc-dmt-nav>`));
+      siteMenu.empty().append($(`<wc-dmt-nav pageurl="${escapeAttr(page.url)}"></wc-dmt-nav>`));
 
       // Append scripts to load web components and adhoc global MDNLinks. The loaded links are returned.
       this.#addAssets($, page);
