@@ -4,7 +4,7 @@
    import { unescapeAttr } from "#utils";
 
    /**
-    * The `page.url` from the associated PageEvent. Used to set the "current" class.
+    * The `page.url` from the associated PageEvent. Used to set the `current` class on the associated anchor.
     */
    export let pageurl = void 0;
 
@@ -21,7 +21,6 @@
          console.warn(`[typedoc-theme-dmt] Navigation WC - Failure to deserialize pageurl: `, pageurl);
       }
    }
-
 
    onMount(() =>
    {
@@ -84,6 +83,7 @@
 </script>
 
 <!-- Currently this is static test data for the TS ES2023 docs -->
+<nav class="tsd-navigation">
 <a href="modules.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4-path"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)" id="icon-4-text"></path></svg><span>Typescript <wbr>Library <wbr>Declarations (ES2023)</span></a>
 <ul class="tsd-small-nested-navigation">
    <li>
@@ -390,3 +390,4 @@
    <li><a href="functions/parseFloat.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg><span>parse<wbr>Float</span></a></li>
    <li><a href="functions/parseInt.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg><span>parse<wbr>Int</span></a></li>
    <li><a href="functions/unescape.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg><span>unescape</span></a></li></ul>
+</nav>
