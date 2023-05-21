@@ -28,9 +28,12 @@
     "svelte-tag": ">=1.x.x"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs" : "^25.0.0",
     "@typhonjs-config/eslint-config" : "^0.6.0",
     "cssnano": "^6.0.1",
     "eslint" : "^8.41.0",
+    "lunr": "^2.3.9",
+    "msgpackr" : "^1.9.2",
     "postcss": "^8.4.23",
     "postcss-cli": "^10.1.0",
     "postcss-preset-env": "^8.3.2",

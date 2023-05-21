@@ -1,3 +1,4 @@
+import commonjs   from '@rollup/plugin-commonjs';
 import resolve    from '@rollup/plugin-node-resolve';
 import terser     from '@rollup/plugin-terser';
 import svelte     from 'rollup-plugin-svelte';
@@ -14,6 +15,7 @@ export default [
          '@rollup/plugin-terser',
          '@rollup/plugin-virtual',
          'cheerio',
+         'lunr',
          'node:fs',
          'node:path',
          'node:url',
@@ -28,6 +30,7 @@ export default [
          sourcemap: false
       },
       plugins: [
+         commonjs(),
          resolve()
       ]
    },
