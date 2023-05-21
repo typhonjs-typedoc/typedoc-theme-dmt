@@ -15,9 +15,17 @@ export function load(app)
 {
    app.options.addDeclaration({
       name: 'dmtFavicon',
-      help: '[typedoc-theme-default-modern] Specify the file path of the favicon file.',
+      help: '[typedoc-theme-default-modern] Specify the file path or URL of the favicon file.',
       type: ParameterType.String,
       defaultValue: null
+   });
+
+   app.options.addDeclaration({
+      name: 'dmtRemoveDefaultModule',
+      help: '[typedoc-theme-default-modern] When true the default module / namespace is removed from navigation and ' +
+       'breadcrumbs.',
+      type: ParameterType.Boolean,
+      defaultValue: false
    });
 
    app.converter.once(Converter.EVENT_BEGIN, () =>

@@ -29,6 +29,7 @@ export class PageRenderer
 
    /** @type {DMTOptions} */
    #options = {
+      removeDefaultModule: false
    };
 
    /**
@@ -127,6 +128,13 @@ export class PageRenderer
       // navigation web component. This occurs as the ~2nd page generated.
       if (page.model.kind === ReflectionKind.Project && page.url === 'index.html')
       {
+         // Potentially remove default module / namespace.
+         // TODO: This needs to be revised / verified.
+         if (this.#options.removeDefaultModule)
+         {
+            $('nav.tsd-navigation a:first[href$="modules.html"]').remove();
+         }
+
          // Remove the currently selected value as this data is cached and dynamically set on load.
          siteMenu.find('a.current').removeClass('current');
 
@@ -187,6 +195,8 @@ export class PageRenderer
     */
    #parseOptions()
    {
+      this.#options.removeDefaultModule = this.#app.options.getValue('dmtRemoveDefaultModule');
+
       const dmtFavicon = this.#app.options.getValue('dmtFavicon');
 
       // Verify dmtFavicon path if defined.
@@ -243,5 +253,8 @@ function isURL(value)
 /**
  * @typedef {object} DMTOptions
  *
- * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] - Parsed data about any defined favicon.
+ * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
+ *
+ * @property {boolean} [removeDefaultModule] When true the default module / namespace is removed from navigation and
+ *           breadcrumbs.
  */
