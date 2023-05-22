@@ -1,2 +1,3 @@
-export * from './SearchIndexPackr.cjs';
 export * from './PageRenderer.mjs';
+export * from './search/NavSearchIndexPackr.mjs';
+export * from './search/SearchIndexPackr.cjs';
