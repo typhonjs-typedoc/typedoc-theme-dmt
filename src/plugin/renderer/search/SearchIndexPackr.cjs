@@ -151,7 +151,6 @@ class SearchIndexPackr
 
       const index = builder.build();
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-index.json'), JSON.stringify(index), 'utf-8');
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search.msgpack'), pack({ rows, index }));
    }
 
