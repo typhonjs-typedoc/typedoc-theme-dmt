@@ -37,9 +37,9 @@ const {
 
 
 /**
- * A plugin that exports an index of the project to a javascript file.
+ * A plugin that exports an index of the project to a MessagePack file.
  *
- * The resulting javascript file can be used to build a simple search function.
+ * The resulting MessagePack file can be fetched and used to build a simple search function.
  */
 class SearchIndexPackr
 {
@@ -47,7 +47,7 @@ class SearchIndexPackr
    #app;
 
    /** @type {boolean} */
-   searchComments;
+   #searchInComments;
 
    /**
     * @param {import('typedoc').Application} app -
@@ -56,7 +56,9 @@ class SearchIndexPackr
    {
       this.#app = app;
 
-      this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this)
+      this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this);
+
+      this.#searchInComments = this.#app.options.getValue('searchInComments');
    }
 
    /**
@@ -82,13 +84,30 @@ class SearchIndexPackr
 
       if (indexEvent.isDefaultPrevented) { return; }
 
+      /** @type {import('lunr').Builder} */
       const builder = new Builder();
       builder.pipeline.add(trimmer);
 
       builder.ref('i');
       for (const [key, boost] of Object.entries(indexEvent.searchFieldWeights))
       {
-         builder.field(key, { boost });
+         switch (key)
+         {
+            case 'comment':
+               if (this.#searchInComments)
+               {
+                  builder.field('c', { boost });
+               }
+               break;
+
+            case 'name':
+               builder.field('n', { boost });
+               break;
+
+            default:
+               builder.field(key, { boost });
+               break;
+         }
       }
 
       for (const reflection of indexEvent.searchResults)
@@ -99,7 +118,7 @@ class SearchIndexPackr
          if (boost <= 0) { continue; }
 
          let parent = reflection.parent;
-         if (parent instanceof ProjectReflection) { parent = undefined; }
+         if (parent instanceof ProjectReflection) { parent = void 0; }
 
          /** @type {SearchDocument} */
          const row = {
@@ -113,32 +132,36 @@ class SearchIndexPackr
 
          const externalSearchField = indexEvent.searchFields[rows.length];
 
-         builder.add({
-             n: externalSearchField?.name ?? reflection.name,
-             c: externalSearchField?.comment ?? this.#getCommentSearchText(reflection),
-             i: rows.length,
-          },
-          { boost }
+         const buildEntry = {
+            n: externalSearchField?.name ?? reflection.name,
+            i: rows.length,
+         };
+
+         if (this.#searchInComments)
+         {
+            buildEntry.c = externalSearchField?.comment ?? this.#getCommentSearchText(reflection);
+         }
+
+         builder.add(
+            buildEntry,
+            { boost }
          );
          rows.push(row);
       }
 
       const index = builder.build();
 
-      const packrFileName = path.join(event.outputDirectory, 'assets', 'dmt', 'search.msgpack');
-
-      fs.writeFileSync(packrFileName, pack({ rows, index }));
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-index.json'), JSON.stringify(index), 'utf-8');
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search.msgpack'), pack({ rows, index }));
    }
 
    /**
-    * @param {DeclarationReflection} reflection
+    * @param {DeclarationReflection} reflection -
     *
     * @returns {string}
     */
    #getCommentSearchText(reflection)
    {
-      if (!this.searchComments) { return; }
-
       /** @type {Comment[]} */
       const comments = [];
 
@@ -147,7 +170,6 @@ class SearchIndexPackr
       reflection.signatures?.forEach((s) => s.comment && comments.push(s.comment));
 
       reflection.getSignature?.comment && comments.push(reflection.getSignature.comment);
-      reflection.setSignature?.comment && comments.push(reflection.setSignature.comment);
 
       if (!comments.length) { return; }
 
