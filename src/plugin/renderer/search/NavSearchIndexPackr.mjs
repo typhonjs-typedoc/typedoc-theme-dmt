@@ -37,7 +37,7 @@ export class NavSearchIndexPackr
    {
       this.#app = app;
 
-      this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this)
+      this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this);
    }
 
    /**
@@ -75,7 +75,7 @@ export class NavSearchIndexPackr
                i: navSearchDocuments.length,
                n: key,
                u: sidebarLinks[key]
-            })
+            });
          }
       }
 

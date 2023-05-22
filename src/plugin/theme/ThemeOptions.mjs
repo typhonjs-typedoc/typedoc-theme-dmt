@@ -65,10 +65,10 @@ export class ThemeOptions
       this.#parseOptions(app);
    }
 
-   /** @returns {{filepath?: string, filename?: string, url?: string}} */
+   /** @returns {{filepath?: string, filename?: string, url?: string}} favicon option */
    get favicon() { return this.#options.favicon; }
 
-   /** @returns {boolean} */
+   /** @returns {boolean} removeDefaultModule option */
    get removeDefaultModule() { return this.#options.removeDefaultModule; }
 
    /**
