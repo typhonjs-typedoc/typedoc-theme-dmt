@@ -1,9 +1,7 @@
 import fs                     from 'node:fs';
 import path                   from 'node:path';
 
-import {
-   fileURLToPath,
-   URL }                      from 'node:url';
+import { fileURLToPath }      from 'node:url';
 
 import {
    PageEvent,
@@ -28,19 +26,23 @@ export class PageRenderer
     */
    #navContent;
 
-   /** @type {DMTOptions} */
-   #options = {
-      removeDefaultModule: false
-   };
+   /** @type {ThemeOptions} */
+   #options;
+
+   // /** @type {DMTOptions} */
+   // #options = {
+   //    removeDefaultModule: false
+   // };
 
    /**
     * @param {import('typedoc').Application} app -
+    *
+    * @param {ThemeOptions} options -
     */
-   constructor(app)
+   constructor(app, options)
    {
       this.#app = app;
-
-      this.#parseOptions();
+      this.#options = options;
 
       // this.#app.converter.once(Converter.EVENT_BEGIN, this.#parseOptions, this);
       this.#app.renderer.on(PageEvent.END, this.#handlePageEnd, this);
@@ -192,72 +194,4 @@ export class PageRenderer
       fs.copyFileSync(path.join(localDir, 'dmt-web-components.js.map'),
        path.join(outAssets, 'dmt-web-components.js.map'));
    }
-
-   /**
-    * Parses DMT options.
-    */
-   #parseOptions()
-   {
-      this.#options.removeDefaultModule = this.#app.options.getValue('dmtRemoveDefaultModule');
-
-      const dmtFavicon = this.#app.options.getValue('dmtFavicon');
-
-      // Verify dmtFavicon path if defined.
-      if (typeof dmtFavicon === 'string' && dmtFavicon.length)
-      {
-         try
-         {
-            const favicon = {};
-
-            if (isURL(dmtFavicon))
-            {
-               favicon.url = dmtFavicon;
-            }
-            else
-            {
-               const faviconPath = path.resolve(dmtFavicon);
-
-               fs.accessSync(faviconPath, fs.constants.R_OK);
-
-               favicon.filepath = faviconPath;
-               favicon.filename = path.basename(faviconPath);
-            }
-
-            this.#options.favicon = favicon;
-         }
-         catch (err)
-         {
-            this.#app.logger.warn(`[typedoc-theme-default-modern] 'dmtFavicon' path did not resolve: ${dmtFavicon}`);
-         }
-      }
-   }
 }
-
-/**
- * Local helper function to test if value is a URL.
- *
- * @param {string}   value - String to test.
- *
- * @returns {boolean} Is valid URL?
- */
-function isURL(value)
-{
-   try
-   {
-      new URL(value);
-      return true;
-   }
-   catch (err)
-   {
-      return false;
-   }
-}
-
-/**
- * @typedef {object} DMTOptions
- *
- * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
- *
- * @property {boolean} [removeDefaultModule] When true the default module / namespace is removed from navigation and
- *           breadcrumbs.
- */
