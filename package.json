@@ -39,7 +39,8 @@
     "postcss-preset-env": "^8.3.2",
     "rollup-plugin-svelte": "^7.1.4",
     "sass": "^1.62.1",
-    "svelte-preprocess" : "^5.0.3"
+    "svelte-preprocess" : "^5.0.3",
+    "trie-search": "^1.4.1"
   },
   "peerDependencies" : {
     "typedoc": ">=0.24.x"
