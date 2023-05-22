@@ -6,9 +6,9 @@ import {
    ReflectionKind,
    RendererEvent }         from 'typedoc';
 
-// Keep this in sync with the interface in src/lib/output/themes/default/assets/typedoc/components/Search.ts
+// Keep this in sync with `src/quick-search/QuickSearch.svelte`.
 /**
- * @typedef {object} NavSearchDocument
+ * @typedef {object} SearchNavDocument
  *
  * @property {number} i Index for trie-search.
  *
@@ -19,13 +19,12 @@ import {
  * @property {string} u The reflection url.
  */
 
-
 /**
- * A plugin that exports an index of the main navigation URLS to a MessagePack file.
+ * Exports an index of the main navigation URLs and reflection data to a MessagePack file.
  *
- * The resulting javascript file can be used to build a simple search function.
+ * The resulting MessagePack file can be loaded into `trie-search` for auto-complete quick search functionality.
  */
-export class NavSearchIndexPackr
+export class SearchNavIndexPackr
 {
    /** @type {import('typedoc').Application} */
    #app;
@@ -54,7 +53,7 @@ export class NavSearchIndexPackr
       /**
        * Creates a top level URL mapping for all main HTML pages.
        *
-       * @type {NavSearchDocument[]}
+       * @type {SearchNavDocument[]}
        */
       const navSearchDocuments = urlMappings.filter((mapping) => mapping.model.kind !== ReflectionKind.Project).map(
        (mapping, i) => ({
@@ -79,7 +78,7 @@ export class NavSearchIndexPackr
          }
       }
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'nav-search.msgpack'),
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-nav.msgpack'),
        pack(navSearchDocuments));
    }
 }

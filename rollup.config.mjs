@@ -36,6 +36,38 @@ export default [
    },
 
    {
+      input: 'src/quick-search/index.mjs',
+      // external: ['./search-nav.msgpack'],   // `main.js` is loaded from this bundle.
+      // treeshake: {
+      //    // moduleSideEffects: ['src/quick-search/index.mjs', 'src/quick-search/loadQuickSearchData.mjs']
+      //    moduleSideEffects: (id, external) =>
+      //    {
+      //       console.log(`TS - id: ${id}; external: ${external}`)
+      //       return false;
+      //    }
+      // },
+      output: {
+         file: 'dist/dmt-quick-search.js',
+         format: 'es',
+         generatedCode: { constBindings: true },
+         plugins: [terser()],
+         sourcemap: true
+      },
+      plugins: [
+         // svelte({
+         //    preprocess: preprocess()
+         // }),
+
+         commonjs(),
+
+         resolve({
+            browser: true,
+            // dedupe: ['svelte']
+         }),
+      ]
+   },
+
+   {
       input: 'src/web-components/index.mjs',
       external: ['../main.js', './dmt-nav-web-component.js'],   // `main.js` is loaded from this bundle.
       output: {

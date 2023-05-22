@@ -7,7 +7,7 @@ import {
 } from 'typedoc';
 
 import {
-   NavSearchIndexPackr,
+   SearchNavIndexPackr,
    PageRenderer,
    SearchIndexPackr }         from './renderer/index.mjs';
 
@@ -39,7 +39,7 @@ export function load(app)
 
          new PageRenderer(app, options);
          new SearchIndexPackr(app);
-         new NavSearchIndexPackr(app);
+         new SearchNavIndexPackr(app);
       }
    });
 

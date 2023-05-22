@@ -1,1 +1,0 @@
-import TrieSearch from 'trie-search';

@@ -12,7 +12,7 @@ import { load }               from 'cheerio';
 
 import { escapeAttr }         from '#utils';
 
-import { compileNavBundle }   from './compileNavBundle.mjs';
+import { compileNavBundle }   from './compile/compileNavBundle.mjs';
 
 export class PageRenderer
 {
@@ -65,7 +65,7 @@ export class PageRenderer
    }
 
    /**
-    * Adds a script element to load the web component bundle supporting MDN links and compatibility charts.
+    * Adds a script links to load DMT source bundles. Also removes TypeDoc scripts as necessary (search).
     *
     * @param {import('cheerio').Cheerio} $ -
     *
@@ -82,6 +82,9 @@ export class PageRenderer
       // Append stylesheet to the head element.
       headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-theme.css" />`));
 
+      // Append nav search index script to the head element.
+      headEl.append($(`<script src="${basePath}assets/dmt/dmt-quick-search.js" type="module" />`));
+
       // Append web components script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-web-components.js" type="module" />`));
 
@@ -95,6 +98,12 @@ export class PageRenderer
          // Append favicon to the head element.
          headEl.append($(`<link rel="icon" href="${basePath}${this.#options.favicon.filename}" />`));
       }
+
+      // Remove unused TypeDoc default assets ------------------------------------------------------------------------
+
+      headEl.find('script[src$="assets/search.js"]').remove();
+
+      // $('head > script').filter((i, x) => x && x.src.match(/assets\/search.js$/)).get(0).remove();
    }
 
    /**
@@ -186,6 +195,13 @@ export class PageRenderer
 
       fs.copyFileSync(path.join(localDir, 'dmt-theme.css'), path.join(outAssets, 'dmt-theme.css'));
       fs.copyFileSync(path.join(localDir, 'dmt-theme.css.map'), path.join(outAssets, 'dmt-theme.css.map'));
+
+      this.#app.logger.verbose(
+       `[typedoc-theme-default-modern] Copying 'dmt-quick-search.js' to output assets directory.`);
+
+      fs.copyFileSync(path.join(localDir, 'dmt-quick-search.js'), path.join(outAssets, 'dmt-quick-search.js'));
+      fs.copyFileSync(path.join(localDir, 'dmt-quick-search.js.map'),
+       path.join(outAssets, 'dmt-quick-search.js.map'));
 
       this.#app.logger.verbose(
        `[typedoc-theme-default-modern] Copying 'dmt-web-components.js' to output assets directory.`);
