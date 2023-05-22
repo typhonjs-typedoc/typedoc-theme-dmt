@@ -1,6 +1,10 @@
+import fs                     from 'node:fs';
+import path                   from 'node:path';
+
 import {
    Converter,
-   ParameterType }            from 'typedoc';
+   ParameterType, RendererEvent
+} from 'typedoc';
 
 import {
    PageRenderer,
@@ -36,6 +40,10 @@ export function load(app)
       if ('default-modern' === app.options.getValue('theme'))
       {
          app.renderer.removeComponent('javascript-index');
+
+         // Make the `dmt` sub-folder on `assets`.
+         app.renderer.on(RendererEvent.BEGIN, (output) => fs.mkdirSync(path.join(output.outputDirectory, 'assets',
+          'dmt')));
 
          new PageRenderer(app);
          new SearchIndexPackr(app);

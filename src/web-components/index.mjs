@@ -18,7 +18,7 @@ new Component({
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {
    // Dynamically load main script now as it will reach the elements loaded by the web components.
-   await import('./main.js');
+   await import('../main.js');
 
    // Removes the `opacity: 0` inline style on `body` element after all scripts have loaded. This allows a smooth
    // transition for the `main.js` default template script to take effect along with loading web components before

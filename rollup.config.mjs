@@ -37,7 +37,7 @@ export default [
 
    {
       input: 'src/web-components/index.mjs',
-      external: ['./main.js', './dmt-nav-web-component.js'],   // `main.js` is loaded from this bundle.
+      external: ['../main.js', './dmt-nav-web-component.js'],   // `main.js` is loaded from this bundle.
       output: {
          file: 'dist/dmt-web-components.js',
          format: 'es',

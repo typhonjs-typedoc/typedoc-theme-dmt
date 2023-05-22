@@ -1,5 +1,6 @@
 import fs                     from 'node:fs';
 import path                   from 'node:path';
+
 import {
    fileURLToPath,
    URL }                      from 'node:url';
@@ -56,7 +57,8 @@ export class PageRenderer
       {
          this.#app.logger.verbose(`[typedoc-theme-default-modern] Generating nav web component bundle.`);
 
-         return compileNavBundle(`${output.outputDirectory}/assets/dmt-nav-web-component.js`, this.#navContent);
+         return compileNavBundle(path.join(output.outputDirectory, 'assets', 'dmt', 'dmt-nav-web-component.js'),
+          this.#navContent);
       });
    }
 
@@ -76,10 +78,10 @@ export class PageRenderer
       const headEl = $('head');
 
       // Append stylesheet to the head element.
-      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt-theme.css" />`));
+      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-theme.css" />`));
 
       // Append web components script to the head element.
-      headEl.append($(`<script src="${basePath}assets/dmt-web-components.js" type="module" />`));
+      headEl.append($(`<script src="${basePath}assets/dmt/dmt-web-components.js" type="module" />`));
 
       if (this.#options?.favicon?.url)
       {
@@ -162,32 +164,33 @@ export class PageRenderer
 
    /**
     * Copy web components bundle to docs output assets directory.
+    *
+    * @param {RendererEvent} output -
     */
-   #handleRendererEnd()
+   #handleRendererEnd(output)
    {
-      const outDocs = this.#app.options.getValue('out');
-
-      const outAssets = `${outDocs}${path.sep}assets`;
+      const outAssets = path.join(output.outputDirectory, 'assets', 'dmt');
       const localDir = path.dirname(fileURLToPath(import.meta.url));
 
       if (this.#options?.favicon?.filepath && this.#options?.favicon?.filename)
       {
          this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmtFavicon' to output directory.`);
 
-         fs.copyFileSync(this.#options.favicon.filepath, `${outDocs}${path.sep}${this.#options.favicon.filename}`);
+         fs.copyFileSync(this.#options.favicon.filepath, path.join(output.outputDirectory,
+          this.#options.favicon.filename));
       }
 
       this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmt-theme.css' to output assets directory.`);
 
-      fs.copyFileSync(`${localDir}${path.sep}dmt-theme.css`, `${outAssets}${path.sep}dmt-theme.css`);
-      fs.copyFileSync(`${localDir}${path.sep}dmt-theme.css.map`, `${outAssets}${path.sep}dmt-theme.css.map`);
+      fs.copyFileSync(path.join(localDir, 'dmt-theme.css'), path.join(outAssets, 'dmt-theme.css'));
+      fs.copyFileSync(path.join(localDir, 'dmt-theme.css.map'), path.join(outAssets, 'dmt-theme.css.map'));
 
       this.#app.logger.verbose(
        `[typedoc-theme-default-modern] Copying 'dmt-web-components.js' to output assets directory.`);
 
-      fs.copyFileSync(`${localDir}${path.sep}dmt-web-components.js`, `${outAssets}${path.sep}dmt-web-components.js`);
-      fs.copyFileSync(`${localDir}${path.sep}dmt-web-components.js.map`,
-       `${outAssets}${path.sep}dmt-web-components.js.map`);
+      fs.copyFileSync(path.join(localDir, 'dmt-web-components.js'), path.join(outAssets, 'dmt-web-components.js'));
+      fs.copyFileSync(path.join(localDir, 'dmt-web-components.js.map'),
+       path.join(outAssets, 'dmt-web-components.js.map'));
    }
 
    /**

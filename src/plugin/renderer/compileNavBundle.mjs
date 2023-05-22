@@ -81,11 +81,11 @@ const navComponentScript = `
    function unescapeAttr(value)
    {
       return JSON.parse(value
-   .replace(/\\\\u003c/g, "<")
-   .replace(/\\\\u003e/g, ">")
-   .replace(/\\\\u0026/g, "&")
-   .replace(/\\\\u0027/g, "'")
-   .replace(/\\\\u0022/g, '"'));
+       .replace(/\\\\u003c/g, "<")
+       .replace(/\\\\u003e/g, ">")
+       .replace(/\\\\u0026/g, "&")
+       .replace(/\\\\u0027/g, "'")
+       .replace(/\\\\u0022/g, '"'));
    }
    
    onMount(() =>
@@ -104,7 +104,7 @@ const navComponentScript = `
 
       // Process all anchors in navigation ---------------------------------------------------------------------------
 
-      const baseURL = import.meta.url.replace(/assets\\/dmt-nav-web-component.js/, '');
+      const baseURL = import.meta.url.replace(/assets\\/dmt\\/dmt-nav-web-component.js/, '');
       const pathURL = globalThis.location.href.replace(baseURL, '');
 
       const depth = (pathURL.match(/\\//) ?? []).length;

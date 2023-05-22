@@ -125,7 +125,7 @@ class SearchIndexPackr
 
       const index = builder.build();
 
-      const packrFileName = path.join(event.outputDirectory, 'assets', 'search.msgpack');
+      const packrFileName = path.join(event.outputDirectory, 'assets', 'dmt', 'search.msgpack');
 
       fs.writeFileSync(packrFileName, pack({ rows, index }));
    }
