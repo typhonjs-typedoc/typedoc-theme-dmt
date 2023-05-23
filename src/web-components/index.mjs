@@ -1,6 +1,8 @@
-import Component        from 'svelte-tag';
+import Component              from 'svelte-tag';
 
-import WrapTest         from './WrapTest.svelte';
+import WrapTest               from './WrapTest.svelte';
+
+import { scrollActivation }   from './scrollActivation.mjs';
 
 import './dmt-nav-web-component.js';
 
@@ -17,6 +19,10 @@ new Component({
 
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {
+   // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
+   // element.
+   scrollActivation();
+
    // Dynamically load main script now as it will reach the elements loaded by the web components.
    await import('../main.js');
 
