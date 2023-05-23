@@ -123,6 +123,17 @@ export class PageRenderer
 
       // Wrap the title header in a flex box to allow additional elements to be added right aligned.
       $('.tsd-page-title h1').wrap('<div class="dmt-title-header-flex"></div>');
+
+      // Augment scroll containers making them programmatically focusable --------------------------------------------
+
+      // Main container
+      $('div.container.container-main').attr('tabindex', -1);
+
+      // Nav sidebar
+      $('div.site-menu').attr('tabindex', -1);
+
+      // On This Page / Inner Element
+      $('details.tsd-page-navigation .tsd-accordion-details').attr('tabindex', -1);
    }
 
    /**
