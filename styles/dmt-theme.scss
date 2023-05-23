@@ -93,6 +93,10 @@ header.tsd-page-toolbar {
   top: 0;
 }
 
+.container {
+  max-width: 2000px;
+}
+
 .container.container-main {
   margin-top: var(--dmt-header-height);
   max-height: var(--dmt-container-max-height);
