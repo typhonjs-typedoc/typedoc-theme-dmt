@@ -6,8 +6,8 @@
 
   --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
 
-  // A defined max-height for the site and page menu.
-  --dmt-site-menu-max-height: calc(100vh - var(--dmt-header-height));
+  // A defined max-height for the col-sidebar when it displays.
+  --dmt-sidebar-max-height: calc(100vh - var(--dmt-header-height) - 0.5rem);
 
   // Additional 1.5 rem to take into account padding at top and to give the appearance of padding at the bottom for
   // `On This Page`.
@@ -93,7 +93,7 @@ header.tsd-page-toolbar {
 
 .site-menu {
   margin-top: 0;
-  max-height: var(--dmt-site-menu-max-height);
+  max-height: var(--dmt-sidebar-max-height);
   padding-top: 0.5rem;
   top: 0;
 }
@@ -113,10 +113,14 @@ header.tsd-page-toolbar {
 
 @media (min-width: 770px) and (max-width: 1399px) {
   .col-sidebar {
-    max-height: var(--dmt-site-menu-max-height);
+    max-height: var(--dmt-sidebar-max-height);
     padding-top: 0.75rem;
     top: 0;
   }
+}
+
+nav.tsd-navigation {
+  padding-bottom: 1rem; // This allows the bottom most element in the nav bar to be visible above browser URL hint.
 }
 
 /* CQ Content ------------------------------------------------------------------------------------------------------- */
@@ -184,6 +188,11 @@ header.tsd-page-toolbar {
   .page-menu {
     padding-top: 0;       // When displayed on the left
     padding-right: 1rem;
+    position: static;     // Must remove sticky!
+  }
+
+  .site-menu {
+    max-height: unset;    // This is tricky, but col-sidebar becomes the parent, so unset max-height.
   }
 }
 
@@ -224,7 +233,7 @@ header.tsd-page-toolbar {
         }
 
         li:last-child {
-          padding-bottom: 36px; // TODO: Likely need to change this to the DMT container header height when defined
+          //padding-bottom: 36px; // TODO: Likely need to change this to the DMT container header height when defined
         }
       }
     }
