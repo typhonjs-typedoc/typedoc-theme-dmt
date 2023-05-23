@@ -51,7 +51,8 @@
   ],
   "browserslist": [">5%", "not IE 11"],
   "scripts": {
-    "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/dmt-theme.css && postcss ./dist/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/dmt-theme.css",
-    "eslint": "eslint ."
+    "build-dev": "npm run build && node .dev-build.mjs",
+    "eslint": "eslint .",
+    "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/dmt-theme.css && postcss ./dist/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/dmt-theme.css"
   }
 }
