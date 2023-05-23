@@ -37,15 +37,6 @@ export default [
 
    {
       input: 'src/quick-search/index.mjs',
-      // external: ['./search-nav.msgpack'],   // `main.js` is loaded from this bundle.
-      // treeshake: {
-      //    // moduleSideEffects: ['src/quick-search/index.mjs', 'src/quick-search/loadQuickSearchData.mjs']
-      //    moduleSideEffects: (id, external) =>
-      //    {
-      //       console.log(`TS - id: ${id}; external: ${external}`)
-      //       return false;
-      //    }
-      // },
       output: {
          file: 'dist/dmt-quick-search.js',
          format: 'es',
@@ -54,15 +45,15 @@ export default [
          sourcemap: true
       },
       plugins: [
-         // svelte({
-         //    preprocess: preprocess()
-         // }),
+         svelte({
+            preprocess: preprocess()
+         }),
 
          commonjs(),
 
          resolve({
             browser: true,
-            // dedupe: ['svelte']
+            dedupe: ['svelte']
          }),
       ]
    },
