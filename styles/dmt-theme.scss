@@ -223,17 +223,12 @@ nav.tsd-navigation {
     .tsd-accordion-details {
       overflow: auto;
       height: 100%;
-      scroll-snap-type: y mandatory;
 
       ul {
         padding-left: 0.5rem;
 
-        li {
-          scroll-snap-align: start;
-        }
-
         li:last-child {
-          //padding-bottom: 36px; // TODO: Likely need to change this to the DMT container header height when defined
+          padding-bottom: 36px; // TODO: Likely need to change this to the DMT container header height when defined
         }
       }
     }
