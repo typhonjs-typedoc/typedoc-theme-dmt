@@ -71,6 +71,20 @@
   margin-right: auto;
 }
 
+// The following `:focus-visible` rules cover the programmatic focusing of scroll containers. Please see documentation
+// in `./src/web-components/scrollActivation.mjs`.
+.site-menu:focus-visible {
+  outline: solid 2px transparent;
+}
+
+details.tsd-page-navigation .tsd-accordion-details:focus-visible {
+  outline: solid 2px transparent;
+}
+
+div.container.container-main {
+  outline: solid 2px transparent;
+}
+
 /* Layout Tweaks ---------------------------------------------------------------------------------------------------- */
 
 header.tsd-page-toolbar {
@@ -95,6 +109,7 @@ header.tsd-page-toolbar {
   margin-top: 0;
   max-height: var(--dmt-sidebar-max-height);
   padding-top: 0.5rem;
+  padding-left: 0.1rem; // For outline
   top: 0;
 }
 
