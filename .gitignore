@@ -1,5 +1,5 @@
 .idea
 .DS_Store
-.dev-build.mjs
+.dev-build.js
 dist/
 node_modules/
