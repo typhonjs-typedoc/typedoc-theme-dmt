@@ -1,15 +1,19 @@
-import { unpack } from 'msgpackr';
-import TrieSearch from 'trie-search';
+import { inflateAndUnpack }   from '#runtime/data/format/msgpack/compress';
+import { TrieSearch }         from '#runtime/data/struct/search/trie';
 
+/**
+ * Loads quick search data.
+ *
+ * @returns {Promise<void>}
+ */
 export async function loadQuickSearchData()
 {
-   let response;
-
    const dmtURL = import.meta.url.replace(/\/dmt-quick-search.js/, '');
 
-   response = await fetch(`${dmtURL}/search-nav.msgpack`);
+   const response = await fetch(`${dmtURL}/search-nav.cmp`);
 
-   if (!response.ok) {
+   if (!response.ok)
+   {
       console.warn(`[typedoc-theme-default-modern] Could not load navigation search index.`);
       return;
    }
@@ -17,10 +21,11 @@ export async function loadQuickSearchData()
    try
    {
       /** @type {TrieSearch<SearchNavDocument>} */
-      const dmtSearchNav = new TrieSearch('n', { indexField: 'i' });
+      // const dmtSearchNav = new TrieSearch('n', { indexField: 'i' });
+      const dmtSearchNav = new TrieSearch('n');
 
       const arrayBuffer = await response.arrayBuffer();
-      dmtSearchNav.addAll(unpack(new Uint8Array(arrayBuffer)))
+      dmtSearchNav.add(inflateAndUnpack(new Uint8Array(arrayBuffer)));
 
       /** @type {TrieSearch<SearchNavDocument>} */
       globalThis.dmtSearchNav = dmtSearchNav;
@@ -49,7 +54,7 @@ export async function loadQuickSearchData()
       {
          if (searchString.length)
          {
-            searchString = searchString.substring(0, searchString.length-1);
+            searchString = searchString.substring(0, searchString.length - 1);
          }
 
          if (searchString.length)

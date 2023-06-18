@@ -1,6 +1,7 @@
 import fs                  from 'node:fs';
 import path                from 'node:path';
-import { pack }            from 'msgpackr';
+
+import { packAndDeflate }  from '#runtime/data/format/msgpack/compress';
 
 import {
    ReflectionKind,
@@ -78,7 +79,7 @@ export class SearchNavIndexPackr
          }
       }
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-nav.msgpack'),
-       pack(navSearchDocuments));
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-nav.cmp'),
+       packAndDeflate(navSearchDocuments));
    }
 }

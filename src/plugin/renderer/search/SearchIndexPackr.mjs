@@ -1,15 +1,15 @@
-const fs                   = require('node:fs');
-const path                 = require('node:path');
-const { pack }             = require('msgpackr');
+import fs                  from 'node:fs';
+import path                from 'node:path';
 
-const { Builder, trimmer } = require('lunr');
+import { packAndDeflate }  from '#runtime/data/format/msgpack/compress';
 
-const {
+import lunr                from 'lunr';
+
+import {
    IndexEvent,
    RendererEvent,
-   Comment,
    DeclarationReflection,
-   ProjectReflection }     = require('typedoc');
+   ProjectReflection }     from 'typedoc';
 
 /**
  * Keep this in sync with the interface in src/lib/output/themes/default/assets/typedoc/components/Search.ts
@@ -21,6 +21,7 @@ const {
 //    classes?: string;
 //    parent?: string;
 // }
+
 /**
  * @typedef {object} SearchDocument
  *
@@ -35,13 +36,12 @@ const {
  * @property {string} [p] Any reflection parents.
  */
 
-
 /**
  * A plugin that exports an index of the project to a MessagePack file.
  *
  * The resulting MessagePack file can be fetched and used to build a simple search function.
  */
-class SearchIndexPackr
+export class SearchIndexPackr
 {
    /** @type {import('typedoc').Application} */
    #app;
@@ -85,8 +85,8 @@ class SearchIndexPackr
       if (indexEvent.isDefaultPrevented) { return; }
 
       /** @type {import('lunr').Builder} */
-      const builder = new Builder();
-      builder.pipeline.add(trimmer);
+      const builder = new lunr.Builder();
+      builder.pipeline.add(lunr.trimmer);
 
       builder.ref('i');
       for (const [key, boost] of Object.entries(indexEvent.searchFieldWeights))
@@ -151,17 +151,18 @@ class SearchIndexPackr
 
       const index = builder.build();
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search.msgpack'), pack({ rows, index }));
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search.cmp'),
+       packAndDeflate({ rows, index }));
    }
 
    /**
     * @param {DeclarationReflection} reflection -
     *
-    * @returns {string}
+    * @returns {string | undefined} Reflection comment to add.
     */
    #getCommentSearchText(reflection)
    {
-      /** @type {Comment[]} */
+      /** @type {import('typedoc').Comment[]} */
       const comments = [];
 
       if (reflection.comment) { comments.push(reflection.comment); }
@@ -178,7 +179,3 @@ class SearchIndexPackr
        .join('\n');
    }
 }
-
-module.exports = {
-   SearchIndexPackr
-};

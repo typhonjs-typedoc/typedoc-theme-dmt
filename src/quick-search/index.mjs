@@ -7,7 +7,7 @@ globalThis.document.addEventListener('DOMContentLoaded', async () =>
    await loadQuickSearchData();
 
    new QuickSearch({
-      target: document.body,
+      target: globalThis.document.body,
       intro: true
-   })
-})
+   });
+});
