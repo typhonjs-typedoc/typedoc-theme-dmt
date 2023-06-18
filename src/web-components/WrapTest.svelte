@@ -1,5 +1,5 @@
 <script>
-   import { unescapeAttr } from '#utils';
+   import { unescapeAttr } from '../utils.js';
 
    export let data = void 0;
 

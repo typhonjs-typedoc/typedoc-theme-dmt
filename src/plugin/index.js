@@ -9,11 +9,11 @@ import {
 import {
    SearchNavIndexPackr,
    PageRenderer,
-   SearchIndexPackr }         from './renderer/index.mjs';
+   SearchIndexPackr }         from './renderer/index.js';
 
 import {
    DefaultModernTheme,
-   ThemeOptions }             from './theme/index.mjs';
+   ThemeOptions }             from './theme/index.js';
 
 /**
  * Provides a theme plugin for Typedoc augmenting the main default theme providing a modern UX look & feel.

@@ -1,6 +1,6 @@
 import QuickSearch               from './QuickSearch.svelte';
 
-import { loadQuickSearchData }   from './loadQuickSearchData.mjs';
+import { loadQuickSearchData }   from './loadQuickSearchData.js';
 
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {

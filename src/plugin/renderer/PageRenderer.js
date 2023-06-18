@@ -10,9 +10,9 @@ import {
 
 import { load }               from 'cheerio';
 
-import { escapeAttr }         from '#utils';
+import { escapeAttr }         from '../../utils.js';
 
-import { compileNavBundle }   from './compile/compileNavBundle.mjs';
+import { compileNavBundle }   from './compile/compileNavBundle.js';
 
 export class PageRenderer
 {

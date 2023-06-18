@@ -72,7 +72,7 @@
 }
 
 // The following `:focus-visible` rules cover the programmatic focusing of scroll containers. Please see documentation
-// in `./src/web-components/scrollActivation.mjs`.
+// in `./src/web-components/scrollActivation.js`.
 .site-menu:focus-visible {
   outline: solid 2px transparent;
 }

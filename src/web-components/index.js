@@ -2,7 +2,7 @@ import Component              from 'svelte-tag';
 
 import WrapTest               from './WrapTest.svelte';
 
-import { scrollActivation }   from './scrollActivation.mjs';
+import { scrollActivation }   from './scrollActivation.js';
 
 import './dmt-nav-web-component.js';
 
