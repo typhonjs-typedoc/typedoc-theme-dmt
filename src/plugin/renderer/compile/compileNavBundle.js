@@ -158,11 +158,11 @@ const navComponentScript = `
  * @type {string}
  */
 const indexJS = `
-import Component        from 'svelte-tag';
+import svelteRetag      from 'svelte-retag';
 
 import NavigationSite   from 'VirtualComponent.js';
 
-new Component({
+svelteRetag({
    component: NavigationSite,
    tagname: 'wc-dmt-nav',
    attributes:['pageurl'],
