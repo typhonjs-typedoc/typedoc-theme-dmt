@@ -29,11 +29,6 @@ export class PageRenderer
    /** @type {ThemeOptions} */
    #options;
 
-   // /** @type {DMTOptions} */
-   // #options = {
-   //    removeDefaultModule: false
-   // };
-
    /**
     * @param {import('typedoc').Application} app -
     *
