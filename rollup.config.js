@@ -1,15 +1,16 @@
-import commonjs   from '@rollup/plugin-commonjs';
-import resolve    from '@rollup/plugin-node-resolve';
-import terser     from '@rollup/plugin-terser';
-import svelte     from 'rollup-plugin-svelte';
-import preprocess from 'svelte-preprocess';
+import commonjs            from '@rollup/plugin-commonjs';
+import resolve             from '@rollup/plugin-node-resolve';
+import terser              from '@rollup/plugin-terser';
+import { importsResolve }  from '@typhonjs-build-test/rollup-plugin-pkg-imports';
+import svelte              from 'rollup-plugin-svelte';
+import preprocess          from 'svelte-preprocess';
 
 /**
  * @type {import('rollup').RollupOptions[]}
  */
 export default [
    {
-      input: 'src/plugin/index.mjs',
+      input: 'src/plugin/index.js',
       external: [
          '@rollup/plugin-node-resolve',
          '@rollup/plugin-terser',
@@ -24,19 +25,20 @@ export default [
          'typedoc'
       ],
       output: {
-         file: 'dist/index.cjs',
-         format: 'cjs',
+         file: 'dist/index.js',
+         format: 'es',
          generatedCode: { constBindings: true },
          sourcemap: false
       },
       plugins: [
          commonjs(),
+         importsResolve(),
          resolve()
       ]
    },
 
    {
-      input: 'src/quick-search/index.mjs',
+      input: 'src/quick-search/index.js',
       output: {
          file: 'dist/dmt-quick-search.js',
          format: 'es',
@@ -50,6 +52,7 @@ export default [
          }),
 
          commonjs(),
+         importsResolve(),
 
          resolve({
             browser: true,
@@ -59,7 +62,7 @@ export default [
    },
 
    {
-      input: 'src/web-components/index.mjs',
+      input: 'src/web-components/index.js',
       external: ['../main.js', './dmt-nav-web-component.js'],   // `main.js` is loaded from this bundle.
       output: {
          file: 'dist/dmt-web-components.js',
