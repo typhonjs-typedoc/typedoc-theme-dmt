@@ -3,19 +3,20 @@
   "version": "0.0.0",
   "description": "Provides a modern and customizable UX augmentation to the default TypeDoc theme.",
   "license": "MPL-2.0",
-  "type": "commonjs",
+  "type": "module",
   "author": "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)",
   "contributors": [
     "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)"
   ],
   "sideEffects": false,
   "imports": {
-    "#utils": "./src/utils.mjs"
+    "#runtime/*": "@typhonjs-svelte/runtime-base/*",
+    "#utils": "./src/utils.js"
   },
   "exports": {
     ".": {
-      "types": "./types/index-plugin.d.mts",
-      "require": "./dist/index.cjs"
+      "types": "./types/index-plugin.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "dependencies" : {
@@ -25,22 +26,22 @@
     "cheerio": "^1.0.0-rc.12",
     "rollup" : ">=3.x.x <4.0.0",
     "svelte": ">=3.x.x <4.0.0",
-    "svelte-tag": ">=1.x.x"
+    "svelte-retag": ">=1.x.x"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs" : "^25.0.0",
     "@typhonjs-config/eslint-config" : "^0.6.0",
+    "@typhonjs-build-test/rollup-plugin-pkg-imports": "^0.0.2",
+    "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base",
     "cssnano": "^6.0.1",
     "eslint" : "^8.41.0",
     "lunr": "^2.3.9",
-    "msgpackr" : "^1.9.2",
     "postcss": "^8.4.23",
     "postcss-cli": "^10.1.0",
     "postcss-preset-env": "^8.3.2",
     "rollup-plugin-svelte": "^7.1.4",
     "sass": "^1.62.1",
-    "svelte-preprocess" : "^5.0.3",
-    "trie-search": "^1.4.1"
+    "svelte-preprocess" : "^5.0.3"
   },
   "peerDependencies" : {
     "typedoc": ">=0.24.x"
@@ -51,7 +52,7 @@
   ],
   "browserslist": [">5%", "not IE 11"],
   "scripts": {
-    "build-dev": "npm run build && node .dev-build.mjs",
+    "build-dev": "npm run build && node .dev-build.js",
     "eslint": "eslint .",
     "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/dmt-theme.css && postcss ./dist/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/dmt-theme.css"
   }
