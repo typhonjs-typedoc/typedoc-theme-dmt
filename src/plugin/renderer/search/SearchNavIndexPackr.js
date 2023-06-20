@@ -7,7 +7,7 @@ import {
    ReflectionKind,
    RendererEvent }         from 'typedoc';
 
-// Keep this in sync with `src/quick-search/QuickSearch.svelte`.
+// Keep this in sync with `src/search-quick/SearchQuick.svelte`.
 /**
  * @typedef {object} SearchNavDocument
  *

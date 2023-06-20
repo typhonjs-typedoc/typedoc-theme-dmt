@@ -1,4 +1,4 @@
-import QuickSearch               from './QuickSearch.svelte';
+import QuickSearch               from './SearchQuick.svelte';
 
 import { loadQuickSearchData }   from './loadQuickSearchData.js';
 

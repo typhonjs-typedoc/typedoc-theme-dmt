@@ -38,9 +38,9 @@ export default [
    },
 
    {
-      input: 'src/quick-search/index.js',
+      input: 'src/search-quick/index.js',
       output: {
-         file: 'dist/dmt-quick-search.js',
+         file: 'dist/dmt-search-quick.js',
          format: 'es',
          generatedCode: { constBindings: true },
          plugins: [terser()],

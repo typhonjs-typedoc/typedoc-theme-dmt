@@ -10,7 +10,7 @@ import {
 
 import { load }               from 'cheerio';
 
-import { escapeAttr }         from '../../utils.js';
+import { escapeAttr }         from '#utils';
 
 import { compileNavBundle }   from './compile/compileNavBundle.js';
 
@@ -78,7 +78,7 @@ export class PageRenderer
       headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-theme.css" />`));
 
       // Append nav search index script to the head element.
-      headEl.append($(`<script src="${basePath}assets/dmt/dmt-quick-search.js" type="module" />`));
+      headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-quick.js" type="module" />`));
 
       // Append web components script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-web-components.js" type="module" />`));
@@ -232,11 +232,11 @@ export class PageRenderer
       fs.copyFileSync(path.join(localDir, 'dmt-theme.css.map'), path.join(outAssets, 'dmt-theme.css.map'));
 
       this.#app.logger.verbose(
-       `[typedoc-theme-default-modern] Copying 'dmt-quick-search.js' to output assets directory.`);
+       `[typedoc-theme-default-modern] Copying 'dmt-search-quick.js' to output assets directory.`);
 
-      fs.copyFileSync(path.join(localDir, 'dmt-quick-search.js'), path.join(outAssets, 'dmt-quick-search.js'));
-      fs.copyFileSync(path.join(localDir, 'dmt-quick-search.js.map'),
-       path.join(outAssets, 'dmt-quick-search.js.map'));
+      fs.copyFileSync(path.join(localDir, 'dmt-search-quick.js'), path.join(outAssets, 'dmt-search-quick.js'));
+      fs.copyFileSync(path.join(localDir, 'dmt-search-quick.js.map'),
+       path.join(outAssets, 'dmt-search-quick.js.map'));
 
       this.#app.logger.verbose(
        `[typedoc-theme-default-modern] Copying 'dmt-web-components.js' to output assets directory.`);

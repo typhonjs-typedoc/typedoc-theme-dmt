@@ -8,7 +8,7 @@ import { TrieSearch }         from '#runtime/data/struct/search/trie';
  */
 export async function loadQuickSearchData()
 {
-   const dmtURL = import.meta.url.replace(/\/dmt-quick-search.js/, '');
+   const dmtURL = import.meta.url.replace(/\/dmt-search-quick.js/, '');
 
    const response = await fetch(`${dmtURL}/search-nav.cmp`);
 
