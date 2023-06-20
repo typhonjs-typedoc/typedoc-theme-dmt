@@ -185,6 +185,13 @@ nav.tsd-navigation {
   margin: 0 auto;
 }
 
+/* Breadcrumb ------------------------------------------------------------------------------------------------------- */
+
+// Remove trailing `/`
+.tsd-breadcrumb li:last-child:after {
+  content: "";
+}
+
 /* Sidebar ---------------------------------------------------------------------------------------------------------- */
 
 // Hide `On This Page` when col-sidebar becomes activated and moves content to the left.
