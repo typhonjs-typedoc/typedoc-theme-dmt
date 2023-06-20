@@ -27,6 +27,13 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
+         name: 'dmtRemoveBreadcrumb',
+         help: '[typedoc-theme-default-modern] When true the entire breadcrumb is removed.',
+         type: ParameterType.Boolean,
+         defaultValue: false
+      });
+
+      app.options.addDeclaration({
          name: 'dmtRemoveDefaultModule',
          help: '[typedoc-theme-default-modern] When true the default module / namespace is removed from navigation ' +
           'and breadcrumbs.',
@@ -68,6 +75,9 @@ export class ThemeOptions
    /** @returns {{filepath?: string, filename?: string, url?: string}} favicon option */
    get favicon() { return this.#options.favicon; }
 
+   /** @returns {boolean} removeBreadcrumb option */
+   get removeBreadcrumb() { return this.#options.removeBreadcrumb; }
+
    /** @returns {boolean} removeDefaultModule option */
    get removeDefaultModule() { return this.#options.removeDefaultModule; }
 
@@ -78,6 +88,7 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
+      this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.removeDefaultModule = app.options.getValue('dmtRemoveDefaultModule');
 
       const dmtFavicon = app.options.getValue('dmtFavicon');
@@ -117,6 +128,8 @@ export class ThemeOptions
  * @typedef {object} DMTOptions
  *
  * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
+ *
+ * @property {boolean} [removeBreadcrumb] When true the entire breadcrumb is removed.
  *
  * @property {boolean} [removeDefaultModule] When true the default module / namespace is removed from navigation and
  *           breadcrumbs.

@@ -97,8 +97,6 @@ export class PageRenderer
       // Remove unused TypeDoc default assets ------------------------------------------------------------------------
 
       headEl.find('script[src$="assets/search.js"]').remove();
-
-      // $('head > script').filter((i, x) => x && x.src.match(/assets\/search.js$/)).get(0).remove();
    }
 
    /**
@@ -144,11 +142,27 @@ export class PageRenderer
       // navigation web component. This occurs as the ~2nd page generated.
       if (page.model.kind === ReflectionKind.Project && page.url === 'index.html')
       {
-         // Potentially remove default module / namespace.
-         // TODO: This needs to be revised / verified.
+         // Potentially remove default module / namespace given `dtsRemoveDefaultModule` option.
          if (this.#options.removeDefaultModule)
          {
-            $('nav.tsd-navigation a:first[href$="modules.html"]').remove();
+            const moduleEl = $('nav.tsd-navigation a:first[href$="modules.html"]');
+            if (moduleEl.length)
+            {
+               // So this block of code is not great. The TypeDoc default theme caches the reflection kind SVG icons
+               // and on this page it is cached in the element we are removing. The below block will transfer this <g>
+               // element to the first matching <use> element with the same ID. I will be submitting a PR to try and
+               // externalize the SVG referenced.
+               const moduleSvg = moduleEl.find('svg.tsd-kind-icon g');
+               const svgId = moduleSvg.attr('id');
+
+               if (svgId)
+               {
+                  const useElements = $(`nav.tsd-navigation use[href$="${svgId}"]`).toArray();
+                  if (useElements.length) { $(useElements[0]).replaceWith(moduleSvg); }
+               }
+
+               moduleEl.remove();
+            }
          }
 
          // Remove the currently selected value as this data is cached and dynamically set on load.
@@ -161,6 +175,24 @@ export class PageRenderer
          // 90% output disk space utilization and 80% speed up over the default theme.
          this.#app.renderer.theme.stopNavigationGeneration();
       }
+
+      if (this.#options.removeDefaultModule) // Remove the module breadcrumb links.
+      {
+         const breadCrumbListElements = $('.tsd-breadcrumb li');
+         const breadcrumbArray = breadCrumbListElements.toArray();
+         if (breadcrumbArray.length > 2)
+         {
+            $(breadcrumbArray[0]).remove();
+         }
+         else
+         {
+            // There is only one link level besides the module, so remove all links.
+            breadCrumbListElements.remove();
+         }
+      }
+
+      // Remove all breadcrumb links.
+      if (this.#options.removeBreadcrumb) { $('.tsd-breadcrumb').remove(); }
 
       // Replace standard navigation with the `NavigationSite` web component. Send page url to select current
       // active anchor.
