@@ -113,9 +113,6 @@ export class PageRenderer
       // display along with the DMT web components providing a seamless load with no flicker.
       $('body').prop('style', 'opacity: 0');
 
-      // TODO: wrapping test / remove.
-      $('.tsd-navigation.settings').wrap(`<wc-dmt-wrap></wc-dmt-wrap>`);
-
       // Wrap the title header in a flex box to allow additional elements to be added right aligned.
       $('.tsd-page-title h1').wrap('<div class="dmt-title-header-flex"></div>');
 

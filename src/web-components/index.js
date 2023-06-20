@@ -1,21 +1,11 @@
-import Component              from 'svelte-tag';
-
-import WrapTest               from './WrapTest.svelte';
-
 import { scrollActivation }   from './scrollActivation.js';
 
 import './dmt-nav-web-component.js';
 
 // Currently in Svelte v3 there is no standard way to create a Svelte based web component that doesn't use the shadow
-// DOM. `svelte-tag` provides a workaround. This allows the Svelte components specified below to be loaded as custom
-// elements and remain in the main document flow allowing styles and interactivity loaded from the `main.js` to take
-// effect. The good news is that Svelte v4 coming soon solves this issue!
-
-new Component({
-   component: WrapTest,
-   tagname: 'wc-dmt-wrap',
-   shadow: false
-});
+// DOM. `svelte-tag` provides a workaround. This allows the `dmv-nav-web-component` and any additional Svelte components
+// specified below to be loaded as custom elements and remain in the main document flow allowing styles and
+// interactivity loaded from the `main.js` to take effect.
 
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {
