@@ -45,10 +45,6 @@
   container: col-content / inline-size;
 }
 
-.container-main {
-  container: container-main / inline-size;
-}
-
 .site-menu {
   container: site-menu / inline-size;
 }
@@ -155,13 +151,6 @@ nav.tsd-navigation {
 
   h5 {
     font-size: clamp(0.8rem, 2.5cqi, 1rem);
-  }
-}
-
-@container container-main (min-width: 0) {
-  // Controls right side page-menu relative to the main container.
-  .page-menu .tsd-kind-icon ~ span {
-    font-size: clamp(0.8rem, 5cqi, 1rem);
   }
 }
 
