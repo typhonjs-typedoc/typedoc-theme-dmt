@@ -178,6 +178,13 @@ nav.tsd-navigation {
   }
 }
 
+/* Header ----------------------------------------------------------------------------------------------------------- */
+
+// Adjust padding for icon buttons to be centered
+.tsd-page-toolbar .tsd-toolbar-icon {
+  padding: 12px 12px;
+}
+
 /* Main Container --------------------------------------------------------------------------------------------------- */
 
 .container {
