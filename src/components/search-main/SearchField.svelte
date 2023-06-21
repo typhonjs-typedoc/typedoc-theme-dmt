@@ -18,10 +18,7 @@
 
    let results;
 
-   onMount(() =>
-   {
-      inputEl.focus();
-   });
+   onMount(() => inputEl.focus());
 
    $: results = processSearchQuery($storeQuery);
 

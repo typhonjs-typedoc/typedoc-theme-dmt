@@ -84,8 +84,8 @@ export class PageRenderer
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-components.js" type="module" />`));
 
       // Append DMT options for search index enabled state; if not enabled loading code is disabled.
-      headEl.append($(`<script type="application/javascript">globalThis.dmtOptions = { search: ${
-       this.#options.search}, searchQuick: ${this.#options.searchQuick} }</script>`));
+      headEl.append($(`<script type="application/javascript">globalThis.dmtOptions = { basePath: '${
+       basePath}', search: ${this.#options.search}, searchQuick: ${this.#options.searchQuick} }</script>`));
 
       if (this.#options?.favicon?.url)
       {
@@ -126,7 +126,7 @@ export class PageRenderer
       tsdSearchEl.empty();
 
       // Remove default theme search results.
-      $('.tsd-toolbar-content .results').remove();
+      $('ul.results').remove();
 
       // Augment scroll containers making them programmatically focusable --------------------------------------------
 
