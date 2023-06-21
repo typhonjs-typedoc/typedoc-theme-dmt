@@ -3,7 +3,7 @@
       getContext,
       onMount }         from 'svelte';
 
-   import { slideFade } from './slideFade.js';
+   import { slideFade } from '../transition/slideFade.js';
 
    const storeVisible = getContext('#visible');
 
