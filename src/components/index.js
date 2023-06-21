@@ -26,7 +26,7 @@ globalThis.document.addEventListener('DOMContentLoaded', async () =>
       loadQuickSearchData().then((result) =>
       {
          if (result)
-         { new SearchQuick({target: globalThis.document.body}); }
+         { new SearchQuick({ target: globalThis.document.body }); }
       });
    }
 

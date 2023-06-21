@@ -37,7 +37,7 @@ export function processSearchQuery(query)
    res.sort((a, b) => b.score - a.score);
 
    // TODO Add option for max search results.
-   for (let i = 0, c = Math.min(10, res.length); i < c; i++)
+   for (let c = Math.min(10, res.length), i = 0; i < c; i++)
    {
       const resultLunr = res[i];
       const index = Number(resultLunr.ref);
@@ -69,12 +69,11 @@ export function processSearchQuery(query)
 }
 
 /**
- *
  * @param {string}   text -
  *
  * @param {string}   search -
  *
- * @returns {string}
+ * @returns {string} Text w/ bold matches.
  */
 function boldMatches(text, search)
 {
