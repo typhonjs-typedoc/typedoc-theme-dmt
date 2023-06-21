@@ -12,23 +12,34 @@
   // Additional 1.5 rem to take into account padding at top and to give the appearance of padding at the bottom for
   // `On This Page`.
   --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - 1.5rem);
+
+  --dmt-container-floating-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 
 :root[data-theme="dark"] {
   --dmt-container-background: rgba(0, 0, 0, 0.1);
   --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
+  --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
+  --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
+  --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
 :root[data-theme="light"] {
   --dmt-container-background: rgba(0, 0, 0, 0.05);
   --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
+  --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
+  --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
+  --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --dmt-container-background: rgba(0, 0, 0, 0.1);
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
+    --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
+    --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
+    --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -36,6 +47,9 @@
   :root {
     --dmt-container-background: rgba(0, 0, 0, 0.05);
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
+    --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
+    --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
+    --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -181,8 +195,12 @@ nav.tsd-navigation {
 /* Header ----------------------------------------------------------------------------------------------------------- */
 
 // Adjust padding for icon buttons to be centered
-.tsd-page-toolbar .tsd-toolbar-icon {
-  padding: 12px 12px;
+.tsd-page-toolbar {
+  box-shadow: var(--dmt-header-box-shadow);
+
+  .tsd-toolbar-icon {
+    padding: 12px 12px;
+  }
 }
 
 /* Main Container --------------------------------------------------------------------------------------------------- */
