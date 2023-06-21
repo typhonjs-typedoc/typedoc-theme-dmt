@@ -10,7 +10,9 @@ import {
 
 import { load }               from 'cheerio';
 
-import { escapeAttr }         from '#utils';
+import {
+   copyDirectory,
+   escapeAttr }               from '#utils';
 
 import { compileNavBundle }   from './compile/compileNavBundle.js';
 
@@ -76,8 +78,12 @@ export class PageRenderer
 
       // Append stylesheet to the head element.
       headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-theme.css" />`));
+      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-search-main.css" />`));
 
-      // Append nav search index script to the head element.
+      // Append main search index script to the head element.
+      headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-main.js" type="module" />`));
+
+      // Append quick search index script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-quick.js" type="module" />`));
 
       // Append web components script to the head element.
@@ -113,6 +119,16 @@ export class PageRenderer
 
       // Wrap the title header in a flex box to allow additional elements to be added right aligned.
       $('.tsd-page-title h1').wrap('<div class="dmt-title-header-flex"></div>');
+
+      // Replace default main search with DMT main search ------------------------------------------------------------
+
+      // Empty default theme search div to make space for the DMT search component.
+      const tsdSearchEl = $($('#tsd-search-field').parent());
+      tsdSearchEl.attr('id', 'dmt-search-main');
+      tsdSearchEl.empty();
+
+      // Remove default theme search results.
+      $('.tsd-toolbar-content .results').remove();
 
       // Augment scroll containers making them programmatically focusable --------------------------------------------
 
@@ -226,23 +242,69 @@ export class PageRenderer
           this.#options.favicon.filename));
       }
 
-      this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmt-theme.css' to output assets directory.`);
+      this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying assets to output assets directory.`);
+      copyDirectory(path.join(localDir, 'assets'), outAssets);
 
-      fs.copyFileSync(path.join(localDir, 'dmt-theme.css'), path.join(outAssets, 'dmt-theme.css'));
-      fs.copyFileSync(path.join(localDir, 'dmt-theme.css.map'), path.join(outAssets, 'dmt-theme.css.map'));
+      // Update main.js default theme removing `initSearch` function -------------------------------------------------
 
-      this.#app.logger.verbose(
-       `[typedoc-theme-default-modern] Copying 'dmt-search-quick.js' to output assets directory.`);
+      // This can be a potentially fragile replacement. The regex below is anchored with a lookahead assertion on
+      // `a[data-toggle]` and removes the previous function call before / `initSearch();`. This works for mangled /
+      // minified code.
 
-      fs.copyFileSync(path.join(localDir, 'dmt-search-quick.js'), path.join(outAssets, 'dmt-search-quick.js'));
-      fs.copyFileSync(path.join(localDir, 'dmt-search-quick.js.map'),
-       path.join(outAssets, 'dmt-search-quick.js.map'));
+      // See: https://github.com/TypeStrong/typedoc/blob/master/src/lib/output/themes/default/assets/bootstrap.ts#L8
 
-      this.#app.logger.verbose(
-       `[typedoc-theme-default-modern] Copying 'dmt-web-components.js' to output assets directory.`);
+      // I'll attempt to submit a PR to TypeDoc for a new default theme option `searchEnabled` that will disable the
+      // default theme search index creation and loading code.
 
-      fs.copyFileSync(path.join(localDir, 'dmt-web-components.js'), path.join(outAssets, 'dmt-web-components.js'));
-      fs.copyFileSync(path.join(localDir, 'dmt-web-components.js.map'),
-       path.join(outAssets, 'dmt-web-components.js.map'));
+      const mainJSPath = path.join(output.outputDirectory, 'assets', 'main.js');
+      if (fs.existsSync(mainJSPath))
+      {
+         const mainData = fs.readFileSync(mainJSPath, 'utf-8');
+         const regex = /\w+\(\);(?=.*a\[data-toggle])/gm;
+
+         if (regex.test(mainData))
+         {
+            fs.writeFileSync(mainJSPath, mainData.replace(regex, ''), 'utf-8');
+         }
+         else
+         {
+            this.#app.logger.error(
+             `[typedoc-theme-default-modern] Failed to remove default theme search initialization in 'main.js' asset.`);
+         }
+      }
+      else
+      {
+         this.#app.logger.error(`[typedoc-theme-default-modern] Could not locate 'main.js' asset.`);
+      }
+
+      // Update style.css default theme removing search field rule ---------------------------------------------------
+
+      // This can be a potentially fragile replacement. The regex below removes the `#tsd-search .field input` rule
+      // from the main styles as sadly it doesn't target a specific selector re `.field input`.
+
+      // See: https://github.com/TypeStrong/typedoc/blob/master/static/style.css#L869-L881
+
+      // I'll attempt to submit a PR to TypeDoc to provide a more specific selector.
+
+      const stylesPath = path.join(output.outputDirectory, 'assets', 'style.css');
+      if (fs.existsSync(stylesPath))
+      {
+         const stylesData = fs.readFileSync(stylesPath, 'utf-8');
+         const regex = /#tsd-search \.field input \{[\s\S]*?}/gm;
+
+         if (regex.test(stylesData))
+         {
+            fs.writeFileSync(stylesPath, stylesData.replace(regex, ''), 'utf-8');
+         }
+         else
+         {
+            this.#app.logger.error(
+             `[typedoc-theme-default-modern] Failed to remove rule in default theme 'styles.css' asset.`);
+         }
+      }
+      else
+      {
+         this.#app.logger.error(`[typedoc-theme-default-modern] Could not locate 'styles.css' asset.`);
+      }
    }
 }
