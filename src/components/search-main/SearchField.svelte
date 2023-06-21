@@ -1,18 +1,29 @@
 <script>
    import {
       getContext,
-      onMount }         from 'svelte';
+      onMount }                  from 'svelte';
 
-   import { slideFade } from '../transition/slideFade.js';
+   import { writable }           from 'svelte/store';
+
+   import SearchResults          from './SearchResults.svelte';
+
+   import { processSearchQuery } from './processSearchQuery.js';
+
+   import { slideFade }          from '../transition/slideFade.js';
 
    const storeVisible = getContext('#visible');
+   const storeQuery = writable('');
 
    let inputEl;
+
+   let results;
 
    onMount(() =>
    {
       inputEl.focus();
    });
+
+   $: results = processSearchQuery($storeQuery);
 
    /**
     * @param {PointerEvent}   event -
@@ -26,11 +37,15 @@
 <svelte:window on:pointerdown={handlePointerdown} />
 
 <input bind:this={inputEl}
+       bind:value={$storeQuery}
        type=text
        id=dmt-search-field
        aria-label=Search
        transition:slideFade={{ duration: 200 }}
 >
+{#if results.length}
+   <SearchResults {results} />
+{/if}
 
 <style>
    #dmt-search-field {
