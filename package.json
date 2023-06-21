@@ -33,12 +33,14 @@
     "@typhonjs-config/eslint-config" : "^0.6.0",
     "@typhonjs-build-test/rollup-plugin-pkg-imports": "^0.0.2",
     "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base",
+    "autoprefixer": "^10.4.14",
     "cssnano": "^6.0.1",
     "eslint" : "^8.41.0",
     "lunr": "^2.3.9",
     "postcss": "^8.4.23",
     "postcss-cli": "^10.1.0",
     "postcss-preset-env": "^8.3.2",
+    "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-svelte": "^7.1.4",
     "sass": "^1.62.1",
     "svelte-preprocess" : "^5.0.3"
@@ -54,6 +56,6 @@
   "scripts": {
     "build-dev": "npm run build && node .dev-build.js",
     "eslint": "eslint .",
-    "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/dmt-theme.css && postcss ./dist/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/dmt-theme.css"
+    "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/assets/dmt-theme.css && postcss ./dist/assets/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/assets/dmt-theme.css"
   }
 }
