@@ -83,18 +83,6 @@ export class PageRenderer
       // Append DMT components script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-components.js" type="module" />`));
 
-
-      // headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-search-main.css" />`));
-
-      // // Append main search index script to the head element.
-      // headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-main.js" type="module" />`));
-      //
-      // // Append quick search index script to the head element.
-      // headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-quick.js" type="module" />`));
-      //
-      // // Append web components script to the head element.
-      // headEl.append($(`<script src="${basePath}assets/dmt/dmt-web-components.js" type="module" />`));
-
       if (this.#options?.favicon?.url)
       {
          // Append favicon URL to the head element.
