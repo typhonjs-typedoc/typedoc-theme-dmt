@@ -38,8 +38,10 @@ export function load(app)
           'dmt')));
 
          new PageRenderer(app, options);
-         new SearchIndexPackr(app);
-         new SearchQuickIndexPackr(app);
+
+         // Selectively load search index creation.
+         if (app.options.getValue('dmtSearch')) { new SearchIndexPackr(app); }
+         if (app.options.getValue('dmtSearchQuick')) { new SearchQuickIndexPackr(app); }
       }
    });
 

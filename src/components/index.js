@@ -11,18 +11,27 @@ import './dmt-nav-web-component.js';
 
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {
-   loadMainSearchData().then((result) =>
+   // Only load main search index if enabled.
+   if (globalThis?.dmtOptions?.search)
    {
-      if (result) { new SearchMain({ target: document.querySelector('#dmt-search-main') }); }
-   });
+      loadMainSearchData().then((result) =>
+      {
+         if (result) { new SearchMain({ target: document.querySelector('#dmt-search-main') }); }
+      });
+   }
 
-   loadQuickSearchData().then((result) =>
+   // Only load quick search index if enabled.
+   if (globalThis?.dmtOptions?.searchQuick)
    {
-      if (result) { new SearchQuick({ target: globalThis.document.body }); }
-   });
+      loadQuickSearchData().then((result) =>
+      {
+         if (result)
+         { new SearchQuick({target: globalThis.document.body}); }
+      });
+   }
 
    // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
-   // element.
+   // element allowing intuitive scrolling.
    scrollActivation();
 
    // Dynamically load main script now as it will reach the elements loaded by any web components.

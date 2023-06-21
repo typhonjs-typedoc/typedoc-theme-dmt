@@ -40,6 +40,20 @@ export class ThemeOptions
          type: ParameterType.Boolean,
          defaultValue: false
       });
+
+      app.options.addDeclaration({
+         name: 'dmtSearch',
+         help: '[typedoc-theme-default-modern] When true the main search index is enabled.',
+         type: ParameterType.Boolean,
+         defaultValue: true
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtSearchQuick',
+         help: '[typedoc-theme-default-modern] When true the quick search index is enabled.',
+         type: ParameterType.Boolean,
+         defaultValue: true
+      });
    }
 
    /**
@@ -81,6 +95,12 @@ export class ThemeOptions
    /** @returns {boolean} removeDefaultModule option */
    get removeDefaultModule() { return this.#options.removeDefaultModule; }
 
+   /** @returns {boolean} search option */
+   get search() { return this.#options.search; }
+
+   /** @returns {boolean} searchQuick option */
+   get searchQuick() { return this.#options.searchQuick; }
+
    /**
     * Parses DMT options.
     *
@@ -90,6 +110,8 @@ export class ThemeOptions
    {
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.removeDefaultModule = app.options.getValue('dmtRemoveDefaultModule');
+      this.#options.search = app.options.getValue('dmtSearch');
+      this.#options.searchQuick = app.options.getValue('dmtSearchQuick');
 
       const dmtFavicon = app.options.getValue('dmtFavicon');
 
@@ -133,4 +155,8 @@ export class ThemeOptions
  *
  * @property {boolean} [removeDefaultModule] When true the default module / namespace is removed from navigation and
  *           breadcrumbs.
+ *
+ * @property {boolean} [search] When true the main search index is enabled.
+ *
+ * @property {boolean} [searchQuick] When true the quick search index is enabled.
  */
