@@ -77,17 +77,23 @@ export class PageRenderer
       const headEl = $('head');
 
       // Append stylesheet to the head element.
+      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-components.css" />`));
       headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-theme.css" />`));
-      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-search-main.css" />`));
 
-      // Append main search index script to the head element.
-      headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-main.js" type="module" />`));
+      // Append DMT components script to the head element.
+      headEl.append($(`<script src="${basePath}assets/dmt/dmt-components.js" type="module" />`));
 
-      // Append quick search index script to the head element.
-      headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-quick.js" type="module" />`));
 
-      // Append web components script to the head element.
-      headEl.append($(`<script src="${basePath}assets/dmt/dmt-web-components.js" type="module" />`));
+      // headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-search-main.css" />`));
+
+      // // Append main search index script to the head element.
+      // headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-main.js" type="module" />`));
+      //
+      // // Append quick search index script to the head element.
+      // headEl.append($(`<script src="${basePath}assets/dmt/dmt-search-quick.js" type="module" />`));
+      //
+      // // Append web components script to the head element.
+      // headEl.append($(`<script src="${basePath}assets/dmt/dmt-web-components.js" type="module" />`));
 
       if (this.#options?.favicon?.url)
       {
@@ -100,7 +106,7 @@ export class PageRenderer
          headEl.append($(`<link rel="icon" href="${basePath}${this.#options.favicon.filename}" />`));
       }
 
-      // Remove unused TypeDoc default assets ------------------------------------------------------------------------
+      // Remove unused default theme assets --------------------------------------------------------------------------
 
       headEl.find('script[src$="assets/search.js"]').remove();
    }
@@ -149,7 +155,7 @@ export class PageRenderer
    {
       const $ = load(page.contents);
 
-      // Remove the `main.js` script as it is loaded after the DOM is loaded in the web components bundle.
+      // Remove the `main.js` script as it is loaded after the DOM is loaded in the DMT components bundle.
       $('script[src*="/main.js"]').remove();
 
       const siteMenu = $('div.site-menu');

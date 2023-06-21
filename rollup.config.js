@@ -2,6 +2,10 @@ import commonjs            from '@rollup/plugin-commonjs';
 import resolve             from '@rollup/plugin-node-resolve';
 import terser              from '@rollup/plugin-terser';
 import { importsResolve }  from '@typhonjs-build-test/rollup-plugin-pkg-imports';
+import autoprefixer        from 'autoprefixer';
+import cssnano             from 'cssnano';
+import postcssPresetEnv    from 'postcss-preset-env';
+import postcss             from 'rollup-plugin-postcss';
 import svelte              from 'rollup-plugin-svelte';
 import preprocess          from 'svelte-preprocess';
 
@@ -38,9 +42,10 @@ export default [
    },
 
    {
-      input: 'src/search-quick/index.js',
+      input: 'src/components/index.js',
+      external: ['../main.js', './dmt-nav-web-component.js'],   // `main.js` is loaded from this bundle.
       output: {
-         file: 'dist/dmt-search-quick.js',
+         file: 'dist/assets/dmt-components.js',
          format: 'es',
          generatedCode: { constBindings: true },
          plugins: [terser()],
@@ -50,6 +55,12 @@ export default [
          svelte({
             preprocess: preprocess()
          }),
+
+         postcss(postcssConfig({
+            extract: 'dmt-components.css',
+            compress: true,
+            sourceMap: true
+         })),
 
          commonjs(),
          importsResolve(),
@@ -59,27 +70,33 @@ export default [
             dedupe: ['svelte']
          }),
       ]
-   },
-
-   {
-      input: 'src/web-components/index.js',
-      external: ['../main.js', './dmt-nav-web-component.js'],   // `main.js` is loaded from this bundle.
-      output: {
-         file: 'dist/dmt-web-components.js',
-         format: 'es',
-         generatedCode: { constBindings: true },
-         plugins: [terser()],
-         sourcemap: true
-      },
-      plugins: [
-         svelte({
-            preprocess: preprocess()
-         }),
-
-         resolve({
-            browser: true,
-            dedupe: ['svelte']
-         }),
-      ]
    }
 ];
+
+/**
+ * Provides a function to return a new PostCSS configuration setting the extract parameter.
+ *
+ * @param {object}   [opts] - Optional parameters.
+ *
+ * @param {string}   [opts.extract] - Name of CSS file to extract to...
+ *
+ * @param {boolean}  [opts.compress=false] - Compress CSS.
+ *
+ * @param {boolean}  [opts.sourceMap=false] - Generate source maps.
+ *
+ * @returns {{extensions: string[], extract, sourceMap: boolean, plugins: (*)[], use: string[], inject: boolean}}
+ *          PostCSS config
+ */
+export function postcssConfig({ extract, compress = false, sourceMap = false } = {})
+{
+   const plugins = compress ? [autoprefixer, postcssPresetEnv, cssnano] : [autoprefixer, postcssPresetEnv];
+
+   return {
+      inject: false,                                        // Don't inject CSS into <HEAD>
+      extract,
+      sourceMap,
+      extensions: ['.scss', '.sass', '.css'],               // File extensions
+      plugins,                                              // Postcss plugins to use
+      use: ['sass']                                         // Use sass / dart-sass
+   };
+}

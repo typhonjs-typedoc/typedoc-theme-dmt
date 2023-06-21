@@ -9,7 +9,7 @@ import { inflateAndUnpack }   from '#runtime/data/format/msgpack/compress';
  */
 export async function loadMainSearchData()
 {
-   const dmtURL = import.meta.url.replace(/\/dmt-search-main.js/, '');
+   const dmtURL = import.meta.url.replace(/\/dmt-components.js/, '');
 
    const response = await fetch(`${dmtURL}/search.cmp`);
 

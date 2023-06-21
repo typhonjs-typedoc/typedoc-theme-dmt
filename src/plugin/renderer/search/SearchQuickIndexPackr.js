@@ -25,7 +25,7 @@ import {
  *
  * The resulting MessagePack file can be loaded into `trie-search` for auto-complete quick search functionality.
  */
-export class SearchNavIndexPackr
+export class SearchQuickIndexPackr
 {
    /** @type {import('typedoc').Application} */
    #app;
@@ -79,7 +79,7 @@ export class SearchNavIndexPackr
          }
       }
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-nav.cmp'),
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-quick.cmp'),
        packAndDeflate(navSearchDocuments));
    }
 }
