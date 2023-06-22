@@ -1,6 +1,7 @@
 <script>
    import { getContext } from 'svelte';
 
+   /** @type {Writable<boolean>} */
    const storeVisible = getContext('#visible');
 </script>
 

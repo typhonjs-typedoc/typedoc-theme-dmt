@@ -3,9 +3,12 @@
 
    /** @type {ProcessedSearchDocument[]} */
    export let results = void 0;
+
+   /** @type {HTMLUListElement} */
+   export let resultsEl = void 0;
 </script>
 
-<ul transition:slideFade={{ duration: 100 }}>
+<ul bind:this={resultsEl} transition:slideFade={{ duration: 100 }}>
 {#each results as result (result.id)}
    <li class="{result.classes}">
       <a href="{result.href}">

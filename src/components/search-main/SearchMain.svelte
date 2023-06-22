@@ -1,25 +1,15 @@
 <script>
-   import {
-      onDestroy,
-      onMount,
-      setContext }      from 'svelte';
+   import { setContext }   from 'svelte';
 
-   import { writable }  from 'svelte/store';
+   import { writable }     from 'svelte/store';
 
-   import SearchButton  from './SearchButton.svelte';
-   import SearchField   from './SearchField.svelte';
+   import SearchButton     from './SearchButton.svelte';
+   import SearchField      from './SearchField.svelte';
 
+   /** @type {Writable<boolean>} */
    const storeVisible = writable(false);
 
    setContext('#visible', storeVisible)
-
-   onDestroy(() =>
-   {
-   });
-
-   onMount(() =>
-   {
-   });
 
    /**
     * Open search when <Alt-s> is pressed.
