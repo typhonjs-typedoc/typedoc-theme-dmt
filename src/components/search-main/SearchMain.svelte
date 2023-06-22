@@ -20,10 +20,6 @@
    {
       switch (event.code)
       {
-         case 'Escape':
-            if ($storeVisible) { $storeVisible = false; }
-            break;
-
          case 'KeyS':
             if (event.altKey) { $storeVisible = true; }
             break;

@@ -92,6 +92,10 @@
             event.preventDefault();
             break;
 
+         case 'Escape':
+            if ($storeVisible) { $storeVisible = false; }
+            break;
+
          case 'Tab':
             if (results.length === 0) { event.preventDefault(); return; }
 
@@ -106,6 +110,9 @@
             event.preventDefault();
             break;
       }
+
+      // Prevents global key commands from activating when main search is active.
+      event.stopPropagation();
    }
 
    /**
