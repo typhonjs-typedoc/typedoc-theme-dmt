@@ -1,17 +1,22 @@
 <script>
-   import { slideFade } from '../transition/slideFade.js';
+   import { getContext }   from 'svelte';
+
+   import { slideFade }    from '../transition/slideFade.js';
 
    /** @type {ProcessedSearchDocument[]} */
    export let results = void 0;
 
    /** @type {HTMLUListElement} */
    export let resultsEl = void 0;
+
+   /** @type {Writable<boolean>} */
+   const storeVisible = getContext('#visible');
 </script>
 
 <ul bind:this={resultsEl} transition:slideFade={{ duration: 100 }}>
 {#each results as result (result.id)}
    <li class="{result.classes}">
-      <a href="{result.href}">
+      <a href="{result.href}" on:click={() => $storeVisible = false}>
          <span class=parent>{@html result.name}</span>
       </a>
    </li>
