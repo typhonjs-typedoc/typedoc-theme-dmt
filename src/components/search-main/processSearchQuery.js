@@ -1,6 +1,6 @@
 /**
  * Note: The Lunr processing code in this source file is taken from the TypeDoc project and slightly modified to match
- * the abbreviated fields in the DMT main search index data.
+ * the abbreviated fields in the DMT main search index data; {@link SearchDocument}.
  *
  * @see https://github.com/TypeStrong/typedoc/blob/master/src/lib/output/themes/default/assets/typedoc/components/Search.ts
  */
