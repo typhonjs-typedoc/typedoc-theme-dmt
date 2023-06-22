@@ -12,31 +12,6 @@ import {
    ProjectReflection }     from 'typedoc';
 
 /**
- * Keep this in sync with the interface in src/lib/output/themes/default/assets/typedoc/components/Search.ts
- */
-// interface SearchDocument {
-//    kind: number;
-//    name: string;
-//    url: string;
-//    classes?: string;
-//    parent?: string;
-// }
-
-/**
- * @typedef {object} SearchDocument
- *
- * @property {import('typedoc').ReflectionKind} k The reflection kind.
- *
- * @property {string} n The reflection name.
- *
- * @property {string} u The reflection url.
- *
- * @property {string} [c] Any reflection classes.
- *
- * @property {string} [p] Any reflection parents.
- */
-
-/**
  * A plugin that exports an index of the project to a MessagePack file.
  *
  * The resulting MessagePack file can be fetched and used to build a simple search function.

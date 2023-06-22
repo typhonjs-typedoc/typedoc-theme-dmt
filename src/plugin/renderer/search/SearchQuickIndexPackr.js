@@ -7,19 +7,6 @@ import {
    ReflectionKind,
    RendererEvent }         from 'typedoc';
 
-// Keep this in sync with `src/search-quick/SearchQuick.svelte`.
-/**
- * @typedef {object} SearchNavDocument
- *
- * @property {number} i Index for trie-search.
- *
- * @property {import('typedoc').ReflectionKind} k The reflection kind.
- *
- * @property {string} n The reflection name.
- *
- * @property {string} u The reflection url.
- */
-
 /**
  * Exports an index of the main navigation URLs and reflection data to a MessagePack file.
  *
@@ -54,7 +41,7 @@ export class SearchQuickIndexPackr
       /**
        * Creates a top level URL mapping for all main HTML pages.
        *
-       * @type {SearchNavDocument[]}
+       * @type {SearchQuickDocument[]}
        */
       const navSearchDocuments = urlMappings.filter((mapping) => mapping.model.kind !== ReflectionKind.Project).map(
        (mapping, i) => ({

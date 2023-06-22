@@ -23,8 +23,11 @@ export async function loadMainSearchData()
    {
       const arrayBuffer = await response.arrayBuffer();
 
-      globalThis.dmtSearchMainData = inflateAndUnpack(new Uint8Array(arrayBuffer));
-      globalThis.dmtSearchMainLunr = Index.load(globalThis.dmtSearchMainData.index);
+      /** @type {{ rows: SearchDocument[], index: [] }} */
+      const data = inflateAndUnpack(new Uint8Array(arrayBuffer));
+
+      globalThis.dmtSearchMainRows = data.rows;
+      globalThis.dmtSearchMainIndex = Index.load(data.index);
    }
    catch (err)
    {

@@ -16,6 +16,7 @@
 
    let inputEl;
 
+   /** @type {ProcessedSearchDocument[]} */
    let results;
 
    onMount(() => inputEl.focus());

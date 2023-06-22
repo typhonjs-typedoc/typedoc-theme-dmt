@@ -20,15 +20,16 @@ export async function loadQuickSearchData()
 
    try
    {
-      /** @type {TrieSearch<SearchNavDocument>} */
-       // const dmtSearchQuick = new TrieSearch('n', { min: 2, splitOnRegEx: /\./ });
-      const dmtSearchQuick = new TrieSearch('n', { min: 2 });
+      /** @type {TrieSearch<SearchQuickDocument>} */
+      const dmtSearchQuickNav = new TrieSearch('n', { min: 2 });
+
+      // TODO: Consider setting splitOnRegEx to separate words on `.` as there are namespaces.
+      // const dmtSearchQuick = new TrieSearch('n', { min: 2, splitOnRegEx: /\./ });
 
       const arrayBuffer = await response.arrayBuffer();
-      dmtSearchQuick.add(inflateAndUnpack(new Uint8Array(arrayBuffer)));
+      dmtSearchQuickNav.add(inflateAndUnpack(new Uint8Array(arrayBuffer)));
 
-      /** @type {TrieSearch<SearchNavDocument>} */
-      globalThis.dmtSearchQuick = dmtSearchQuick;
+      globalThis.dmtSearchQuickNav = dmtSearchQuickNav;
    }
    catch (err)
    {
@@ -48,7 +49,7 @@ export async function loadQuickSearchData()
    //    if ((/^[A-Za-z0-9.]$/i).test(key))
    //    {
    //       searchString += key;
-   //       console.log(globalThis.dmtSearchQuick.search(searchString));
+   //       console.log(globalThis.dmtSearchQuickNav.search(searchString));
    //    }
    //    else if (event.key === 'Backspace')
    //    {
@@ -59,7 +60,7 @@ export async function loadQuickSearchData()
    //
    //       if (searchString.length)
    //       {
-   //          console.log(globalThis.dmtSearchQuick.search(searchString));
+   //          console.log(globalThis.dmtSearchQuickNav.search(searchString));
    //       }
    //    }
    //    else if (event.key === 'Escape')

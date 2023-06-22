@@ -8,21 +8,23 @@
 /**
  * @param {string}   query - A search query.
  *
- * @returns {[]} Processed query results.
+ * @returns {ProcessedSearchDocument[]} Processed query results.
  */
 export function processSearchQuery(query)
 {
    const searchText = query.trim();
 
-   const res = searchText.length && globalThis.dmtSearchMainLunr ?
-    globalThis.dmtSearchMainLunr.search(`*${searchText}*`) : [];
+   if (searchText.length === 0) { return []; }
 
-   const results = [];
+   const indexResults = globalThis.dmtSearchMainIndex.search(`*${searchText}*`);
 
-   for (let i = 0; i < res.length; i++)
+   /** @type {ProcessedSearchDocument[]} */
+   const processedDocuments = [];
+
+   for (let i = 0; i < indexResults.length; i++)
    {
-      const item = res[i];
-      const row = globalThis.dmtSearchMainData.rows[Number(item.ref)];
+      const item = indexResults[i];
+      const row = globalThis.dmtSearchMainRows[Number(item.ref)];
       let boost = 1;
 
       // Boost by exact match on name.
@@ -34,19 +36,20 @@ export function processSearchQuery(query)
       item.score *= boost;
    }
 
-   res.sort((a, b) => b.score - a.score);
+   indexResults.sort((a, b) => b.score - a.score);
 
    // TODO Add option for max search results.
-   for (let c = Math.min(10, res.length), i = 0; i < c; i++)
+   for (let c = Math.min(10, indexResults.length), i = 0; i < c; i++)
    {
-      const resultLunr = res[i];
-      const index = Number(resultLunr.ref);
-      const row = globalThis.dmtSearchMainData.rows[index];
+      const indexResult = indexResults[i];
+      const index = Number(indexResult.ref);
+      const row = globalThis.dmtSearchMainRows[index];
 
       // Bold the matched part of the query in the search results
       let name = boldMatches(row.n, searchText); // name
 
-      if (globalThis.DEBUG_SEARCH_WEIGHTS) { name += ` (score: ${resultLunr.score.toFixed(2)})`; }
+      // TypeDoc may set this variable for debugging.
+      if (globalThis?.DEBUG_SEARCH_WEIGHTS) { name += ` (score: ${indexResult.score.toFixed(2)})`; }
 
       if (row.p) // parent
       {
@@ -56,7 +59,7 @@ export function processSearchQuery(query)
          )}.</span>${name}`;
       }
 
-      results.push({
+      processedDocuments.push({
          id: index,
          kind: row.k,
          classes: row.c ?? '', // classes
@@ -65,7 +68,7 @@ export function processSearchQuery(query)
       });
    }
 
-   return results;
+   return processedDocuments;
 }
 
 /**
@@ -116,9 +119,23 @@ const SPECIAL_HTML = {
 /**
  * @param {string}   text -
  *
- * @returns {*} Escaped text.
+ * @returns {string} Escaped text.
  */
 function escapeHtml(text)
 {
    return text.replace(/[&<>"']/g, (match) => SPECIAL_HTML[match]);
 }
+
+/**
+ * @typedef {object} ProcessedSearchDocument Provides parsed presentation data for a SearchDocument found in a query.
+ *
+ * @property {number}   id A unique ID.
+ *
+ * @property {import('typedoc').ReflectionKind} kind The reflection kind.
+ *
+ * @property {string}   classes Any particular classes to apply regarding properties like private / inherited, etc.
+ *
+ * @property {string}   href The document link.
+ *
+ * @property {string}   name The document name HTML content.
+ */

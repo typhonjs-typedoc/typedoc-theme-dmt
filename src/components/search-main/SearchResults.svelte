@@ -1,6 +1,7 @@
 <script>
    import { slideFade } from '../transition/slideFade.js';
 
+   /** @type {ProcessedSearchDocument[]} */
    export let results = void 0;
 </script>
 
