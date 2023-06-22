@@ -146,6 +146,14 @@ header.tsd-page-toolbar {
   position: sticky;
 }
 
+// Style generator div as container.
+.tsd-generator {
+  background: var(--dmt-container-background);
+  border: var(--dmt-container-border);
+  border-radius: var(--dmt-container-border-radius);
+  margin-bottom: 0.75rem;
+}
+
 @media (min-width: 770px) and (max-width: 1399px) {
   .col-sidebar {
     max-height: var(--dmt-sidebar-max-height);
