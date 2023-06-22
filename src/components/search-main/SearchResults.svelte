@@ -9,13 +9,16 @@
    /** @type {HTMLUListElement} */
    export let resultsEl = void 0;
 
+   /** @type {Writable<number>} */
+   const storeCurrentId = getContext('#currentId');
+
    /** @type {Writable<boolean>} */
    const storeVisible = getContext('#visible');
 </script>
 
 <ul bind:this={resultsEl} transition:slideFade={{ duration: 100 }}>
 {#each results as result (result.id)}
-   <li class="{result.classes}">
+   <li class="{result.classes}" class:selected={result.id === $storeCurrentId}>
       <a href="{result.href}" on:click={() => $storeVisible = false}>
          <span class=parent>{@html result.name}</span>
       </a>
@@ -24,19 +27,32 @@
 </ul>
 
 <style>
+   a {
+      display: block;
+   }
+
    li {
       padding: 0 10px;
       background-color: var(--color-background);
       text-overflow: ellipsis;
       overflow: hidden;
+      transition: background 0.15s ease-in-out;
    }
 
-   li:nth-child(even) {
-      background-color: var(--color-background-secondary);
+   li.selected {
+      background: var(--dmt-menu-item-background-selected);
+   }
+
+   li:hover {
+      background: var(--dmt-menu-item-background-hover);
    }
 
    li:not(:last-child) {
       border-bottom: var(--dmt-container-separator-border);
+   }
+
+   li:nth-child(even):not(:hover):not(.selected) {
+      background-color: var(--color-background-secondary);
    }
 
    ul {

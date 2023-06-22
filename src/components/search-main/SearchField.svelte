@@ -1,7 +1,8 @@
 <script>
    import {
       getContext,
-      onMount }                  from 'svelte';
+      onMount,
+      setContext }               from 'svelte';
 
    import { writable }           from 'svelte/store';
 
@@ -10,6 +11,15 @@
    import { processSearchQuery } from './processSearchQuery.js';
 
    import { slideFade }          from '../transition/slideFade.js';
+
+   /**
+    * Stores the current selected ID for navigating search query results in {@link SearchResults}.
+    *
+    * @type {Writable<number|undefined>}
+    */
+   const storeCurrentId = writable(void 0);
+
+   setContext('#currentId', storeCurrentId);
 
    /** @type {Writable<boolean>} */
    const storeVisible = getContext('#visible');
@@ -21,12 +31,7 @@
     */
    const storeQuery = writable('');
 
-   /**
-    * Stores the current selected ID for navigating search query results in {@link SearchResults}.
-    *
-    * @type {Writable<number|undefined>}
-    */
-   const storeCurrentId = writable(void 0);
+   let currentIndex = 0;
 
    /** @type {HTMLInputElement} */
    let inputEl;
@@ -34,13 +39,20 @@
    /** @type {ProcessedSearchDocument[]} */
    let results;
 
-   /** @type {HTMLUListElement} */
+   /**
+    * Bound from {@link SearchResults} to check for window pointer down events outside input & results elements.
+    *
+    * @type {HTMLUListElement}
+    */
    let resultsEl;
 
+   // Focus input element on mount.
    onMount(() => inputEl.focus());
 
    $: {
       results = processSearchQuery($storeQuery);
+      currentIndex = -1;
+      storeCurrentId.set(void 0);
    }
 
    /**
@@ -53,12 +65,45 @@
       switch (event.code)
       {
          case 'ArrowDown':
+            if (results.length === 0) { return; }
+
+            if (currentIndex < results.length - 1)
+            {
+               storeCurrentId.set(results[++currentIndex].id);
+               event.preventDefault();
+            }
             break;
 
          case 'ArrowUp':
+            if (results.length === 0) { return; }
+
+            if (currentIndex > 0)
+            {
+               storeCurrentId.set(results[--currentIndex].id);
+               event.preventDefault();
+            }
+            break;
+
+         case 'Enter':
+            if (currentIndex >= 0)
+            {
+               window.location.href = results[currentIndex].href;
+            }
+            event.preventDefault();
             break;
 
          case 'Tab':
+            if (results.length === 0) { event.preventDefault(); return; }
+
+            if (event.shiftKey)
+            {
+               if (currentIndex > 0) { storeCurrentId.set(results[--currentIndex].id); }
+            }
+            else if (currentIndex < results.length - 1)
+            {
+               storeCurrentId.set(results[++currentIndex].id);
+            }
+            event.preventDefault();
             break;
       }
    }
