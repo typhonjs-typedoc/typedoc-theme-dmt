@@ -83,9 +83,22 @@ export class PageRenderer
       // Append DMT components script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-components.js" type="module" />`));
 
+      /**
+       * Configures the global options available in frontend runtime.
+       *
+       * @type {DMTGlobalOptions}
+       */
+      const dmtGlobalOptions = {
+         basePath,
+         search: this.#options.search,
+         searchLimit: this.#options.searchLimit,
+         searchQuick: this.#options.searchQuick,
+         searchQuickLimit: this.#options.searchQuickLimit
+      };
+
       // Append DMT options for search index enabled state; if not enabled loading code is disabled.
-      headEl.append($(`<script type="application/javascript">globalThis.dmtOptions = { basePath: '${
-       basePath}', search: ${this.#options.search}, searchQuick: ${this.#options.searchQuick} }</script>`));
+      headEl.append(
+       $(`<script type="application/javascript">globalThis.dmtOptions = ${JSON.stringify(dmtGlobalOptions)}</script>`));
 
       if (this.#options?.favicon?.url)
       {

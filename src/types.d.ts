@@ -40,6 +40,9 @@ export interface SearchDocument {
    p?: string;
 }
 
+/**
+ * Provides the quick search document entry structure.
+ */
 export interface SearchQuickDocument
 {
    /**
@@ -61,6 +64,36 @@ export interface SearchQuickDocument
     * The reflection url.
     */
    u: string;
+}
+
+/**
+ * Defines the global DMT options available in the frontend runtime.
+ */
+export type DMTGlobalOptions = {
+   /**
+    * The base path from the current page.
+    */
+   basePath: string;
+
+   /**
+    * The `dmtSearch` option; when true the main search index is active.
+    */
+   search: boolean;
+
+   /**
+    * The `dmtSearchLimit` option; The max number of documents returned in the main search query processing.
+    */
+   searchLimit: number;
+
+   /**
+    * The `dmtSearchQuick` option; when true the quick search index is active.
+    */
+   searchQuick: boolean;
+
+   /**
+    * The `dmtSearchQuickLimit` option; The max number of documents returned in the main search query processing.
+    */
+   searchQuickLimit: number;
 }
 
 /**
@@ -89,33 +122,8 @@ declare global {
       dmtSearchQuickNav?: TrieSearch<SearchQuickDocument>;
 
       /**
-       * Defines DMT plugin options used at the global scope. They are loaded in DMT plugin / PageRenderer.
+       * Defines DMT plugin options used at the global scope. Configured in DMT plugin / `PageRenderer.#addAssets`.
        */
-      dmtOptions?: {
-         /**
-          * The base path from the current page.
-          */
-         basePath: string;
-
-         /**
-          * The `dmtSearch` option; when true the main search index is active.
-          */
-         search: boolean;
-
-         /**
-          * The `dmtSearchLimit` option; The max number of documents returned in the main search query processing.
-          */
-         searchLimit: number;
-
-         /**
-          * The `dmtSearchQuick` option; when true the quick search index is active.
-          */
-         searchQuick: boolean;
-
-         /**
-          * The `dmtSearchQuickLimit` option; The max number of documents returned in the main search query processing.
-          */
-         searchQuickLimit: boolean;
-      }
+      dmtOptions: DMTGlobalOptions
    }
 }

@@ -38,8 +38,7 @@ export function processSearchQuery(query)
 
    indexResults.sort((a, b) => b.score - a.score);
 
-   // TODO Add option for max search results.
-   for (let c = Math.min(10, indexResults.length), i = 0; i < c; i++)
+   for (let c = Math.min(globalThis.dmtOptions.searchLimit ?? 10, indexResults.length), i = 0; i < c; i++)
    {
       const indexResult = indexResults[i];
       const index = Number(indexResult.ref);
