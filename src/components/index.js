@@ -4,7 +4,9 @@ import SearchQuick               from './search-quick/SearchQuick.svelte';
 import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
 import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
 
-import { scrollActivation }      from './scrollActivation.js';
+import {
+   keyCommands,
+   scrollActivation }            from './events/index.js';
 
 // Loads the Navigation web component.
 import './dmt-nav-web-component.js';
@@ -29,6 +31,9 @@ globalThis.document.addEventListener('DOMContentLoaded', async () =>
          { new SearchQuick({ target: globalThis.document.body }); }
       });
    }
+
+   // Provides global keyboard commands.
+   keyCommands();
 
    // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
    // element allowing intuitive scrolling.
