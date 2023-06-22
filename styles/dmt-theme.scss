@@ -1,19 +1,20 @@
 :root {
   --dmt-container-border-radius: 8px;
+  --dmt-container-floating-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
   --dmt-container-padding: 1em;
 
   --dmt-header-height: 42px;
 
-  --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
-
-  // A defined max-height for the col-sidebar when it displays.
-  --dmt-sidebar-max-height: calc(100vh - var(--dmt-header-height) - 0.5rem);
+  --dmt-menu-item-background-hover: var(--color-accent);
+  --dmt-menu-item-background-selected: var(--color-accent);
 
   // Additional 1.5 rem to take into account padding at top and to give the appearance of padding at the bottom for
   // `On This Page`.
   --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - 1.5rem);
 
-  --dmt-container-floating-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  // A defined max-height for the col-sidebar when it displays.
+  --dmt-sidebar-max-height: calc(100vh - var(--dmt-header-height) - 0.5rem);
 }
 
 
@@ -24,6 +25,11 @@
   --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
   --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
+
+/*
+    --light-color-accent: #c5c7c9;
+    --light-color-active-menu-item: var(--light-color-accent);
+ */
 
 :root[data-theme="light"] {
   --dmt-container-background: rgba(0, 0, 0, 0.05);
