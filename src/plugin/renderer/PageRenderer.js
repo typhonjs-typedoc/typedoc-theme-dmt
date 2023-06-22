@@ -141,6 +141,15 @@ export class PageRenderer
       // Remove default theme search results.
       $('ul.results').remove();
 
+      // Move generator element to column content --------------------------------------------------------------------
+
+      const generatorEl = $('.tsd-generator');
+      if (generatorEl.length)
+      {
+         $('.col-content').append(generatorEl.clone());
+         generatorEl.remove();
+      }
+
       // Augment scroll containers making them programmatically focusable --------------------------------------------
 
       // Main container
