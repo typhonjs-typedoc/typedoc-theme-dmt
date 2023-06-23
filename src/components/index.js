@@ -5,11 +5,20 @@ import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
 import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
 
 import {
+   inflateAndUnpack,
+   inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
+
+import {
    keyCommands,
    scrollActivation }            from './events/index.js';
 
 // Loads the Navigation web component.
 import './dmt-nav-web-component.js';
+
+// Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
+// plugins that might work with compressed data.
+globalThis.dmtInflateAndUnpack = inflateAndUnpack;
+globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {
@@ -27,8 +36,7 @@ globalThis.document.addEventListener('DOMContentLoaded', async () =>
    {
       loadQuickSearchData().then((result) =>
       {
-         if (result)
-         { new SearchQuick({ target: globalThis.document.body }); }
+         if (result) { new SearchQuick({ target: globalThis.document.body }); }
       });
    }
 

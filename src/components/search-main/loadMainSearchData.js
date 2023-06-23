@@ -1,6 +1,4 @@
-import { Index }              from 'lunr';
-
-import { inflateAndUnpack }   from '#runtime/data/format/msgpack/compress';
+import { Index }  from 'lunr';
 
 /**
  * Loads main search index.
@@ -24,7 +22,7 @@ export async function loadMainSearchData()
       const arrayBuffer = await response.arrayBuffer();
 
       /** @type {{ rows: SearchDocument[], index: [] }} */
-      const data = inflateAndUnpack(new Uint8Array(arrayBuffer));
+      const data = globalThis.dmtInflateAndUnpack(new Uint8Array(arrayBuffer));
 
       globalThis.dmtSearchMainRows = data.rows;
       globalThis.dmtSearchMainIndex = Index.load(data.index);

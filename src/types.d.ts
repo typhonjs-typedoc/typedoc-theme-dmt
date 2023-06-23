@@ -10,6 +10,10 @@ import type { ReflectionKind }   from 'typedoc';
 
 import type { TrieSearch }       from '#runtime/data/struct/search/trie';
 
+import type {
+   inflateAndUnpack,
+   inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
+
 /**
  * Provides the main search document entry structure.
  */
@@ -101,6 +105,16 @@ export type DMTGlobalOptions = {
  */
 declare global {
    interface Window {
+      /**
+       * Provides `inflateAndUnpack` to inflate and unpack MessagePack binary data.
+       */
+      dmtInflateAndUnpack: typeof inflateAndUnpack,
+
+      /**
+       * Provides `inflateAndUnpackB64` to decode a base 64 string, inflate, and unpack MessagePack binary data.
+       */
+      dmtInflateAndUnpackB64: typeof inflateAndUnpackB64,
+
       /**
        * When the main search is enabled provides a Lunr.Index instance.
        */

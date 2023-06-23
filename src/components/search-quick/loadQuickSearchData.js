@@ -1,5 +1,4 @@
-import { inflateAndUnpack }   from '#runtime/data/format/msgpack/compress';
-import { TrieSearch }         from '#runtime/data/struct/search/trie';
+import { TrieSearch }   from '#runtime/data/struct/search/trie';
 
 /**
  * Loads quick search index.
@@ -27,7 +26,7 @@ export async function loadQuickSearchData()
       // const dmtSearchQuick = new TrieSearch('n', { min: 2, splitOnRegEx: /\./ });
 
       const arrayBuffer = await response.arrayBuffer();
-      dmtSearchQuickNav.add(inflateAndUnpack(new Uint8Array(arrayBuffer)));
+      dmtSearchQuickNav.add(globalThis.dmtInflateAndUnpack(new Uint8Array(arrayBuffer)));
 
       globalThis.dmtSearchQuickNav = dmtSearchQuickNav;
    }
