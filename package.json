@@ -25,26 +25,26 @@
     "@rollup/plugin-virtual" : ">=3.x.x <4.0.0",
     "cheerio": "^1.0.0-rc.12",
     "rollup" : ">=3.x.x <4.0.0",
-    "svelte": ">=3.x.x <4.0.0",
+    "svelte": ">=4.x.x",
     "svelte-tag": ">=1.x.x"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs" : "^25.0.0",
+    "@rollup/plugin-commonjs" : "^25.0.2",
     "@types/lunr": "^2.3.4",
     "@typhonjs-config/eslint-config" : "^0.6.0",
     "@typhonjs-build-test/rollup-plugin-pkg-imports": "^0.0.2",
     "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base",
     "autoprefixer": "^10.4.14",
     "cssnano": "^6.0.1",
-    "eslint" : "^8.41.0",
+    "eslint" : "^8.43.0",
     "lunr": "^2.3.9",
-    "postcss": "^8.4.23",
+    "postcss": "^8.4.24",
     "postcss-cli": "^10.1.0",
-    "postcss-preset-env": "^8.3.2",
+    "postcss-preset-env": "^8.5.1",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-svelte": "^7.1.4",
-    "sass": "^1.62.1",
-    "svelte-preprocess" : "^5.0.3"
+    "rollup-plugin-svelte": "^7.1.5",
+    "sass": "^1.63.6",
+    "svelte-preprocess" : "^5.0.4"
   },
   "peerDependencies" : {
     "typedoc": ">=0.24.x"
