@@ -35,7 +35,7 @@ export function load(app)
 
          // Make the `dmt` sub-folder on `assets`.
          app.renderer.on(RendererEvent.BEGIN, (output) => fs.mkdirSync(path.join(output.outputDirectory, 'assets',
-          'dmt')));
+          'dmt'), { recursive: true }));
 
          new PageRenderer(app, options);
 
