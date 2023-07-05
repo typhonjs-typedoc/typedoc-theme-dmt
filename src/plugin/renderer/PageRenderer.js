@@ -181,8 +181,11 @@ export class PageRenderer
          // Potentially remove default module / namespace given `dtsRemoveDefaultModule` option.
          if (this.#options.removeDefaultModule)
          {
-            const moduleEl = $('nav.tsd-navigation a:first[href$="modules.html"]');
-            if (moduleEl.length)
+            // Find the first anchor with HREF ending in `modules.html` or `index.html`
+            const moduleEl =
+             $('nav.tsd-navigation a[href$="modules.html"]:first, nav.tsd-navigation a[href$="index.html"]:first');
+
+            if (moduleEl?.length)
             {
                // So this block of code is not great. The TypeDoc default theme caches the reflection kind SVG icons
                // and on this page it is cached in the element we are removing. The below block will transfer this <g>
