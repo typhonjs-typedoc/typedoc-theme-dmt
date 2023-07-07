@@ -1,8 +1,8 @@
 import SearchMain                from './search-main/SearchMain.svelte';
-import SearchQuick               from './search-quick/SearchQuick.svelte';
+// import SearchQuick               from './search-quick/SearchQuick.svelte';
 
 import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
-import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
+// import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
 
 import {
    inflateAndUnpack,
@@ -31,14 +31,15 @@ globalThis.document.addEventListener('DOMContentLoaded', async () =>
       });
    }
 
-   // Only load quick search index if enabled.
-   if (globalThis?.dmtOptions?.searchQuick)
-   {
-      loadQuickSearchData().then((result) =>
-      {
-         if (result) { new SearchQuick({ target: globalThis.document.body }); }
-      });
-   }
+   // TODO: Work in progress
+   // // Only load quick search index if enabled.
+   // if (globalThis?.dmtOptions?.searchQuick)
+   // {
+   //    loadQuickSearchData().then((result) =>
+   //    {
+   //       if (result) { new SearchQuick({ target: globalThis.document.body }); }
+   //    });
+   // }
 
    // Provides global keyboard commands.
    keyCommands();

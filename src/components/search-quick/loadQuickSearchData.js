@@ -23,7 +23,7 @@ export async function loadQuickSearchData()
       const dmtSearchQuickNav = new TrieSearch('n', { min: 2 });
 
       // TODO: Consider setting splitOnRegEx to separate words on `.` as there are namespaces.
-      // const dmtSearchQuick = new TrieSearch('n', { min: 2, splitOnRegEx: /\./ });
+      // const dmtSearchQuickNav = new TrieSearch('n', { min: 2, splitOnRegEx: /\./ });
 
       const arrayBuffer = await response.arrayBuffer();
       dmtSearchQuickNav.add(globalThis.dmtInflateAndUnpack(new Uint8Array(arrayBuffer)));
