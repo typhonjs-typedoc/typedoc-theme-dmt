@@ -258,6 +258,21 @@ nav.tsd-navigation {
     margin-bottom: 2rem;
   }
 
+  // Type Alias / declaration ------------------------------
+  div.tsd-type-declaration {
+    background: var(--dmt-container-background);
+    border: var(--dmt-container-border);
+    border-radius: var(--dmt-container-border-radius);
+    box-shadow: var(--dmt-container-box-shadow);
+    padding: var(--dmt-container-padding-member);
+
+    margin-bottom: 2rem;
+
+    h4 {
+      margin-top: 0;
+    }
+  }
+
   // Breadcrumb --------------------------------------------
 
   // Remove trailing `/`
