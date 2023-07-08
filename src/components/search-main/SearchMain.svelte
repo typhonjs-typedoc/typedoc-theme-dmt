@@ -32,12 +32,12 @@
 {#if $storeVisible}
    <SearchField />
 {/if}
-<label for=dmt-search-field class="dmt-widget dmt-toolbar-icon search no-caption">
+<div class="dmt-widget dmt-toolbar-icon search no-caption">
    <SearchButton />
-</label>
+</div>
 
 <style>
-   label {
+   div {
       position: absolute;
       overflow: hidden;
       right: -40px;
@@ -56,23 +56,4 @@
       transition: opacity 0.1s, background-color 0.2s;
       vertical-align: bottom;
    }
-
-
-   /*#tsd-search .field input, #tsd-search .title, #tsd-toolbar-links a {*/
-   /*   transition: opacity 0.2s;*/
-   /*}*/
-
-   /*input {*/
-   /*   box-sizing: border-box;*/
-   /*   position: relative;*/
-   /*   top: -50px;*/
-   /*   z-index: 1;*/
-   /*   width: 100%;*/
-   /*   padding: 0 10px;*/
-   /*   opacity: 0;*/
-   /*   outline: 0;*/
-   /*   border: 0;*/
-   /*   background: transparent;*/
-   /*   color: var(--color-text);*/
-   /*}*/
 </style>

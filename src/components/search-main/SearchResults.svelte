@@ -16,7 +16,7 @@
    const storeVisible = getContext('#visible');
 </script>
 
-<ul bind:this={resultsEl} transition:slideFade={{ duration: 100 }}>
+<ul bind:this={resultsEl} transition:slideFade|global={{ duration: 100 }}>
 {#each results as result (result.id)}
    <li class="{result.classes}" class:selected={result.id === $storeCurrentId}>
       <a href="{result.href}" on:click={() => $storeVisible = false}>
