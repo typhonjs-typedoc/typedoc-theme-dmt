@@ -163,58 +163,12 @@ export class PageRenderer
    }
 
    /**
-    * @param {PageEvent}   page -
+    * Modifications for every page based on DMT options.
+    *
+    * @param {import('cheerio').Cheerio}  $ -
     */
-   #handlePageEnd(page)
+   #augmentGlobalOptions($)
    {
-      const $ = load(page.contents);
-
-      // Remove the `main.js` script as it is loaded after the DOM is loaded in the DMT components bundle.
-      $('script[src*="/main.js"]').remove();
-
-      const siteMenu = $('div.site-menu');
-
-      // Save the navigation sidebar content for the main index.html page. This is used to create the dynamic
-      // navigation web component. This occurs as the ~2nd page generated.
-      if (page.model.kind === ReflectionKind.Project && page.url === 'index.html')
-      {
-         // Potentially remove default module / namespace given `dtsRemoveDefaultModule` option.
-         if (this.#options.removeDefaultModule)
-         {
-            // Find the first anchor with HREF ending in `modules.html` or `index.html`
-            const moduleEl =
-             $('nav.tsd-navigation a[href$="modules.html"]:first, nav.tsd-navigation a[href$="index.html"]:first');
-
-            if (moduleEl?.length)
-            {
-               // So this block of code is not great. The TypeDoc default theme caches the reflection kind SVG icons
-               // and on this page it is cached in the element we are removing. The below block will transfer this <g>
-               // element to the first matching <use> element with the same ID. I will be submitting a PR to try and
-               // externalize the SVG referenced.
-               const moduleSvg = moduleEl.find('svg.tsd-kind-icon g');
-               const svgId = moduleSvg.attr('id');
-
-               if (svgId)
-               {
-                  const useElements = $(`nav.tsd-navigation use[href$="${svgId}"]`).toArray();
-                  if (useElements.length) { $(useElements[0]).replaceWith(moduleSvg); }
-               }
-
-               moduleEl.remove();
-            }
-         }
-
-         // Remove the currently selected value as this data is cached and dynamically set on load.
-         siteMenu.find('a.current').removeClass('current');
-
-         // Store the HTML content of the index.html navigation sidebar to load into nav web component.
-         this.#navContent = siteMenu.html();
-
-         // Stop all further generation of the navigation sidebar. This is where the magic goes down regarding the
-         // 90% output disk space utilization and 80% speed up over the default theme.
-         this.#app.renderer.theme.stopNavigationGeneration();
-      }
-
       if (this.#options.removeDefaultModule) // Remove the module breadcrumb links.
       {
          const breadCrumbListElements = $('.tsd-breadcrumb li');
@@ -232,6 +186,73 @@ export class PageRenderer
 
       // Remove all breadcrumb links.
       if (this.#options.removeBreadcrumb) { $('.tsd-breadcrumb').remove(); }
+   }
+
+   /**
+    * Modifications for project navigation.
+    *
+    * @param {import('cheerio').Cheerio}  $ -
+    *
+    * @param {import('cheerio').Cheerio}  siteMenu -
+    */
+   #augmentProjectNav($, siteMenu)
+   {
+      // Find the first anchor with HREF ending in `modules.html` or `index.html`
+      const moduleEl =
+       $('nav.tsd-navigation a[href$="modules.html"]:first, nav.tsd-navigation a[href$="index.html"]:first');
+
+      if (moduleEl.length)
+      {
+         // So this block of code is not great. The TypeDoc default theme caches the reflection kind SVG icons
+         // and on this page it is cached in the element we are removing. The below block will transfer this <g>
+         // element to the first matching <use> element with the same ID. I will be submitting a PR to try and
+         // externalize the SVG referenced.
+         const moduleSvg = moduleEl.find('svg.tsd-kind-icon g');
+
+         // Prepending to the site menu the cached namespace kind SVG.
+         if (moduleSvg.length) { siteMenu.prepend($('<svg style="display: none;"></svg>').append(moduleSvg.clone())); }
+
+         if (this.#options.removeDefaultModule)
+         {
+            // Remove the entire first project / module link.
+            moduleEl.remove();
+         }
+         else
+         {
+            // Swap the project / module li element SVG to a reference.
+            moduleSvg.replaceWith($('<use href="#icon-4"></use>'));
+         }
+      }
+
+      // Remove the currently selected value as this data is cached and dynamically set on load.
+      siteMenu.find('a.current').removeClass('current');
+
+      // Store the HTML content of the index.html navigation sidebar to load into nav web component.
+      this.#navContent = siteMenu.html();
+
+      // Stop all further generation of the navigation sidebar. This is where the magic goes down regarding the
+      // 90% output disk space utilization and 80% speed up over the default theme.
+      this.#app.renderer.theme?.stopNavigationGeneration();
+   }
+
+   /**
+    * @param {PageEvent}   page -
+    */
+   #handlePageEnd(page)
+   {
+      const $ = load(page.contents);
+
+      // Remove the `main.js` script as it is loaded after the DOM is loaded in the DMT components bundle.
+      $('script[src*="/main.js"]').remove();
+
+      const siteMenu = $('div.site-menu');
+
+      // Save the navigation sidebar content for the main index.html page. This is used to create the dynamic
+      // navigation web component. This occurs as the ~2nd page generated.
+      if (page.model.kind === ReflectionKind.Project && page.url === 'index.html')
+      {
+         this.#augmentProjectNav($, siteMenu);
+      }
 
       // Replace standard navigation with the `NavigationSite` web component. Send page url to select current
       // active anchor.
@@ -240,9 +261,12 @@ export class PageRenderer
       // Append scripts to load web components.
       this.#addAssets($, page);
 
-      // A few global modifications tweaks like the favicon and slight modifications to layout to allow right aligning
-      // of additional elements in flexbox layouts.
+      // A few global modifications tweaks like the favicon and slight modifications to the layout to allow right
+      // aligning of additional elements in flexbox layouts.
       this.#augmentGlobal($);
+
+      // Further global modifications based on DMT options.
+      this.#augmentGlobalOptions($);
 
       page.contents = $.html();
    }
