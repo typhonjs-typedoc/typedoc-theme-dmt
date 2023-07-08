@@ -1,8 +1,12 @@
 :root {
-  --dmt-container-border-radius: 8px;
-  --dmt-container-floating-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  --dmt-container-border-radius: 0.5rem;
+  --dmt-container-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.5);
+  --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.5);
   --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
   --dmt-container-padding: 1rem;
+
+  // For member / variable / function sections.  Alas there are element margins to further manipulate.
+  --dmt-container-padding-member: 0.25rem 0.25rem 0 0.5rem;
 
   --dmt-header-height: 42px;
 
@@ -23,20 +27,17 @@
   --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
   --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
   --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
-  --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.6);
+  --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.6);
 }
-
-/*
-    --light-color-accent: #c5c7c9;
-    --light-color-active-menu-item: var(--light-color-accent);
- */
 
 :root[data-theme="light"] {
   --dmt-container-background: rgba(0, 0, 0, 0.05);
   --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
   --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
   --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
-  --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.3);
+  --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -45,7 +46,8 @@
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
     --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
     --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
-    --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.6);
+    --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -55,7 +57,8 @@
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
     --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
     --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
-    --dmt-header-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.3);
+    --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -198,24 +201,6 @@ nav.tsd-navigation {
   }
 }
 
-/* Content ---------------------------------------------------------------------------------------------------------- */
-
-// `Index` details element
-.tsd-panel-group.tsd-index-group details {
-  border: var(--dmt-container-border);
-  padding: var(--dmt-container-padding);
-  background: var(--dmt-container-background);
-  border-radius: var(--dmt-container-border-radius);
-
-  .tsd-index-heading {
-    margin: 0
-  }
-
-  .tsd-accordion-details section:not(:last-child) {
-    margin-bottom: 15px;
-  }
-}
-
 /* Header ----------------------------------------------------------------------------------------------------------- */
 
 // Adjust padding for icon buttons to be centered
@@ -232,14 +217,55 @@ nav.tsd-navigation {
 .container {
   padding: 0 1rem;
   margin: 0 auto;
+
+  // `Index` details element -------------------------------
+
+  .tsd-panel-group.tsd-index-group details {
+    background: var(--dmt-container-background);
+    border: var(--dmt-container-border);
+    border-radius: var(--dmt-container-border-radius);
+    box-shadow: var(--dmt-container-box-shadow);
+    padding: var(--dmt-container-padding);
+
+    .tsd-index-heading {
+      margin: 0
+    }
+
+    .tsd-accordion-details section:not(:last-child) {
+      margin-bottom: 15px;
+    }
+  }
+
+  // Module Index Panels -----------------------------------
+  section.tsd-index-section .tsd-index-list {
+    background: var(--dmt-container-background);
+    border: var(--dmt-container-border);
+    border-radius: var(--dmt-container-border-radius);
+    box-shadow: var(--dmt-container-box-shadow);
+    padding: var(--dmt-container-padding);
+  }
+
+  // Member Panels -----------------------------------------
+
+  section.tsd-panel.tsd-member {
+    background: var(--dmt-container-background);
+    border: var(--dmt-container-border);
+    border-radius: var(--dmt-container-border-radius);
+    box-shadow: var(--dmt-container-box-shadow);
+    padding: var(--dmt-container-padding-member);
+
+    // Override default theme margin.
+    margin-bottom: 2rem;
+  }
+
+  // Breadcrumb --------------------------------------------
+
+  // Remove trailing `/`
+  .tsd-breadcrumb li:last-child:after {
+    content: "";
+  }
 }
 
-/* Breadcrumb ------------------------------------------------------------------------------------------------------- */
-
-// Remove trailing `/`
-.tsd-breadcrumb li:last-child:after {
-  content: "";
-}
 
 /* Sidebar ---------------------------------------------------------------------------------------------------------- */
 
@@ -261,11 +287,12 @@ nav.tsd-navigation {
 }
 
 .page-menu {
-  /* Styling for sidebar `Settings` */
+  // Styling for sidebar `Settings`
   .tsd-navigation.settings {
-    border: var(--dmt-container-border);
     background: var(--dmt-container-background);
+    border: var(--dmt-container-border);
     border-radius: var(--dmt-container-border-radius);
+    box-shadow: var(--dmt-container-box-shadow-floating);
     padding: var(--dmt-container-padding);
 
     margin: 0;
@@ -275,10 +302,12 @@ nav.tsd-navigation {
     }
   }
 
+  // Styling for sidebar `On This Page`
   details.tsd-index-accordion.tsd-page-navigation {
-    border: var(--dmt-container-border);
     background: var(--dmt-container-background);
+    border: var(--dmt-container-border);
     border-radius: var(--dmt-container-border-radius);
+    box-shadow: var(--dmt-container-box-shadow-floating);
     overflow: hidden;
     padding: var(--dmt-container-padding);
 
@@ -297,11 +326,12 @@ nav.tsd-navigation {
     }
   }
 
-  /* Styling for sidebar `On This Page` */
+  // Styling for sidebar `On This Page` detail element open.
   details[open].tsd-index-accordion.tsd-page-navigation {
     padding: var(--dmt-container-padding) 0 0 var(--dmt-container-padding);
   }
 
+  // Both `Settings` and `On This Page`.
   details[open] .tsd-accordion-summary {
     padding-bottom: var(--dmt-container-padding);
     border-bottom: var(--dmt-container-border);
