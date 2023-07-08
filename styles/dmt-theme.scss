@@ -2,7 +2,7 @@
   --dmt-container-border-radius: 8px;
   --dmt-container-floating-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
-  --dmt-container-padding: 1em;
+  --dmt-container-padding: 1rem;
 
   --dmt-header-height: 42px;
 
@@ -271,17 +271,16 @@ nav.tsd-navigation {
     margin: 0;
 
     .tsd-filter-visibility h4 {
-      padding-top: 0;
+      padding-top: 0.25rem;
     }
   }
 
-  /* Styling for sidebar `On This Page` */
-  .tsd-index-accordion.tsd-page-navigation {
+  details.tsd-index-accordion.tsd-page-navigation {
     border: var(--dmt-container-border);
-    padding: var(--dmt-container-padding) 0 0 var(--dmt-container-padding);
     background: var(--dmt-container-background);
     border-radius: var(--dmt-container-border-radius);
     overflow: hidden;
+    padding: var(--dmt-container-padding);
 
     // Make the details content overflow / scrollbars.
     .tsd-accordion-details {
@@ -298,9 +297,13 @@ nav.tsd-navigation {
     }
   }
 
-  // All accordions
+  /* Styling for sidebar `On This Page` */
+  details[open].tsd-index-accordion.tsd-page-navigation {
+    padding: var(--dmt-container-padding) 0 0 var(--dmt-container-padding);
+  }
+
   details[open] .tsd-accordion-summary {
-    padding-bottom: 10px;
+    padding-bottom: var(--dmt-container-padding);
     border-bottom: var(--dmt-container-border);
   }
 }
