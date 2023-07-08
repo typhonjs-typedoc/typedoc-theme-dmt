@@ -11,7 +11,13 @@ export class ThemeOptions
 {
    /** @type {DMTOptions} */
    #options = {
-      removeDefaultModule: false
+      removeBreadcrumb: false,
+      removeDefaultModule: false,
+      removeNavTopLevelIcon: false,
+      search: true,
+      searchLimit: 10,
+      searchQuick: false,
+      SearchQuickLimit: 10,
    };
 
    /**
@@ -43,6 +49,13 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
+         name: 'dmtRemoveNavTopLevelIcon',
+         help: `${ID} When true the top level SVG icon for each entry / namespace is removed.`,
+         type: ParameterType.Boolean,
+         defaultValue: false
+      });
+
+      app.options.addDeclaration({
          name: 'dmtSearch',
          help: `${ID} When true the main search index is enabled.`,
          type: ParameterType.Boolean,
@@ -60,7 +73,7 @@ export class ThemeOptions
          name: 'dmtSearchQuick',
          help: `${ID} When true the quick search index is enabled.`,
          type: ParameterType.Boolean,
-         defaultValue: true
+         defaultValue: false
       });
 
       app.options.addDeclaration({
@@ -110,6 +123,9 @@ export class ThemeOptions
    /** @returns {boolean} removeDefaultModule option */
    get removeDefaultModule() { return this.#options.removeDefaultModule; }
 
+   /** @returns {boolean} removeNavTopLevelIcon option */
+   get removeNavTopLevelIcon() { return this.#options.removeNavTopLevelIcon; }
+
    /** @returns {boolean} search option */
    get search() { return this.#options.search; }
 
@@ -131,6 +147,7 @@ export class ThemeOptions
    {
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.removeDefaultModule = app.options.getValue('dmtRemoveDefaultModule');
+      this.#options.removeNavTopLevelIcon = app.options.getValue('dmtRemoveNavTopLevelIcon');
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
       this.#options.searchQuick = app.options.getValue('dmtSearchQuick');
@@ -199,6 +216,8 @@ export class ThemeOptions
  *
  * @property {boolean} removeDefaultModule When true the default module / namespace is removed from navigation and
  *           breadcrumbs.
+ *
+ * @property {boolean} removeNavTopLevelIcon When true the top level SVG icon for each entry / namespace is removed.
  *
  * @property {boolean} search When true the main search index is enabled.
  *

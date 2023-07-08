@@ -131,6 +131,16 @@ header.tsd-page-toolbar {
   padding-top: 0.5rem;
   padding-left: 0.1rem; // For outline
   top: 0;
+
+  // Just the accordion summary elements in the nav sidebar.
+  .tsd-accordion-summary {
+    display: flex;
+    align-items: center;
+  }
+
+  .tsd-nested-navigation {
+    margin-left: 2.5rem;
+  }
 }
 
 .page-menu {

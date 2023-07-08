@@ -189,7 +189,7 @@ export class PageRenderer
    }
 
    /**
-    * Modifications for project navigation.
+    * Modifications for project navigation. This is where
     *
     * @param {import('cheerio').Cheerio}  $ -
     *
@@ -204,9 +204,9 @@ export class PageRenderer
       if (moduleEl.length)
       {
          // So this block of code is not great. The TypeDoc default theme caches the reflection kind SVG icons
-         // and on this page it is cached in the element we are removing. The below block will transfer this <g>
-         // element to the first matching <use> element with the same ID. I will be submitting a PR to try and
-         // externalize the SVG referenced.
+         // and on this page it is cached in the element we are removing. The below block will clone this <g>
+         // element and wrap it in a non-visible SVG element as the first child to `.site-menu`. I will be submitting a
+         // PR to TypeDoc to try and externalize the SVG referenced.
          const moduleSvg = moduleEl.find('svg.tsd-kind-icon g');
 
          // Prepending to the site menu the cached namespace kind SVG.
@@ -217,6 +217,11 @@ export class PageRenderer
             // Remove the entire first project / module link.
             moduleEl.remove();
          }
+         else if (this.#options.removeNavTopLevelIcon)
+         {
+            // Only the SVG icon needs to be removed.
+            moduleEl.find('svg.tsd-kind-icon').remove();
+         }
          else
          {
             // Swap the project / module li element SVG to a reference.
@@ -226,6 +231,17 @@ export class PageRenderer
 
       // Remove the currently selected value as this data is cached and dynamically set on load.
       siteMenu.find('a.current').removeClass('current');
+
+      // Potentially remove the `tsd-kind-icon` SVG from all top level nav li elements. Depending on the documentation
+      // goals this looks much nicer for NPM / Node packages w/ sub-path exports as it removes the top level namespace
+      // SVG icon that shows up for the package paths.
+      if (this.#options.removeNavTopLevelIcon)
+      {
+         $('ul.tsd-small-nested-navigation > li').each(function()
+         {
+            $(this).find('svg.tsd-kind-icon:first').remove();
+         });
+      }
 
       // Store the HTML content of the index.html navigation sidebar to load into nav web component.
       this.#navContent = siteMenu.html();
