@@ -17,7 +17,8 @@
     ".": {
       "types": "./types/index-plugin.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "dependencies" : {
     "@rollup/plugin-node-resolve" : ">=15.x.x",
@@ -47,7 +48,7 @@
     "svelte-preprocess" : "^5.0.4"
   },
   "peerDependencies" : {
-    "typedoc": ">=0.24.x"
+    "typedoc": ">=0.24.8"
   },
   "files": [
     "/dist",
