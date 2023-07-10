@@ -16,7 +16,8 @@
   "exports": {
     ".": {
       "types": "./types/index-plugin.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -34,7 +35,7 @@
     "@types/lunr": "^2.3.4",
     "@typhonjs-config/eslint-config" : "^0.6.0",
     "@typhonjs-build-test/rollup-plugin-pkg-imports": "^0.0.2",
-    "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base",
+    "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base#0.1.0",
     "autoprefixer": "^10.4.14",
     "cssnano": "^6.0.1",
     "eslint" : "^8.43.0",
@@ -56,7 +57,6 @@
   ],
   "browserslist": [">5%", "not IE 11"],
   "scripts": {
-    "build-dev": "npm run build && node .dev-build.js",
     "eslint": "eslint .",
     "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/assets/dmt-theme.css && postcss ./dist/assets/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/assets/dmt-theme.css"
   }
