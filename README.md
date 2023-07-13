@@ -33,17 +33,19 @@ better font size changes for different screen orientations. There are additional
 
 ## Installation:
 
+`package.json`:
 ```json
 {
    "devDependencies": {
-      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.1.0"
+      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.1.0",
+      "typedoc": "^0.24.8"
    }
 }
 ```
 
 ## Configuration:
 
-`typedoc.json` / includes extra DMT options / and comments (JSON5).
+`typedoc.json` / includes extra DMT options / and comments (JSON5):
 ```json5
 {
   // Set a local file path or URL to set as the favicon.
