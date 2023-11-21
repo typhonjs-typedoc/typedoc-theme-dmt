@@ -228,7 +228,13 @@ nav.tsd-navigation {
     padding: var(--dmt-container-padding);
 
     .tsd-index-heading {
-      margin: 0
+      margin: 0 0 15px 0;
+    }
+
+    &:not([open]) {
+      .tsd-index-heading.uppercase {
+        margin: 0;
+      }
     }
 
     .tsd-accordion-details section:not(:last-child) {
