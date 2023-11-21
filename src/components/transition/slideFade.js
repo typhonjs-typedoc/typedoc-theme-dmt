@@ -1,5 +1,5 @@
-import { fade, slide }  from '#svelte/transition';
-import { linear }       from '#svelte/easing';
+import { fade, slide }  from 'svelte/transition';
+import { linear }       from 'svelte/easing';
 
 /**
  * Combines slide & fade transitions into a single transition. For options `easing` this is applied to both transitions,
