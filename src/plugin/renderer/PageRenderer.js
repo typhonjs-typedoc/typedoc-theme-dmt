@@ -310,11 +310,13 @@ export class PageRenderer
 
       // Update main.js default theme removing `initSearch` function -------------------------------------------------
 
-      // This can be a potentially fragile replacement. The regex below is anchored with a lookahead assertion on
-      // `a[data-toggle]` and removes the previous function call before / `initSearch();`. This works for mangled /
-      // minified code.
+      // TypeDoc 0.25.3+
 
-      // See: https://github.com/TypeStrong/typedoc/blob/master/src/lib/output/themes/default/assets/bootstrap.ts#L8
+      // This can be a potentially fragile replacement. The regex below is anchored with a negative lookbehind
+      // assertion on `be;` which is the `initNav();` function minified. It removes the previous function call
+      // before / `initSearch();` which is `he();` minified. This works for mangled / minified code.
+
+      // See: https://github.com/TypeStrong/typedoc/blob/master/src/lib/output/themes/default/assets/bootstrap.ts#L25
 
       // I'll attempt to submit a PR to TypeDoc for a new default theme option `searchEnabled` that will disable the
       // default theme search index creation and loading code.
@@ -323,7 +325,8 @@ export class PageRenderer
       if (fs.existsSync(mainJSPath))
       {
          const mainData = fs.readFileSync(mainJSPath, 'utf-8');
-         const regex = /\w+\(\);(?=.*a\[data-toggle])/gm;
+
+         const regex = /(?<!be\(\);)he\(\);/gm;
 
          if (regex.test(mainData))
          {
