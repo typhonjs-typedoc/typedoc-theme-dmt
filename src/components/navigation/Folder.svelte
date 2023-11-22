@@ -1,28 +1,35 @@
 <script>
+   import { getContext } from 'svelte';
+
    import TJSSvgFolder  from './TJSSvgFolder.svelte';
 
    /** @type {object} */
    export let entry;
 
-   /** @type {string} */
-   export let prepend;
+   const pathPrepend = getContext('#pathPrepend');
+   const sessionStorage = getContext('#sessionStorage');
+
+   // Retrieve the storage prepend string from global DMT options or generate a random string.
+   const storagePrepend = globalThis.dmtOptions.storagePrepend ??
+    `docs-${Math.random().toString(36).substring(2, 18)}`;
 
    const folderProps = {
-      options: { focusIndicator: true }
+      options: { focusIndicator: true },
+      store: sessionStorage.getStore(`${storagePrepend}-nav-${entry.path}`, false)
    }
 </script>
 
 <TJSSvgFolder {...folderProps}>
-   <a href={`${prepend}${entry.path}`} slot=label>
+   <a href={`${pathPrepend}${entry.path}`} slot=label>
       <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${entry.kind}`}></use></svg>
       <span>{entry.text}</span>
    </a>
 
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}
-         <svelte:self entry={child} {prepend}/>
+         <svelte:self entry={child} />
       {:else}
-         <a href={`${prepend}${child.path}`}>
+         <a href={`${pathPrepend}${child.path}`}>
             <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${child.kind}`}></use></svg>
             <span>{child.text}</span>
          </a>

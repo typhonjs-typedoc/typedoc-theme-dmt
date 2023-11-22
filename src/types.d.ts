@@ -98,6 +98,11 @@ export type DMTGlobalOptions = {
     * The `dmtSearchQuickLimit` option; The max number of documents returned in the main search query processing.
     */
    searchQuickLimit: number;
+
+   /**
+    * Provides a key based on the package name or a random string to prepend to local / session storage keys.
+    */
+   storagePrepend: string;
 }
 
 /**
