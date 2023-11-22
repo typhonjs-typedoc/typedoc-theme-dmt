@@ -4,9 +4,9 @@ import path                   from 'node:path';
 import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
 
 /**
- * Exports an index of the main navigation URLs and reflection data to a MessagePack file.
+ * Exports an index of the left-hand navigation data and URLs to a MessagePack file to `/assets/dmt/navigationIndex.js`.
  *
- * The resulting MessagePack file can be loaded into `trie-search` for auto-complete quick search functionality.
+ * The resulting MessagePack file is loaded by the `Navigation` Svelte component.
  */
 export class NavigationBuilder
 {
