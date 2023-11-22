@@ -12,7 +12,6 @@ export class ThemeOptions
    /** @type {DMTOptions} */
    #options = {
       removeBreadcrumb: false,
-      removeDefaultModule: false,
       removeNavTopLevelIcon: false,
       search: true,
       searchLimit: 10,
@@ -37,13 +36,6 @@ export class ThemeOptions
       app.options.addDeclaration({
          name: 'dmtRemoveBreadcrumb',
          help: `${ID} When true the entire breadcrumb is removed.`,
-         type: ParameterType.Boolean,
-         defaultValue: false
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtRemoveDefaultModule',
-         help: `${ID} When true the default module / namespace is removed from navigation and breadcrumbs.`,
          type: ParameterType.Boolean,
          defaultValue: false
       });
@@ -120,9 +112,6 @@ export class ThemeOptions
    /** @returns {boolean} removeBreadcrumb option */
    get removeBreadcrumb() { return this.#options.removeBreadcrumb; }
 
-   /** @returns {boolean} removeDefaultModule option */
-   get removeDefaultModule() { return this.#options.removeDefaultModule; }
-
    /** @returns {boolean} removeNavTopLevelIcon option */
    get removeNavTopLevelIcon() { return this.#options.removeNavTopLevelIcon; }
 
@@ -146,7 +135,6 @@ export class ThemeOptions
    #parseOptions(app)
    {
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
-      this.#options.removeDefaultModule = app.options.getValue('dmtRemoveDefaultModule');
       this.#options.removeNavTopLevelIcon = app.options.getValue('dmtRemoveNavTopLevelIcon');
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
@@ -213,9 +201,6 @@ export class ThemeOptions
  * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
  *
  * @property {boolean} removeBreadcrumb When true the entire breadcrumb is removed.
- *
- * @property {boolean} removeDefaultModule When true the default module / namespace is removed from navigation and
- *           breadcrumbs.
  *
  * @property {boolean} removeNavTopLevelIcon When true the top level SVG icon for each entry / namespace is removed.
  *

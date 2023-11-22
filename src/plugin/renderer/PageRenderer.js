@@ -155,19 +155,17 @@ export class PageRenderer
     */
    #augmentGlobalOptions($)
    {
-      if (this.#options.removeDefaultModule) // Remove the module breadcrumb links.
+      // Always remove the default theme top level default module / namespace from breadcrumb links.
+      const breadCrumbListElements = $('.tsd-breadcrumb li');
+      const breadcrumbArray = breadCrumbListElements.toArray();
+      if (breadcrumbArray.length > 2)
       {
-         const breadCrumbListElements = $('.tsd-breadcrumb li');
-         const breadcrumbArray = breadCrumbListElements.toArray();
-         if (breadcrumbArray.length > 2)
-         {
-            $(breadcrumbArray[0]).remove();
-         }
-         else
-         {
-            // There is only one link level besides the module, so remove all links.
-            breadCrumbListElements.remove();
-         }
+         $(breadcrumbArray[0]).remove();
+      }
+      else
+      {
+         // There is only one link level besides the module, so remove all links.
+         breadCrumbListElements.remove();
       }
 
       // Remove all breadcrumb links.
