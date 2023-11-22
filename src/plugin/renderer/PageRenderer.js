@@ -5,16 +5,11 @@ import { fileURLToPath }      from 'node:url';
 
 import {
    PageEvent,
-   ReflectionKind,
    RendererEvent }            from 'typedoc';
 
 import { load }               from 'cheerio';
 
-import {
-   copyDirectory,
-   escapeAttr }               from '#utils';
-
-import { compileNavBundle }   from './compile/compileNavBundle.js';
+import { copyDirectory }      from '#utils';
 
 export class PageRenderer
 {
@@ -46,19 +41,6 @@ export class PageRenderer
 
       // this.#app.renderer.once(RendererEvent.BEGIN, this.#parseOptions, this);
       this.#app.renderer.once(RendererEvent.END, this.#handleRendererEnd, this);
-
-      // At the end of rendering dynamically generate a Svelte web component with the static navigation data from the
-      // Project / `index.html` reflection. There is logic in the component to select the associated anchor link and
-      // rewrite all the anchor hrefs for the appropriate category location. This is usually the 2nd page rendered and
-      // has the quality of containing all the SVG data for the navigation sidebar where the default "modules.html"
-      // does not.
-      this.#app.renderer.postRenderAsyncJobs.push(async (output) =>
-      {
-         this.#app.logger.verbose(`[typedoc-theme-default-modern] Generating nav web component bundle.`);
-
-         return compileNavBundle(path.join(output.outputDirectory, 'assets', 'dmt', 'dmt-nav-web-component.js'),
-          this.#navContent);
-      });
    }
 
    /**
@@ -189,69 +171,6 @@ export class PageRenderer
    }
 
    /**
-    * Modifications for project navigation. This is where
-    *
-    * @param {import('cheerio').Cheerio}  $ -
-    *
-    * @param {import('cheerio').Cheerio}  siteMenu -
-    */
-   #augmentProjectNav($, siteMenu)
-   {
-      // Find the first anchor with HREF ending in `modules.html` or `index.html`
-      const moduleEl =
-       $('nav.tsd-navigation a[href$="modules.html"]:first, nav.tsd-navigation a[href$="index.html"]:first');
-
-      if (moduleEl.length)
-      {
-         // So this block of code is not great. The TypeDoc default theme caches the reflection kind SVG icons
-         // and on this page it is cached in the element we are removing. The below block will clone this <g>
-         // element and wrap it in a non-visible SVG element as the first child to `.site-menu`. I will be submitting a
-         // PR to TypeDoc to try and externalize the SVG referenced.
-         const moduleSvg = moduleEl.find('svg.tsd-kind-icon g');
-
-         // Prepending to the site menu the cached namespace kind SVG.
-         if (moduleSvg.length) { siteMenu.prepend($('<svg style="display: none;"></svg>').append(moduleSvg.clone())); }
-
-         if (this.#options.removeDefaultModule)
-         {
-            // Remove the entire first project / module link.
-            moduleEl.remove();
-         }
-         else if (this.#options.removeNavTopLevelIcon)
-         {
-            // Only the SVG icon needs to be removed.
-            moduleEl.find('svg.tsd-kind-icon').remove();
-         }
-         else
-         {
-            // Swap the project / module li element SVG to a reference.
-            moduleSvg.replaceWith($('<use href="#icon-4"></use>'));
-         }
-      }
-
-      // Remove the currently selected value as this data is cached and dynamically set on load.
-      siteMenu.find('a.current').removeClass('current');
-
-      // Potentially remove the `tsd-kind-icon` SVG from all top level nav li elements. Depending on the documentation
-      // goals this looks much nicer for NPM / Node packages w/ sub-path exports as it removes the top level namespace
-      // SVG icon that shows up for the package paths.
-      if (this.#options.removeNavTopLevelIcon)
-      {
-         $('ul.tsd-small-nested-navigation > li').each(function()
-         {
-            $(this).find('svg.tsd-kind-icon:first').remove();
-         });
-      }
-
-      // Store the HTML content of the index.html navigation sidebar to load into nav web component.
-      this.#navContent = siteMenu.html();
-
-      // Stop all further generation of the navigation sidebar. This is where the magic goes down regarding the
-      // 90% output disk space utilization and 80% speed up over the default theme.
-      this.#app.renderer.theme?.stopNavigationGeneration();
-   }
-
-   /**
     * @param {PageEvent}   page -
     */
    #handlePageEnd(page)
@@ -261,18 +180,12 @@ export class PageRenderer
       // Remove the `main.js` script as it is loaded after the DOM is loaded in the DMT components bundle.
       $('script[src*="/main.js"]').remove();
 
+      // Remove the default theme navigation script.
+      $('script[src*="/navigation.js"]').remove();
+
       const siteMenu = $('div.site-menu');
 
-      // Save the navigation sidebar content for the main index.html page. This is used to create the dynamic
-      // navigation web component. This occurs as the ~2nd page generated.
-      if (page.model.kind === ReflectionKind.Project && page.url === 'index.html')
-      {
-         this.#augmentProjectNav($, siteMenu);
-      }
-
-      // Replace standard navigation with the `NavigationSite` web component. Send page url to select current
-      // active anchor.
-      siteMenu.empty().append($(`<wc-dmt-nav pageurl="${escapeAttr(page.url)}"></wc-dmt-nav>`));
+      siteMenu.empty().append($(`<nav class="tsd-navigation"></nav>`));
 
       // Append scripts to load web components.
       this.#addAssets($, page);
@@ -326,7 +239,7 @@ export class PageRenderer
       {
          const mainData = fs.readFileSync(mainJSPath, 'utf-8');
 
-         const regex = /(?<!be\(\);)he\(\);/gm;
+         const regex = /he\(\);be\(\);/gm;
 
          if (regex.test(mainData))
          {

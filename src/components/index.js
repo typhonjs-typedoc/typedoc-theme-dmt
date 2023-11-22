@@ -1,3 +1,5 @@
+import Navigation                from './navigation/Navigation.svelte';
+
 import SearchMain                from './search-main/SearchMain.svelte';
 // import SearchQuick               from './search-quick/SearchQuick.svelte';
 
@@ -12,8 +14,7 @@ import {
    keyCommands,
    scrollActivation }            from './events/index.js';
 
-// Loads the Navigation web component.
-import './dmt-nav-web-component.js';
+import './navigationIndex.js';
 
 // Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
 // plugins that might work with compressed data.
@@ -22,6 +23,10 @@ globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {
+   new Navigation({
+      target: document.querySelector('nav.tsd-navigation')
+   })
+
    // Only load main search index if enabled.
    if (globalThis?.dmtOptions?.search)
    {
