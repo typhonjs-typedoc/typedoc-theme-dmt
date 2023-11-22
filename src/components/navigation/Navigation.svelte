@@ -5,7 +5,13 @@
 
    import Folder  from './Folder.svelte';
 
-   const index = globalThis.dmtInflateAndUnpackB64(globalThis.dmtNavigationIndex);
+   // Inflate and unpack the navigation index.
+   const index = typeof globalThis.dmtNavigationIndex === 'string' ?
+    globalThis.dmtInflateAndUnpackB64(globalThis.dmtNavigationIndex) : [];
+
+   // Determine if the top level icon for namespace / module folders is removed.
+   const removeTopLevelIcon = typeof globalThis.dmtOptions.removeNavTopLevelIcon === 'boolean' ?
+    globalThis.dmtOptions.removeNavTopLevelIcon : false;
 
    // Determine the depth in the static HTML paths to adjust a prepended relative path for all navigation links.
    const baseURL = import.meta.url.replace(/assets\/dmt\/dmt-components.js/, '');
@@ -20,7 +26,7 @@
 
 {#each index as entry (entry.path)}
    {#if Array.isArray(entry.children)}
-      <Folder {entry} />
+      <Folder {entry} removeIcon={removeTopLevelIcon} />
    {:else}
       <a href={`${pathPrepend}${entry.path}`}>
          <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${entry.kind}`}></use></svg>

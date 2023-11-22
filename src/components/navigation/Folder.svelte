@@ -6,6 +6,8 @@
    /** @type {object} */
    export let entry;
 
+   export let removeIcon = false;
+
    const pathPrepend = getContext('#pathPrepend');
    const sessionStorage = getContext('#sessionStorage');
 
@@ -21,7 +23,9 @@
 
 <TJSSvgFolder {...folderProps}>
    <a href={`${pathPrepend}${entry.path}`} slot=label>
-      <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${entry.kind}`}></use></svg>
+      {#if !removeIcon}
+         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${entry.kind}`}></use></svg>
+      {/if}
       <span>{entry.text}</span>
    </a>
 

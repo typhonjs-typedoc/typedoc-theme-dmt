@@ -75,6 +75,7 @@ export class PageRenderer
        */
       const dmtGlobalOptions = {
          basePath,
+         removeNavTopLevelIcon: this.#options.removeNavTopLevelIcon,
          search: this.#options.search,
          searchLimit: this.#options.searchLimit,
          searchQuick: this.#options.searchQuick,
