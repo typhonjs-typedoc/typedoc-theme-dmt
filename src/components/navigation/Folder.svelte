@@ -14,6 +14,14 @@
    /** @type {object} */
    export let entry;
 
+   /**
+    * To properly support nested categories / groups it is necessary to prepend the parent path to the storage key as
+    * the folder stores are reactive. This prevents opening / closing all categories of the same name.
+    *
+    * @type {string}
+    */
+   export let parentPath = '';
+
    export let removeIcon = false;
 
    const sessionStorage = getContext('#sessionStorage');
@@ -24,8 +32,7 @@
 
    const folderProps = {
       options: { focusIndicator: true },
-      // TODO: Must consider category tags `entry.text` is not precise enough.
-      store: sessionStorage.getStore(`${storagePrepend}-nav-${entry.path ?? entry.text}`, false)
+      store: sessionStorage.getStore(`${storagePrepend}-nav-${entry.path ?? `${parentPath}-${entry.text}`}`, false)
    }
 </script>
 
@@ -33,7 +40,7 @@
    <Entry {entry} {removeIcon} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}
-         <svelte:self entry={child} />
+         <svelte:self entry={child} parentPath={entry.path ?? entry.text} />
       {:else}
          <Entry entry={child} />
       {/if}
