@@ -1,14 +1,21 @@
 <script>
-   import { getContext } from 'svelte';
+   /**
+    * Provides a folder implementation for module / namespaces.
+    *
+    * Note: Presently, a custom copy of `TJSSvgFolder` is used. When this is switched over to the library version
+    * CSS variables for font-weight and width will need to be set.
+    */
 
-   import TJSSvgFolder  from './TJSSvgFolder.svelte';
+   import { getContext }   from 'svelte';
+
+   import Entry            from './Entry.svelte';
+   import TJSSvgFolder     from './TJSSvgFolder.svelte';
 
    /** @type {object} */
    export let entry;
 
    export let removeIcon = false;
 
-   const pathPrepend = getContext('#pathPrepend');
    const sessionStorage = getContext('#sessionStorage');
 
    // Retrieve the storage prepend string from global DMT options or generate a random string.
@@ -17,26 +24,18 @@
 
    const folderProps = {
       options: { focusIndicator: true },
-      store: sessionStorage.getStore(`${storagePrepend}-nav-${entry.path}`, false)
+      // TODO: Must consider category tags `entry.text` is not precise enough.
+      store: sessionStorage.getStore(`${storagePrepend}-nav-${entry.path ?? entry.text}`, false)
    }
 </script>
 
 <TJSSvgFolder {...folderProps}>
-   <a href={`${pathPrepend}${entry.path}`} slot=label>
-      {#if !removeIcon}
-         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${entry.kind}`}></use></svg>
-      {/if}
-      <span>{entry.text}</span>
-   </a>
-
+   <Entry {entry} {removeIcon} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}
          <svelte:self entry={child} />
       {:else}
-         <a href={`${pathPrepend}${child.path}`}>
-            <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${child.kind}`}></use></svg>
-            <span>{child.text}</span>
-         </a>
+         <Entry entry={child} />
       {/if}
    {/each}
 </TJSSvgFolder>

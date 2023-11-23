@@ -1,9 +1,10 @@
 <script>
    import { setContext }         from 'svelte';
 
-   import { TJSSessionStorage }  from "#runtime/svelte/store/web-storage";
+   import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
-   import Folder  from './Folder.svelte';
+   import Entry                  from './Entry.svelte';
+   import Folder                 from './Folder.svelte';
 
    // Inflate and unpack the navigation index.
    const index = typeof globalThis.dmtNavigationIndex === 'string' ?
@@ -28,9 +29,6 @@
    {#if Array.isArray(entry.children)}
       <Folder {entry} removeIcon={removeTopLevelIcon} />
    {:else}
-      <a href={`${pathPrepend}${entry.path}`}>
-         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${entry.kind}`}></use></svg>
-         <span>{entry.text}</span>
-      </a>
+      <Entry {entry} />
    {/if}
 {/each}

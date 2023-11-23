@@ -416,6 +416,7 @@
              on:keydown|capture={onKeyDown}
              on:keyup|capture={onKeyUp}
              class:default-cursor={localOptions.chevronOnly}
+             class:focus-indicator={localOptions.focusIndicator}
              role=button
              tabindex=0>
         <svg bind:this={svgEl} viewBox="0 0 24 24">
@@ -474,15 +475,15 @@
         border-width: var(--tjs-folder-summary-border-width, initial);
         cursor: var(--tjs-folder-summary-cursor, pointer);
         font-size: var(--tjs-folder-summary-font-size, inherit);
-        font-weight: var(--tjs-folder-summary-font-weight, bold);
+        font-weight: var(--tjs-folder-summary-font-weight, normal);
         font-family: var(--tjs-folder-summary-font-family, inherit);
         gap: var(--tjs-folder-summary-gap, 0.125em);
         list-style: none;
-        margin: var(--tjs-folder-summary-margin, 0 0 0 -0.4em);
-        padding: var(--tjs-folder-summary-padding, 0.25em) 0;
+        margin: var(--tjs-folder-summary-margin, 0);
+        padding: var(--tjs-folder-summary-padding, 0) 0;
         transition: var(--tjs-folder-summary-transition, background 0.1s);
         user-select: none;
-        width: var(--tjs-folder-summary-width, fit-content);
+        width: var(--tjs-folder-summary-width, 100%);
     }
 
     .default-cursor {
@@ -490,8 +491,8 @@
     }
 
     summary svg {
-        width: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1.25em));
-        height: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1.25em));
+        width: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1em));
+        height: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1em));
         color: var(--tjs-folder-summary-chevron-color, currentColor);
         cursor: var(--tjs-folder-summary-cursor, pointer);
         opacity: var(--tjs-folder-summary-chevron-opacity, 0.2);
@@ -502,7 +503,7 @@
 
     summary:focus-visible {
         box-shadow: var(--tjs-folder-summary-box-shadow-focus-visible, var(--tjs-default-box-shadow-focus-visible));
-        outline: var(--tjs-folder-summary-outline-focus-visible, var(--tjs-default-outline-focus-visible, revert));
+        outline: var(--tjs-folder-summary-outline-focus-visible, var(--tjs-default-outline-focus-visible, transparent));
         transition: var(--tjs-folder-summary-transition-focus-visible, var(--tjs-default-transition-focus-visible));
     }
 
@@ -512,6 +513,10 @@
 
     summary:focus-visible .tjs-folder-focus-indicator {
         background: var(--tjs-folder-summary-focus-indicator-background, var(--tjs-default-focus-indicator-background, white));
+    }
+
+    summary:focus-visible.focus-indicator {
+        outline: transparent;
     }
 
     summary:hover svg {
@@ -536,6 +541,9 @@
     }
 
     .contents {
+        display: var(--tjs-folder-contents-display, flex);
+        flex-direction: var(--tjs-folder-contents-flex-direction, column);
+        gap: var(--tjs-folder-contents-gap);
         position: relative;
         background-blend-mode: var(--tjs-folder-contents-background-blend-mode, initial);
         background: var(--tjs-folder-contents-background, none);
