@@ -196,7 +196,7 @@ nav.tsd-navigation {
 }
 
 @container site-menu (min-width: 0) {
-  .tsd-navigation a {
+  .tsd-navigation span {
     font-size: clamp(0.8rem, 5cqi, 1rem);
   }
 }
