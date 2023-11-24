@@ -6,9 +6,7 @@
    import Entry                  from './Entry.svelte';
    import Folder                 from './Folder.svelte';
 
-   // Inflate and unpack the navigation index.
-   const index = typeof globalThis.dmtNavigationIndex === 'string' ?
-    globalThis.dmtInflateAndUnpackB64(globalThis.dmtNavigationIndex) : [];
+   export let navigationIndex = [];
 
    // Determine if the top level icon for namespace / module folders is removed.
    const removeTopLevelIcon = typeof globalThis.dmtOptions.removeNavTopLevelIcon === 'boolean' ?
@@ -26,7 +24,7 @@
 </script>
 
 <div class=dmt-navigation-content>
-   {#each index as entry (entry.path)}
+   {#each navigationIndex as entry (entry.path)}
       {#if Array.isArray(entry.children)}
          <Folder {entry} removeIcon={removeTopLevelIcon} />
       {:else}

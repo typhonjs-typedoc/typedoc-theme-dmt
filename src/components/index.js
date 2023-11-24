@@ -14,7 +14,8 @@ import {
    keyCommands,
    scrollActivation }            from './events/index.js';
 
-import './navigationIndex.js';
+// Loads compressed global component data.
+import './componentData.js';
 
 // Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
 // plugins that might work with compressed data.
@@ -23,8 +24,16 @@ globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 
 globalThis.document.addEventListener('DOMContentLoaded', async () =>
 {
+   /** @type {DMTComponentData} */
+   const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ?
+    globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {};
+
    new Navigation({
-      target: document.querySelector('nav.tsd-navigation')
+      target: document.querySelector('nav.tsd-navigation'),
+      props: {
+         navigationIndex: dmtComponentData?.navigationIndex,
+         sidebarLinks: dmtComponentData?.sidebarLinks
+      }
    })
 
    // Only load main search index if enabled.

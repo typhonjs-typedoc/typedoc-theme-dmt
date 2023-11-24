@@ -7,7 +7,7 @@ import {
 } from 'typedoc';
 
 import {
-   NavigationBuilder,
+   GlobalComponentData,
    PageRenderer,
    SearchIndexPackr,
    SearchQuickIndexPackr }    from './renderer/index.js';
@@ -32,19 +32,18 @@ export function load(app)
       {
          const options = new ThemeOptions(app);
 
-         // Stop all generation of the navigation sidebar.
-         app.renderer.theme?.stopNavigationGeneration();
-
          // Remove unused default theme components.
          app.renderer.removeComponent('javascript-index');
          app.renderer.removeComponent('navigation-tree');
 
          // Make the `dmt` sub-folder on `assets`.
-         app.renderer.on(RendererEvent.BEGIN, (output) => fs.mkdirSync(path.join(output.outputDirectory, 'assets',
+         app.renderer.on(RendererEvent.BEGIN, (event) => fs.mkdirSync(path.join(event.outputDirectory, 'assets',
           'dmt'), { recursive: true }));
 
+         // Generate compressed global component data.
+         GlobalComponentData.build(app, options);
+
          // Add DMT components.
-         new NavigationBuilder(app);
          new PageRenderer(app, options);
 
          // Selectively load search index creation.
