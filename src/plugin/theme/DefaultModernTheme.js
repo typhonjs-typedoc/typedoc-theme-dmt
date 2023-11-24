@@ -22,6 +22,9 @@ export class DefaultModernTheme extends DefaultTheme
       if (!this.#renderContext)
       {
          this.#renderContext = new DefaultThemeRenderContext(this, pageEvent, this.application.options);
+
+         // Stop default theme navigation generation.
+         this.#renderContext.navigation = () => {};
       }
       else
       {
@@ -30,21 +33,5 @@ export class DefaultModernTheme extends DefaultTheme
       }
 
       return this.#renderContext;
-   }
-
-   /**
-    * When invoked all future pages rendered will no longer have site navigation generated.
-    */
-   stopNavigationGeneration()
-   {
-      if (this.#renderContext)
-      {
-         this.#renderContext.navigation = () => {};
-      }
-      else
-      {
-         this.application.logger.error(
-          `[typedoc-theme-default-modern] 'stopNavigationGeneration' invoked with no active render context.`);
-      }
    }
 }
