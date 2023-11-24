@@ -1,7 +1,7 @@
 <script>
    import { getContext }   from 'svelte';
 
-   import { slideFade }    from '../transition/slideFade.js';
+   import { slideFade }    from '#runtime/svelte/transition';
 
    /** @type {ProcessedSearchDocument[]} */
    export let results = void 0;

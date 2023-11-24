@@ -6,11 +6,11 @@
 
    import { writable }           from 'svelte/store';
 
+   import { slideFade }          from '#runtime/svelte/transition';
+
    import SearchResults          from './SearchResults.svelte';
 
    import { processSearchQuery } from './processSearchQuery.js';
-
-   import { slideFade }          from '../transition/slideFade.js';
 
    /**
     * Stores the current selected ID for navigating search query results in {@link SearchResults}.
