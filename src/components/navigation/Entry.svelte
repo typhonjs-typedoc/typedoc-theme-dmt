@@ -14,7 +14,7 @@
 </script>
 
 {#if path}
-   <a href={path}>
+   <a href={path} class=no-summary-click>
       {#if icon}
          <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${icon}`}></use></svg>
       {/if}
@@ -27,5 +27,9 @@
 <style>
    a {
       width: fit-content;
+   }
+
+   svg, span {
+      pointer-events: none;
    }
 </style>

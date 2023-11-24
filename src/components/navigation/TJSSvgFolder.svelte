@@ -265,12 +265,14 @@
 
       const chevronTarget = target === svgEl || svgEl.contains(target);
 
-      if (target === summaryEl || target === labelEl || chevronTarget ||
-       target.querySelector('.summary-click') !== null)
+      const isNoSummaryClick = target.classList.contains('no-summary-click') ||
+       target.querySelector('.no-summary-click') !== null ||
+        (target.parentElement && target.parentElement.classList.contains('no-summary-click'));
+
+      if (!isNoSummaryClick || target === summaryEl || target === labelEl || chevronTarget)
       {
          if (!fromKeyboard && localOptions.chevronOnly && !chevronTarget)
          {
-            event.preventDefault();
             event.stopPropagation();
             return;
          }
@@ -285,21 +287,9 @@
          {
             onClose({ event });
          }
+      }
 
-         event.preventDefault();
-         event.stopPropagation();
-      }
-      else
-      {
-         // Handle exclusion cases when no-summary-click class is in target, targets children, or targets parent
-         // element.
-         if (target.classList.contains('no-summary-click') || target.querySelector('.no-summary-click') !== null ||
-          (target.parentElement && target.parentElement.classList.contains('no-summary-click')))
-         {
-            event.preventDefault();
-            event.stopPropagation();
-         }
-      }
+      event.stopPropagation();
    }
 
    /**
@@ -316,7 +306,6 @@
       // action.
       if (document.activeElement === summaryEl && (event?.pointerId === -1 || event?.mozInputSource === 6))
       {
-         event.preventDefault();
          event.stopPropagation();
          return;
       }
@@ -343,7 +332,6 @@
    {
       if (document.activeElement === summaryEl && event.code === keyCode)
       {
-         event.preventDefault();
          event.stopPropagation();
       }
    }
@@ -359,7 +347,6 @@
       {
          handleOpenClose(event, true);
 
-         event.preventDefault();
          event.stopPropagation();
       }
    }

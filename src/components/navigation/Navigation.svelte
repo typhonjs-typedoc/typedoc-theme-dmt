@@ -25,10 +25,19 @@
    setContext('#sessionStorage', new TJSSessionStorage());
 </script>
 
-{#each index as entry (entry.path)}
-   {#if Array.isArray(entry.children)}
-      <Folder {entry} removeIcon={removeTopLevelIcon} />
-   {:else}
-      <Entry {entry} />
-   {/if}
-{/each}
+<div class=dmt-navigation-content>
+   {#each index as entry (entry.path)}
+      {#if Array.isArray(entry.children)}
+         <Folder {entry} removeIcon={removeTopLevelIcon} />
+      {:else}
+         <Entry {entry} />
+      {/if}
+   {/each}
+</div>
+
+<style>
+   .dmt-navigation-content {
+      display: flex;
+      flex-direction: column;
+   }
+</style>
