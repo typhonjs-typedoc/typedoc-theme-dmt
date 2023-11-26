@@ -1,24 +1,37 @@
 <script>
    import { getContext }   from 'svelte';
 
-   /** @type {object} */
+   /** @type {import('typedoc').NavigationElement} */
    export let entry;
 
+   /**
+    * Whether to render the SVG icon for top level modules / namespaces.
+    *
+    * @type {boolean}
+    */
    export let removeIcon = false;
 
-   const pathURL = getContext('#pathURL');
-   const pathPrepend = getContext('#pathPrepend');
+   /**
+    * Any associated sessionStorage key set as a data attribute.
+    *
+    * @type {string|null}
+    */
+   export let storageKey = null;
+
+   const { pathURL, pathPrepend } = getContext('#options');
 
    const icon = !removeIcon && entry.kind ? entry.kind : void 0;
 
    const path = entry.path ? `${pathPrepend}${entry.path}` : void 0;
-   const isCurrent = entry.path ? entry.path === pathURL : false;
+
+   $: isCurrent = entry.path ? entry.path === $pathURL : false;
 </script>
 
 {#if path}
    <a href={path}
       on:click|stopPropagation
-      class:current={isCurrent}>
+      class:current={isCurrent}
+      data-storage-key={storageKey}>
       {#if icon}
          <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${icon}`}></use></svg>
       {/if}
