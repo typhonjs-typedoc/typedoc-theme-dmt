@@ -19,6 +19,7 @@
 
    const pathPrepend = '../'.repeat(depth);
 
+   setContext('#pathURL', pathURL);
    setContext('#pathPrepend', pathPrepend);
    setContext('#sessionStorage', new TJSSessionStorage());
 </script>
