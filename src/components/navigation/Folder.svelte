@@ -11,7 +11,7 @@
    import Entry            from './Entry.svelte';
    import TJSSvgFolder     from './TJSSvgFolder.svelte';
 
-   /** @type {import('typedoc').NavigationElement} */
+   /** @type {import('./types').DMTNavigationElement} */
    export let entry;
 
    /**
@@ -36,6 +36,9 @@
     `docs-${Math.random().toString(36).substring(2, 18)}`;
 
    const storageKey = `${storagePrepend}-nav-${entry.path ?? `${parentPath}-${entry.text}`}`;
+
+   // Set storage key to DMTNavigationEntry.
+   entry.storageKey = storageKey;
 
    const store = dmtSessionStorage.getStore(storageKey, false);
 

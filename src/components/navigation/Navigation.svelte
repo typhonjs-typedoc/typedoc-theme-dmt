@@ -10,9 +10,14 @@
    import Entry                  from './Entry.svelte';
    import Folder                 from './Folder.svelte';
 
-   import { openCurrentPath }    from './openCurrentPath.js';
+   import { NavigationState }    from './NavigationState.js';
 
+   /** @type {import('./types').DMTNavigationElement[]} */
    export let navigationIndex = [];
+
+   const dmtSessionStorage = new TJSSessionStorage();
+
+   const navigationState = new NavigationState(dmtSessionStorage, navigationIndex);
 
    // Determine if the top level icon for namespace / module folders is removed.
    const removeTopLevelIcon = typeof globalThis.dmtOptions.removeNavTopLevelIcon === 'boolean' ?
@@ -20,94 +25,120 @@
 
    // Determine the depth in the static HTML paths to adjust a prepended relative path for all navigation links.
    const baseURL = import.meta.url.replace(/assets\/dmt\/dmt-components.js/, '');
-   const pathURL = globalThis.location.href.replace(baseURL, '');
+   let pathURL = globalThis.location.href.replace(baseURL, '');
 
    // Find the path URL match without any additional URL fragment.
    const depth = (pathURL.match(/\//) ?? []).length;
 
    const pathPrepend = '../'.repeat(depth);
 
-   const dmtSessionStorage = new TJSSessionStorage();
-
    const options = {
+      baseURL,
+      dmtSessionStorage,
+      initialPathURL: pathURL,
+      navigationState,
       pathURL: writable(pathURL),
       pathPrepend,
-      dmtSessionStorage
    };
 
    setContext('#options', options);
 
-   /** @type {HTMLDivElement} */
-   let navigationEl;
+   navigationState.setInitialState(options);
 
-   console.log(`!! Navigation - pathURL: `, pathURL);
-
-   // Adjust the navigation index via a depth first search setting `opened` property for each node with children to the
-   // entry matching the given path URL.
-   openCurrentPath(navigationIndex, pathURL);
+   // // Attempt to set initial current path; there may be a hash fragment.
+   // const initialResult = navigationState.initialCurrentPath(pathURL);
+   //
+   // // Handle the case of a hash fragment.
+   // if (pathURL.includes('#'))
+   // {
+   //    const match = pathURL.split(/(?<=\.html)/);
+   //
+   //    // Try setting initial result again with the base URL without the hash fragment.
+   //    if (!initialResult)
+   //    {
+   //       const noHashURL = match[0];
+   //       if (noHashURL && navigationState.initialCurrentPath(noHashURL)) { options.pathURL.set(noHashURL); }
+   //    }
+   //
+   //    // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
+   //    const hashFragment = match[1];
+   //    const targetElement = document.querySelector(`div.col-content a[href^="${hashFragment}"]`);
+   //    const contentEl = document.querySelector('div.container.container-main');
+   //
+   //    if (targetElement && contentEl)
+   //    {
+   //       contentEl.focus();
+   //       contentEl.scrollTo({
+   //          top: targetElement.getBoundingClientRect().top - 60,
+   //          behavior: 'instant'
+   //       });
+   //    }
+   // }
+   //
+   // // Adjust the navigation index via a depth first search setting `opened` property for each tree node to the
+   // // entry matching the given path URL.
+   // if (!navigationState.initialCurrentPath(pathURL) && pathURL.includes('#'))
+   // {
+   //    const noHashURL = pathURL.split(/(?<=\.html)/)?.[0];
+   //    if (noHashURL && navigationState.initialCurrentPath(noHashURL)) { options.pathURL.set(noHashURL); }
+   // }
 
    // ----------------------------------------------------------------------------------------------------------------
 
+   // /**
+   //  * Handle any clicks on content anchors with a hash ensuring that the clicked upon anchor is always visible in the
+   //  * navigation tree.
+   //  *
+   //  * @param event
+   //  */
+   // function hashAnchorClick(event)
+   // {
+   //    event.preventDefault(); // Prevent the default anchor click behavior.
+   //
+   //    // If the hash differs then set the window location.
+   //    if (window.location.hash !== this.hash)
+   //    {
+   //       window.location.hash = this.hash;
+   //    }
+   //    else
+   //    {
+   //       // Otherwise ensure the current path is visible.
+   //       const hashURL = this.href.replace(baseURL, '');
+   //       navigationState.ensureCurrentPath(hashURL);
+   //    }
+   // }
+
+   // // Target all content anchor elements with a hash fragment:
+   // document.querySelectorAll('div.col-content a[href^="#"], details.tsd-page-navigation a[href^="#"]').forEach((el) =>
+   // {
+   //    el.addEventListener('click', hashAnchorClick);
+   // });
+
    /**
+    * Updates the session storage state to opened for all tree nodes to the new URL path.
+    *
     * @param {HashChangeEvent}   event - A HashChange event.
     */
    async function onHashchange(event)
    {
-      const oldURLPath = event.oldURL.replace(baseURL, '');
       const newURLPath = event.newURL.replace(baseURL, '');
 
-      // Set new URL via store.
-      options.pathURL.set(newURLPath);
+      // Ensure any tree nodes are open for `newURLPath`.
+      if (navigationState.ensureCurrentPath(newURLPath))
+      {
+         // Wait for Svelte to render tree.
+         await tick();
 
-      // const oldAnchorEl = navigationEl.querySelector(`a[href$="${oldURLPath}"]`);
-      // let newAnchorEl = navigationEl.querySelector(`a[href$="${newURLPath}"]`);
-      //
-      // // Both anchors are visible so `current` class can be swapped.
-      // if (oldAnchorEl && newAnchorEl)
-      // {
-      //    oldAnchorEl.classList.remove('current');
-      //    newAnchorEl.classList.add('current');
-      // }
-      // // Handle case when the old anchor is a closed tree node and new anchor is a child entry.
-      // else if (oldAnchorEl && !newAnchorEl)
-      // {
-      //    let oldStorageKey = oldAnchorEl ? oldAnchorEl.dataset.storageKey : void 0;
-      //    if (oldStorageKey)
-      //    {
-      //       dmtSessionStorage.setItem(oldStorageKey, true);
-      //
-      //       await tick(); // Await for Svelte to render the contents of the tree node in the case that it opens.
-      //
-      //       newAnchorEl = navigationEl.querySelector(`a[href$="${newURLPath}"]`);
-      //
-      //       if (oldAnchorEl && newAnchorEl)
-      //       {
-      //          oldAnchorEl.classList.remove('current');
-      //          newAnchorEl.classList.add('current');
-      //       }
-      //    }
-      //
-      //    console.log(`!! Navigation - onHashchange - oldStorageKey: `, oldStorageKey);
-      // }
-      // // Handle the case that the old and new anchors are both from a closed parent tree node.
-      // else if (!oldAnchorEl && !newAnchorEl && oldURLPath.includes('#') && newURLPath.includes('#'))
-      // {
-      //
-      // }
-      //
-      //
-      //
-      // console.log(`!! Navigation - onHashchange - oldURLPath: `, oldURLPath);
-      // console.log(`!! Navigation - onHashchange - newURLPath: `, newURLPath);
-      // console.log(`!! Navigation - onHashchange - oldAnchorEl: `, oldAnchorEl);
-      // console.log(`!! Navigation - onHashchange - newAnchorEl: `, newAnchorEl);
+         // Set new URL via store.
+         options.pathURL.set(newURLPath);
+      }
    }
 </script>
 
 <svelte:window on:hashchange={onHashchange} />
 
-<div bind:this={navigationEl} class=dmt-navigation-content>
-   {#each navigationIndex as entry (entry.path)}
+<div class=dmt-navigation-content>
+   {#each navigationState.index as entry (entry.path)}
       {#if Array.isArray(entry.children)}
          <Folder {entry} removeIcon={removeTopLevelIcon} />
       {:else}
