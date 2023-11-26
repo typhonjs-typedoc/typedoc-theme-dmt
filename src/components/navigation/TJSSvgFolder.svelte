@@ -117,17 +117,20 @@
     * `1em * 0.8`.
     */
 
-   import { onDestroy }         from 'svelte';
-   import { writable }          from 'svelte/store';
+   import {
+      getContext,
+      onDestroy }                from 'svelte';
 
-   import { toggleDetails }     from '#runtime/svelte/action/animate';
-   import { applyStyles }       from '#runtime/svelte/action/dom';
-   import { isSvelteComponent } from '#runtime/svelte/util';
-   import { isObject }          from '#runtime/util/object';
+   import { writable }           from 'svelte/store';
+
+   import { toggleDetails }      from '#runtime/svelte/action/animate';
+   import { applyStyles }        from '#runtime/svelte/action/dom';
+   import { isSvelteComponent }  from '#runtime/svelte/util';
+   import { isObject }           from '#runtime/util/object';
 
    import {
       isWritableStore,
-      subscribeIgnoreFirst }    from '#runtime/util/store';
+      subscribeIgnoreFirst }     from '#runtime/util/store';
 
    /** @type {TJSFolderData} */
    export let folder = void 0;
@@ -158,6 +161,8 @@
 
    /** @type {(data?: { event?: PointerEvent }) => void} */
    export let onContextMenu = void 0;
+
+   const application = getContext('#external')?.application;
 
    /** @type {TJSFolderOptions} */
    const localOptions = {
@@ -265,14 +270,11 @@
 
       const chevronTarget = target === svgEl || svgEl.contains(target);
 
-      const isNoSummaryClick = target.classList.contains('no-summary-click') ||
-       target.querySelector('.no-summary-click') !== null ||
-        (target.parentElement && target.parentElement.classList.contains('no-summary-click'));
-
-      if (!isNoSummaryClick || target === summaryEl || target === labelEl || chevronTarget)
+      if (target === summaryEl || target === labelEl || chevronTarget)
       {
          if (!fromKeyboard && localOptions.chevronOnly && !chevronTarget)
          {
+            event.preventDefault();
             event.stopPropagation();
             return;
          }
@@ -281,14 +283,15 @@
 
          if ($store && typeof onOpen === 'function')
          {
-            onOpen({ event });
+            onOpen({ event, element: detailsEl, folder, id, label, store });
          }
          else if (typeof onClose === 'function')
          {
-            onClose({ event });
+            onClose({ event, element: detailsEl, folder, id, label, store });
          }
       }
 
+      event.preventDefault();
       event.stopPropagation();
    }
 
@@ -301,11 +304,14 @@
     */
    function onClickSummary(event)
    {
+      const activeWindow = application?.reactive?.activeWindow ?? globalThis;
+
       // Firefox sends a `click` event / non-standard response so check for mozInputSource equaling 6 (keyboard) or
       // a negative pointerId from Chromium and prevent default. This allows `onKeyUp` to handle any open / close
       // action.
-      if (document.activeElement === summaryEl && (event?.pointerId === -1 || event?.mozInputSource === 6))
+      if (activeWindow.document.activeElement === summaryEl && (event?.pointerId === -1 || event?.mozInputSource === 6))
       {
+         event.preventDefault();
          event.stopPropagation();
          return;
       }
@@ -330,8 +336,11 @@
     */
    function onKeyDown(event)
    {
-      if (document.activeElement === summaryEl && event.code === keyCode)
+      const activeWindow = application?.reactive?.activeWindow ?? globalThis;
+
+      if (activeWindow.document.activeElement === summaryEl && event.code === keyCode)
       {
+         event.preventDefault();
          event.stopPropagation();
       }
    }
@@ -343,10 +352,13 @@
     */
    function onKeyUp(event)
    {
-      if (document.activeElement === summaryEl && event.code === keyCode)
+      const activeWindow = application?.reactive?.activeWindow ?? globalThis;
+
+      if (activeWindow.document.activeElement === summaryEl && event.code === keyCode)
       {
          handleOpenClose(event, true);
 
+         event.preventDefault();
          event.stopPropagation();
       }
    }
@@ -374,14 +386,17 @@
    }
 </script>
 
+<!-- Note: the manual control of the `open` state `on:toggle`. This circumvents the automatic browser handling when
+clicking on the `summary` element allowing any child element to use `on:click|stopPropagation` to prevent clicks from
+changing the open state.  -->
+
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <details class=tjs-svg-folder
          bind:this={detailsEl}
 
          on:close={onLocalClose}
-         on:closeAny={onLocalClose}
          on:open={onLocalOpen}
-         on:openAny={onLocalOpen}
+         on:toggle={() => detailsEl.open = $store}
 
          on:click
          on:keydown
@@ -396,167 +411,167 @@
          data-id={id}
          data-label={label}
          data-closing='false'>
-    <!-- svelte-ignore a11y-no-redundant-roles -->
-    <summary bind:this={summaryEl}
-             on:click|capture={onClickSummary}
-             on:contextmenu={onContextMenuPress}
-             on:keydown|capture={onKeyDown}
-             on:keyup|capture={onKeyUp}
-             class:default-cursor={localOptions.chevronOnly}
-             class:focus-indicator={localOptions.focusIndicator}
-             role=button
-             tabindex=0>
-        <svg bind:this={svgEl} viewBox="0 0 24 24">
-            <path
-                fill=currentColor
-                stroke=currentColor
-                style="stroke-linejoin: round; stroke-width: 3;"
-                d="M5,8L19,8L12,15Z"
-            />
-        </svg>
+   <!-- svelte-ignore a11y-no-redundant-roles -->
+   <summary bind:this={summaryEl}
+            on:click={onClickSummary}
+            on:contextmenu={onContextMenuPress}
+            on:keydown|capture={onKeyDown}
+            on:keyup|capture={onKeyUp}
+            class:default-cursor={localOptions.chevronOnly}
+            class:focus-indicator={localOptions.focusIndicator}
+            role=button
+            tabindex=0>
+      <svg bind:this={svgEl} viewBox="0 0 24 24">
+         <path fill=currentColor
+               stroke=currentColor
+               style="stroke-linejoin: round; stroke-width: 3;"
+               d="M5,8L19,8L12,15Z"
+         />
+      </svg>
 
-        {#if localOptions.focusIndicator}
-           <div class=tjs-folder-focus-indicator />
-        {/if}
+      {#if localOptions.focusIndicator}
+         <div class=tjs-folder-focus-indicator />
+      {/if}
 
-        <slot name=label>
-            {#if isSvelteComponent(folder?.slotLabel?.class)}
-                <svelte:component this={folder.slotLabel.class} {...(isObject(folder?.slotLabel?.props) ? folder.slotLabel.props : {})} />
-            {:else}
-                <div bind:this={labelEl} class=label>{label}</div>
+      <slot name=label>
+         {#if isSvelteComponent(folder?.slotLabel?.class)}
+            <svelte:component this={folder.slotLabel.class} {...(isObject(folder?.slotLabel?.props) ? folder.slotLabel.props : {})} />
+         {:else}
+            <div bind:this={labelEl} class=label>{label}</div>
+         {/if}
+      </slot>
+
+      <slot name="summary-end">
+         {#if isSvelteComponent(folder?.slotSummaryEnd?.class)}
+            <svelte:component this={folder.slotSummaryEnd.class} {...(isObject(folder?.slotSummaryEnd?.props) ? folder.slotSummaryEnd.props : {})} />
+         {/if}
+      </slot>
+   </summary>
+
+   <div class=contents>
+      {#if visible}
+         <slot>
+            {#if isSvelteComponent(folder?.slotDefault?.class)}
+               <svelte:component this={folder.slotDefault.class} {...(isObject(folder?.slotDefault?.props) ? folder.slotDefault.props : {})} />
             {/if}
-        </slot>
-
-        <slot name="summary-end">
-            {#if isSvelteComponent(folder?.slotSummaryEnd?.class)}
-                <svelte:component this={folder.slotSummaryEnd.class} {...(isObject(folder?.slotSummaryEnd?.props) ? folder.slotSummaryEnd.props : {})} />
-            {/if}
-        </slot>
-    </summary>
-
-    <div class=contents>
-        {#if visible}
-            <slot>
-                {#if isSvelteComponent(folder?.slotDefault?.class)}
-                    <svelte:component this={folder.slotDefault.class} {...(isObject(folder?.slotDefault?.props) ? folder.slotDefault.props : {})} />
-                {/if}
-            </slot>
-        {/if}
-    </div>
+         </slot>
+      {/if}
+   </div>
 </details>
 
 <style>
-    details {
-        margin-left: var(--tjs-folder-details-margin-left, -0.4em);
-        padding-left: var(--tjs-folder-details-padding-left, 0.4em); /* Set for children folders to increase indent */
-    }
+   details {
+      margin-left: var(--tjs-folder-details-margin-left, -0.4em);
+      padding-left: var(--tjs-folder-details-padding-left, 0.4em); /* Set for children folders to increase indent */
+   }
 
-    summary {
-        display: flex;
-        position: relative;
-        align-items: center;
-        background-blend-mode: var(--tjs-folder-summary-background-blend-mode, initial);
-        background: var(--tjs-folder-summary-background, none);
-        border: var(--tjs-folder-summary-border, none);
-        border-radius: var(--tjs-folder-summary-border-radius, 0);
-        border-width: var(--tjs-folder-summary-border-width, initial);
-        cursor: var(--tjs-folder-summary-cursor, pointer);
-        font-size: var(--tjs-folder-summary-font-size, inherit);
-        font-weight: var(--tjs-folder-summary-font-weight, normal);
-        font-family: var(--tjs-folder-summary-font-family, inherit);
-        gap: var(--tjs-folder-summary-gap, 0.125em);
-        list-style: none;
-        margin: var(--tjs-folder-summary-margin, 0);
-        padding: var(--tjs-folder-summary-padding, 0) 0;
-        transition: var(--tjs-folder-summary-transition, background 0.1s);
-        user-select: none;
-        width: var(--tjs-folder-summary-width, 100%);
-    }
+   summary {
+      display: flex;
+      position: relative;
+      align-items: center;
+      background-blend-mode: var(--tjs-folder-summary-background-blend-mode, initial);
+      background: var(--tjs-folder-summary-background, none);
+      border: var(--tjs-folder-summary-border, none);
+      border-radius: var(--tjs-folder-summary-border-radius, 0);
+      border-width: var(--tjs-folder-summary-border-width, initial);
+      cursor: var(--tjs-folder-summary-cursor, pointer);
+      font-size: var(--tjs-folder-summary-font-size, inherit);
+      font-weight: var(--tjs-folder-summary-font-weight, bold);
+      font-family: var(--tjs-folder-summary-font-family, inherit);
+      gap: var(--tjs-folder-summary-gap, 0.125em);
+      list-style: none;
+      margin: var(--tjs-folder-summary-margin, 0 0 0 -0.4em);
+      padding: var(--tjs-folder-summary-padding, 0.25em) 0;
+      transition: var(--tjs-folder-summary-transition, background 0.1s);
+      user-select: none;
+      width: var(--tjs-folder-summary-width, fit-content);
+   }
 
-    .default-cursor {
-        cursor: default;
-    }
+   .default-cursor {
+      cursor: default;
+   }
 
-    summary svg {
-        width: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1em));
-        height: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1em));
-        color: var(--tjs-folder-summary-chevron-color, currentColor);
-        cursor: var(--tjs-folder-summary-cursor, pointer);
-        opacity: var(--tjs-folder-summary-chevron-opacity, 0.2);
-        margin: var(--tjs-folder-summary-chevron-margin, 0);
-        transition: var(--tjs-folder-summary-chevron-transition, opacity 0.2s, transform 0.1s);
-        transform: var(--tjs-folder-summary-chevron-rotate-closed, rotate(-90deg));
-    }
+   summary svg {
+      width: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1.25em));
+      height: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1.25em));
+      color: var(--tjs-folder-summary-chevron-color, currentColor);
+      cursor: var(--tjs-folder-summary-cursor, pointer);
+      opacity: var(--tjs-folder-summary-chevron-opacity, 0.2);
+      margin: var(--tjs-folder-summary-chevron-margin, 0);
+      transition: var(--tjs-folder-summary-chevron-transition, opacity 0.2s, transform 0.1s);
+      transform: var(--tjs-folder-summary-chevron-rotate-closed, rotate(-90deg));
+   }
 
-    summary:focus-visible {
-        box-shadow: var(--tjs-folder-summary-box-shadow-focus-visible, var(--tjs-default-box-shadow-focus-visible));
-        outline: var(--tjs-folder-summary-outline-focus-visible, var(--tjs-default-outline-focus-visible, transparent));
-        transition: var(--tjs-folder-summary-transition-focus-visible, var(--tjs-default-transition-focus-visible));
-    }
+   summary:focus-visible {
+      box-shadow: var(--tjs-folder-summary-box-shadow-focus-visible, var(--tjs-default-box-shadow-focus-visible));
+      outline: var(--tjs-folder-summary-outline-focus-visible, var(--tjs-default-outline-focus-visible, revert));
+      transition: var(--tjs-folder-summary-transition-focus-visible, var(--tjs-default-transition-focus-visible));
+   }
 
-    summary:focus-visible .label {
-        text-shadow: var(--tjs-folder-summary-label-text-shadow-focus-visible, var(--tjs-default-text-shadow-focus-hover, revert));
-    }
+   summary:focus-visible .label {
+      text-shadow: var(--tjs-folder-summary-label-text-shadow-focus-visible, var(--tjs-default-text-shadow-focus-hover, revert));
+   }
 
-    summary:focus-visible .tjs-folder-focus-indicator {
-        background: var(--tjs-folder-summary-focus-indicator-background, var(--tjs-default-focus-indicator-background, white));
-    }
+   summary:focus-visible .tjs-folder-focus-indicator {
+      background: var(--tjs-folder-summary-focus-indicator-background, var(--tjs-default-focus-indicator-background, white));
+   }
 
-    summary:focus-visible.focus-indicator {
-        outline: transparent;
-    }
+   summary:focus-visible.focus-indicator {
+      outline: transparent;
+   }
 
-    summary:hover svg {
-        opacity: var(--tjs-folder-summary-chevron-opacity-hover, 1);
-    }
+   summary:hover svg {
+      opacity: var(--tjs-folder-summary-chevron-opacity-hover, 1);
+   }
 
-    .tjs-folder-focus-indicator {
-        align-self: var(--tjs-folder-summary-focus-indicator-align-self, var(--tjs-default-focus-indicator-align-self, stretch));
-        border: var(--tjs-folder-summary-focus-indicator-border, var(--tjs-default-focus-indicator-border));
-        border-radius: var(--tjs-folder-summary-focus-indicator-border-radius, var(--tjs-default-focus-indicator-border-radius, 0.1em));
-        flex: 0 0 var(--tjs-folder-summary-focus-indicator-width, var(--tjs-default-focus-indicator-width, 0.25em));
-        height: var(--tjs-folder-summary-focus-indicator-height, var(--tjs-default-focus-indicator-height));
-        transition: var(--tjs-folder-summary-focus-indicator-transition, var(--tjs-default-focus-indicator-transition));
-    }
+   .tjs-folder-focus-indicator {
+      align-self: var(--tjs-folder-summary-focus-indicator-align-self, var(--tjs-default-focus-indicator-align-self, stretch));
+      border: var(--tjs-folder-summary-focus-indicator-border, var(--tjs-default-focus-indicator-border));
+      border-radius: var(--tjs-folder-summary-focus-indicator-border-radius, var(--tjs-default-focus-indicator-border-radius, 0.1em));
+      flex: 0 0 var(--tjs-folder-summary-focus-indicator-width, var(--tjs-default-focus-indicator-width, 0.25em));
+      height: var(--tjs-folder-summary-focus-indicator-height, var(--tjs-default-focus-indicator-height));
+      transition: var(--tjs-folder-summary-focus-indicator-transition, var(--tjs-default-focus-indicator-transition));
+      pointer-events: none;
+   }
 
-    details[open] > summary {
-        background: var(--tjs-folder-summary-background-open, var(--tjs-folder-summary-background, inherit));
-    }
+   details[open] > summary {
+      background: var(--tjs-folder-summary-background-open, var(--tjs-folder-summary-background, inherit));
+   }
 
-    [open]:not(details[data-closing='true']) > summary svg {
-        transform: rotate(var(--tjs-folder-summary-chevron-rotate-open, 0));
-    }
+   [open]:not(details[data-closing='true']) > summary svg {
+      transform: rotate(var(--tjs-folder-summary-chevron-rotate-open, 0));
+   }
 
-    .contents {
-        display: var(--tjs-folder-contents-display, flex);
-        flex-direction: var(--tjs-folder-contents-flex-direction, column);
-        gap: var(--tjs-folder-contents-gap);
-        position: relative;
-        background-blend-mode: var(--tjs-folder-contents-background-blend-mode, initial);
-        background: var(--tjs-folder-contents-background, none);
-        border: var(--tjs-folder-contents-border, none);
-        margin: var(--tjs-folder-contents-margin, 0 0 0 -0.4em);
-        padding: var(--tjs-folder-contents-padding, 0 0 0 calc(var(--tjs-folder-summary-font-size, 1em) * 0.8));
-    }
+   .contents {
+      display: var(--tjs-folder-contents-display, flex);
+      flex-direction: var(--tjs-folder-contents-flex-direction, column);
+      gap: var(--tjs-folder-contents-gap);
+      position: relative;
+      background-blend-mode: var(--tjs-folder-contents-background-blend-mode, initial);
+      background: var(--tjs-folder-contents-background, none);
+      border: var(--tjs-folder-contents-border, none);
+      margin: var(--tjs-folder-contents-margin, 0 0 0 -0.4em);
+      padding: var(--tjs-folder-contents-padding, 0 0 0 calc(var(--tjs-folder-summary-font-size, 1em) * 0.8));
+   }
 
-    .contents::before {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: calc(100% + 0.65em);
-        left: 0;
-        top: -0.65em;
-    }
+   .contents::before {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: calc(100% + 0.65em);
+      left: 0;
+      top: -0.65em;
+   }
 
-    .label {
-        overflow: var(--tjs-folder-summary-label-overflow, hidden);
-        text-overflow: var(--tjs-folder-summary-label-text-overflow, ellipsis);
-        white-space: var(--tjs-folder-summary-label-white-space, nowrap);
-        width: var(--tjs-folder-summary-label-width, fit-content);
-    }
+   .label {
+      overflow: var(--tjs-folder-summary-label-overflow, hidden);
+      text-overflow: var(--tjs-folder-summary-label-text-overflow, ellipsis);
+      white-space: var(--tjs-folder-summary-label-white-space, nowrap);
+      width: var(--tjs-folder-summary-label-width, fit-content);
+   }
 
-    summary:focus-visible + .contents::before {
-        height: 100%;
-        top: 0;
-    }
+   summary:focus-visible + .contents::before {
+      height: 100%;
+      top: 0;
+   }
 </style>

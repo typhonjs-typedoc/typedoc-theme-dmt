@@ -37,5 +37,11 @@
    .dmt-navigation-content {
       display: flex;
       flex-direction: column;
+
+      --tjs-folder-summary-font-weight: normal;
+      --tjs-folder-summary-font-size: 1em;
+      --tjs-folder-summary-margin: 0;
+      --tjs-folder-summary-padding: 0;
+      --tjs-folder-summary-width: 100%;
    }
 </style>

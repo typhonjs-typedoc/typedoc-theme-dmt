@@ -14,7 +14,7 @@
 </script>
 
 {#if path}
-   <a href={path} class=no-summary-click>
+   <a href={path} on:click|stopPropagation>
       {#if icon}
          <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${icon}`}></use></svg>
       {/if}
