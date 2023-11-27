@@ -1,30 +1,31 @@
+import { tick } from 'svelte';
+
 /**
  * Provides the ability to walk the navigation index and manage state for initial opened state for entries and ensuring
  * opened state when URL hash changes occur.
  */
 export class NavigationState
 {
-   /** @type {import('#runtime/svelte/store/web-storage').TJSSessionStorage} */
-   #dmtSessionStorage;
+   /** @type {import('./NavigationData').NavigationData} */
+   #navData;
 
-   /** @type {import('./types').DMTNavigationElement[]} */
-   #navigationIndex;
+   #onHashchangeBound;
 
    /**
-    * @param {import('#runtime/svelte/store/web-storage').TJSSessionStorage} dmtSessionStorage - DMT session storage.
-    *
-    * @param {import('./types').DMTNavigationElement[]} navigationIndex - Navigation index.
+    * @param {import('./NavigationData').NavigationData} navData - Navigation data.
     */
-   constructor(dmtSessionStorage, navigationIndex)
+   constructor(navData)
    {
-      this.#dmtSessionStorage = dmtSessionStorage;
-      this.#navigationIndex = navigationIndex;
+      this.#navData = navData;
+      this.#onHashchangeBound = this.#onHashchange.bind(this);
+
+      this.#setInitialState();
    }
 
    /**
-    * @returns {import('./types').DMTNavigationElement[]}
+    * @returns {Function} Window hashchange listener.
     */
-   get index() { return this.#navigationIndex; }
+   get onHashchange() { return this.#onHashchangeBound; }
 
    /**
     * Finds the child nodes that match the given path URL by a depth first search and recursively finds any associated
@@ -39,66 +40,66 @@ export class NavigationState
       // Sets `opened` for all entry tree nodes from the path URL given.
       const operation = (entry) =>
       {
-         if (entry.storageKey) { this.#dmtSessionStorage.setItem(entry.storageKey, true); }
+         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true); }
       }
 
       return this.#searchTree(pathURL, operation);
    }
 
-   /**
-    * Handles setting the initial open state and scrolling the main content div to any hash fragment.
-    *
-    * @param {object}   options - Navigation options.
-    */
-   setInitialState(options)
-   {
-      const pathURL = options.initialPathURL;
-
-      // Attempt to set initial current path; there may be a hash fragment.
-      const initialResult = this.#initialCurrentPath(pathURL);
-
-      // Handle the case of a hash fragment.
-      if (pathURL.includes('#'))
-      {
-         const match = pathURL.split(/(?<=\.html)/);
-
-         // Try setting initial result again with the base URL without the hash fragment.
-         if (!initialResult)
-         {
-            const noHashURL = match[0];
-            if (noHashURL && this.#initialCurrentPath(noHashURL)) { options.pathURL.set(noHashURL); }
-         }
-
-         // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
-         const hashFragment = match[1];
-         const targetElement = document.querySelector(`div.col-content a[href^="${hashFragment}"]`);
-         const contentEl = document.querySelector('div.container.container-main');
-
-         if (targetElement && contentEl)
-         {
-            contentEl.focus();
-            contentEl.scrollTo({
-               top: targetElement.getBoundingClientRect().top - 60,
-               behavior: 'instant'
-            });
-         }
-      }
-
-      // Create custom click handlers for all main content anchors that have a hash fragment. `hashAnchorClick` will
-      // ensure that the Navigation entry is visible when clicked even if the main URL hash fragment doesn't change.
-      const hashAnchorClick = createHashAnchorClick(this, options.baseURL);
-
-      const hashAnchors = document.querySelectorAll(
-       'div.col-content a[href^="#"], details.tsd-page-navigation a[href^="#"]');
-
-      for (const anchorEl of hashAnchors)
-      {
-console.log(`!! adding click listener: `, anchorEl.href)
-         anchorEl.addEventListener('click', hashAnchorClick);
-      }
-   }
-
    // Internal implementation ----------------------------------------------------------------------------------------
+
+   /**
+    * Create custom click handlers for all main content anchors that have a hash fragment. `hashAnchorClick` will
+    * ensure that the Navigation entry is visible when clicked even if the main URL hash fragment doesn't change.
+    */
+   #hashAnchorLinks()
+   {
+      const baseURL = this.#navData.baseURL;
+      const navigationState = this;
+
+      /**
+       * Handle any clicks on content anchors with a hash ensuring that the clicked upon anchor is always visible in the
+       * navigation tree.
+       *
+       * @param {PointerEvent}   event -
+       */
+      function hashAnchorClick(event)
+      {
+         event.preventDefault(); // Prevent the default anchor click behavior.
+
+         const pageURLNoHash = globalThis.location.href.split('#')[0];
+         const anchorURLNoHash = this.href.split('#')[0];
+
+console.log(`!! hashAnchorClick - 0 - pageURLNoHash: `, pageURLNoHash);
+console.log(`!! hashAnchorClick - 1 - anchorURLNoHash: `, anchorURLNoHash);
+
+         // If the no hash URLS or hash differ then set the window location.
+         if (pageURLNoHash !== anchorURLNoHash || globalThis.location.hash !== this.hash)
+         {
+console.log(`!! hashAnchorClick - A - not the same href / hash`)
+            globalThis.location.href = this.href;
+         }
+         else
+         {
+            // Otherwise ensure the current path is visible.
+            const hashURL = this.href.replace(baseURL, '');
+
+console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
+
+            if (!navigationState.ensureCurrentPath(hashURL))
+            {
+               console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
+            }
+         }
+      }
+
+      // Find all anchor links in the main content body and page navigation.
+      const hashAnchors = document.querySelectorAll(
+       'div.col-content a[href*="#"], details.tsd-page-navigation a[href*="#"]');
+
+      // Add custom hash anchor click handling.
+      for (const anchorEl of hashAnchors) { anchorEl.addEventListener('click', hashAnchorClick); }
+   }
 
    /**
     * Finds the child nodes that match the given path URL by a depth first search and sets a new `opened` attribute
@@ -115,6 +116,26 @@ console.log(`!! adding click listener: `, anchorEl.href)
       const operation = (entry) => entry.opened = true;
 
       return this.#searchTree(pathURL, operation);
+   }
+
+   /**
+    * Updates the session storage state to opened for all tree nodes to the new URL path.
+    *
+    * @param {HashChangeEvent}   event - A HashChange event.
+    */
+   async #onHashchange(event)
+   {
+      const newURLPath = event.newURL.replace(this.#navData.baseURL, '');
+
+      // Ensure any tree nodes are open for `newURLPath`.
+      if (this.ensureCurrentPath(newURLPath))
+      {
+         // Wait for Svelte to render tree.
+         await tick();
+
+         // Set new URL via store.
+         this.#navData.setCurrentPathURL(newURLPath);
+      }
    }
 
    /**
@@ -163,10 +184,10 @@ console.log(`!! adding click listener: `, anchorEl.href)
     */
    #searchTree(pathURL, operation)
    {
-      if (!this.#navigationIndex?.length) { return false; }
+      if (!this.#navData.index?.length) { return false; }
 
       // Scan all top level entries first.
-      for (const entry of this.#navigationIndex)
+      for (const entry of this.#navData.index)
       {
          if (Array.isArray(entry.children)) { continue; }
 
@@ -175,7 +196,7 @@ console.log(`!! adding click listener: `, anchorEl.href)
       }
 
       // Depth first search for path setting a new variable `opened` for all leaves up to path entry.
-      for (const entry of this.#navigationIndex)
+      for (const entry of this.#navData.index)
       {
          if (!Array.isArray(entry.children)) { continue; }
 
@@ -184,39 +205,44 @@ console.log(`!! adding click listener: `, anchorEl.href)
 
       return false;
    }
-}
 
-/**
- * Handle any clicks on content anchors with a hash ensuring that the clicked upon anchor is always visible in the
- * navigation tree.
- *
- * @param {NavigationState} navigationState - NavigationState instance.
- *
- * @param {string} baseURL - The base URL.
- */
-function createHashAnchorClick(navigationState, baseURL)
-{
-   return function hashAnchorClick(event)
+   /**
+    * Handles setting the initial open state and scrolling the main content div to any hash fragment.
+    */
+   #setInitialState()
    {
-      event.preventDefault(); // Prevent the default anchor click behavior.
+      const pathURL = this.#navData.initialPathURL;
 
-console.log(`!! hashAnchorClick - 0 - this.hash: `, this.hash);
-console.log(`!! hashAnchorClick - 0 - this.href: `, this.href);
+      // Attempt to set initial current path; there may be a hash fragment.
+      const initialResult = this.#initialCurrentPath(pathURL);
 
-      // If the hash differs then set the window location.
-      if (window.location.hash !== this.hash)
+      // Handle the case of a hash fragment.
+      if (pathURL.includes('#'))
       {
-console.log(`!! hashAnchorClick - 1 - not the same hash`)
-         window.location.hash = this.hash;
-      }
-      else
-      {
-         // Otherwise ensure the current path is visible.
-         const hashURL = this.href.replace(baseURL, '');
+         const match = pathURL.split(/(?<=\.html)/);
 
-console.log(`!! hashAnchorClick - 2 - hashURL`)
+         // Try setting initial result again with the base URL without the hash fragment.
+         if (!initialResult)
+         {
+            const noHashURL = match[0];
+            if (noHashURL && this.#initialCurrentPath(noHashURL)) { this.#navData.setCurrentPathURL(noHashURL); }
+         }
 
-         navigationState.ensureCurrentPath(hashURL);
+         // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
+         const hashFragment = match[1];
+         const targetElement = document.querySelector(`div.col-content a[href^="${hashFragment}"]`);
+         const contentEl = document.querySelector('div.container.container-main');
+
+         if (targetElement && contentEl)
+         {
+            contentEl.focus();
+            contentEl.scrollTo({
+               top: targetElement.getBoundingClientRect().top - 60,
+               behavior: 'instant'
+            });
+         }
       }
+
+      this.#hashAnchorLinks();
    }
 }

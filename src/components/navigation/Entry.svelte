@@ -18,13 +18,13 @@
     */
    export let storageKey = null;
 
-   const { pathURL, pathPrepend } = getContext('#options');
+   const { pathPrepend, currentPathURLStore } = /** @type {NavigationData} */ getContext('#navigationData');
 
    const icon = !removeIcon && entry.kind ? entry.kind : void 0;
 
    const path = entry.path ? `${pathPrepend}${entry.path}` : void 0;
 
-   $: isCurrent = entry.path ? entry.path === $pathURL : false;
+   $: isCurrent = entry.path ? entry.path === $currentPathURLStore : false;
 </script>
 
 {#if path}

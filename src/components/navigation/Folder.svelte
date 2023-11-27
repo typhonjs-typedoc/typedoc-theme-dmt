@@ -29,7 +29,7 @@
     */
    export let removeIcon = false;
 
-   const { dmtSessionStorage } = getContext('#options');
+   const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
 
    // Retrieve the storage prepend string from global DMT options or generate a random string.
    const storagePrepend = globalThis?.dmtOptions?.storagePrepend ??
