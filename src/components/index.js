@@ -22,51 +22,50 @@ import './componentData.js';
 globalThis.dmtInflateAndUnpack = inflateAndUnpack;
 globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 
-globalThis.document.addEventListener('DOMContentLoaded', async () =>
-{
-   /** @type {DMTComponentData} */
-   const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ?
-    globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {};
+/** @type {DMTComponentData} */
+const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ?
+ globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {};
 
-   new Navigation({
-      target: document.querySelector('nav.tsd-navigation'),
-      props: {
-         navigationIndex: dmtComponentData?.navigationIndex,
-         sidebarLinks: dmtComponentData?.sidebarLinks
-      }
-   })
-
-   // Only load main search index if enabled.
-   if (globalThis?.dmtOptions?.search)
-   {
-      loadMainSearchData().then((result) =>
-      {
-         if (result) { new SearchMain({ target: document.querySelector('#dmt-search-main') }); }
-      });
+new Navigation({
+   target: document.querySelector('nav.tsd-navigation'),
+   props: {
+      navigationIndex: dmtComponentData?.navigationIndex,
+      sidebarLinks: dmtComponentData?.sidebarLinks
    }
+})
 
-   // TODO: Work in progress
-   // // Only load quick search index if enabled.
-   // if (globalThis?.dmtOptions?.searchQuick)
-   // {
-   //    loadQuickSearchData().then((result) =>
-   //    {
-   //       if (result) { new SearchQuick({ target: globalThis.document.body }); }
-   //    });
-   // }
+// Only load main search index if enabled.
+if (globalThis?.dmtOptions?.search)
+{
+   loadMainSearchData().then((result) =>
+   {
+      if (result) { new SearchMain({ target: document.querySelector('#dmt-search-main') }); }
+   });
+}
 
-   // Provides global keyboard commands.
-   keyCommands();
+// TODO: Work in progress
+// // Only load quick search index if enabled.
+// if (globalThis?.dmtOptions?.searchQuick)
+// {
+//    loadQuickSearchData().then((result) =>
+//    {
+//       if (result) { new SearchQuick({ target: globalThis.document.body }); }
+//    });
+// }
 
-   // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
-   // element allowing intuitive scrolling.
-   scrollActivation();
+// Provides global keyboard commands.
+keyCommands();
 
-   // Dynamically load main script now as it will reach the elements loaded by any web components.
-   await import('../main.js');
+// Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
+// element allowing intuitive scrolling.
+scrollActivation();
 
-   // Removes the `opacity: 0` inline style on `body` element after all scripts have loaded. This allows a smooth
-   // transition for the `main.js` default template script to take effect along with loading web components before
-   // the page is initially visible. There is no flicker as this is handled by a rAF callback.
-   globalThis.requestAnimationFrame(() => globalThis.document.querySelector('body').style = null);
-});
+// Dynamically load main script now as it will reach the elements loaded by any web components.
+// await import('../main.js');
+
+// Removes the `opacity: 0` inline style on `body` element after all scripts have loaded. This allows a smooth
+// transition for the `main.js` default template script to take effect along with loading web components before
+// the page is initially visible. There is no flicker as this is handled by a rAF callback.
+// globalThis.requestAnimationFrame(() => globalThis.document.querySelector('body').style = null);
+
+document.querySelector('body').style = null;

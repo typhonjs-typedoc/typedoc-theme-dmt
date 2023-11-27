@@ -180,8 +180,9 @@ export class PageRenderer
    {
       const $ = load(page.contents);
 
+      // TODO: Potentially remove.
       // Remove the `main.js` script as it is loaded after the DOM is loaded in the DMT components bundle.
-      $('script[src*="/main.js"]').remove();
+      // $('script[src*="/main.js"]').remove();
 
       // Remove the default theme navigation script.
       $('script[src*="/navigation.js"]').remove();
