@@ -67,29 +67,27 @@ export class NavigationState
       {
          event.preventDefault(); // Prevent the default anchor click behavior.
 
-         const pageURLNoHash = globalThis.location.href.split('#')[0];
+         const fullURLNoHash = globalThis.location.href.split('#')[0];
          const anchorURLNoHash = this.href.split('#')[0];
 
-console.log(`!! hashAnchorClick - 0 - pageURLNoHash: `, pageURLNoHash);
-console.log(`!! hashAnchorClick - 1 - anchorURLNoHash: `, anchorURLNoHash);
-
-         // If the no hash URLS or hash differ then set the window location.
-         if (pageURLNoHash !== anchorURLNoHash || globalThis.location.hash !== this.hash)
+         // If the main URLs or hash differ then set the window location. The `onHashchange` function will trigger.
+         if (fullURLNoHash !== anchorURLNoHash || globalThis.location.hash !== this.hash)
          {
-console.log(`!! hashAnchorClick - A - not the same href / hash`)
             globalThis.location.href = this.href;
+            return;
          }
-         else
+
+         // Otherwise a link is clicked and the URL / hash reference is the same as the current page. Ensure that
+         // the navigation tree shows the current entry.
+
+         const pathURL = this.href.replace(baseURL, '');
+
+         if (!navigationState.ensureCurrentPath(pathURL) && pathURL.includes('#'))
          {
-            // Otherwise ensure the current path is visible.
-            const hashURL = this.href.replace(baseURL, '');
-
-console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
-
-            if (!navigationState.ensureCurrentPath(hashURL))
-            {
-               console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
-            }
+            // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
+            // without the hash fragment.
+            const noHashURL = pathURL.split('#')[0];
+            if (noHashURL) { navigationState.ensureCurrentPath(noHashURL); }
          }
       }
 
@@ -102,24 +100,53 @@ console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
    }
 
    /**
-    * Finds the child nodes that match the given path URL by a depth first search and sets a new `opened` attribute
-    * used to override any stored values from session storage on initial render ensuring that the current entry is always
-    * visible.
+    * Finds the child nodes that match the given path URL by a depth first search and sets the entries session storage
+    * key to true / opened for all entry tree nodes from the path URL given. This overrides any stored values from
+    * session storage on initial render ensuring that the current entry is always visible.
     *
     * @param {string}   pathURL - The path URL to locate.
     *
     * @returns {boolean} If entry for path URL is found and operation applied.
     */
-   #initialCurrentPath(pathURL)
+   #initializeCurrentPath(pathURL)
    {
-      // Sets `opened` for all entry tree nodes from the path URL given.
-      const operation = (entry) => entry.opened = true;
+      // Sets entry session storage to true / opened for all entry tree nodes from the path URL given.
+      const operation = (entry) =>
+      {
+         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true) }
+      }
 
       return this.#searchTree(pathURL, operation);
    }
 
    /**
-    * Updates the session storage state to opened for all tree nodes to the new URL path.
+    * Walks the navigation index tree generating session storage / `storageKey` in all tree nodes.
+    */
+   #initializeTree()
+   {
+      if (typeof globalThis?.dmtOptions?.storagePrepend !== 'string')
+      {
+         console.warn(`[typedoc-theme-default-modern] Could not find 'storagePrepend' DMT option.`);
+      }
+
+      // Retrieve the storage prepend string from global DMT options or use a default key.
+      const storagePrepend = globalThis?.dmtOptions?.storagePrepend ?? 'docs-unnamed';
+
+      const operation = (entry, parentEntry) =>
+      {
+         this.#navData.hasTree = true;
+
+         // Set storage key to DMTNavigationEntry.
+         const parentPath = parentEntry ? parentEntry.path ?? parentEntry.text : '';
+         entry.storageKey = `${storagePrepend}-nav-${entry.path ?? `${parentPath}-${entry.text}`}`;
+      }
+
+      this.#walkTree(operation);
+   }
+
+   /**
+    * Updates the session storage state opening all tree nodes to the new URL path. This is added as a listener for
+    * `hashchange` on `window`.
     *
     * @param {HashChangeEvent}   event - A HashChange event.
     */
@@ -128,14 +155,7 @@ console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
       const newURLPath = event.newURL.replace(this.#navData.baseURL, '');
 
       // Ensure any tree nodes are open for `newURLPath`.
-      if (this.ensureCurrentPath(newURLPath))
-      {
-         // Wait for Svelte to render tree.
-         await tick();
-
-         // Set new URL via store.
-         this.#navData.setCurrentPathURL(newURLPath);
-      }
+      if (this.ensureCurrentPath(newURLPath)) { this.#navData.setCurrentPathURL(newURLPath); }
    }
 
    /**
@@ -145,7 +165,7 @@ console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
     *
     * @param {string}   pathURL - The path URL to locate.
     *
-    * @param {(entry: import('./types').DMTNavigationElement) => void} operation - Function to operate on entry.
+    * @param {TreeOperation} operation - Tree entry operation to apply.
     *
     * @returns {boolean} Whether the path URL matched an entry in this branch.
     */
@@ -178,7 +198,7 @@ console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
     *
     * @param {string}   pathURL - The path URL to locate.
     *
-    * @param {(entry: import('./types').DMTNavigationElement) => void} operation - Function to operate on entry.
+    * @param {TreeOperation} operation - Tree entry operation to apply.
     *
     * @returns {boolean} If the path is found and operation is applied.
     */
@@ -211,26 +231,29 @@ console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
     */
    #setInitialState()
    {
+      this.#initializeTree();
+
       const pathURL = this.#navData.initialPathURL;
 
       // Attempt to set initial current path; there may be a hash fragment.
-      const initialResult = this.#initialCurrentPath(pathURL);
+      const initialResult = this.#initializeCurrentPath(pathURL);
 
       // Handle the case of a hash fragment.
       if (pathURL.includes('#'))
       {
-         const match = pathURL.split(/(?<=\.html)/);
+         const match = pathURL.split('#');
 
-         // Try setting initial result again with the base URL without the hash fragment.
+         // Try setting initial result again with the path URL without the hash fragment.
          if (!initialResult)
          {
             const noHashURL = match[0];
-            if (noHashURL && this.#initialCurrentPath(noHashURL)) { this.#navData.setCurrentPathURL(noHashURL); }
+            if (noHashURL && this.#initializeCurrentPath(noHashURL)) { this.#navData.setCurrentPathURL(noHashURL); }
          }
 
          // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
+         // Note: Firefox does without manual scrolling.
          const hashFragment = match[1];
-         const targetElement = document.querySelector(`div.col-content a[href^="${hashFragment}"]`);
+         const targetElement = document.querySelector(`div.col-content a[href*="#${hashFragment}"]`);
          const contentEl = document.querySelector('div.container.container-main');
 
          if (targetElement && contentEl)
@@ -243,6 +266,55 @@ console.log(`!! hashAnchorClick - B - same page hashURL: `, hashURL);
          }
       }
 
+      // Modify all content links with hash fragments.
       this.#hashAnchorLinks();
    }
+
+   /**
+    * Walks the navigation index / tree for each path recursively.
+    *
+    * @param {import('./types').DMTNavigationElement} entry - The current entry.
+    *
+    * @param {import('./types').DMTNavigationElement} parentEntry - The parent entry.
+    *
+    * @param {TreeOperation}  operation - Tree entry operation to apply.
+    */
+   #walkPath(entry, parentEntry, operation)
+   {
+      // If the entry has children, continue the search recursively.
+      if (Array.isArray(entry.children))
+      {
+         for (const child of entry.children)
+         {
+            if (!Array.isArray(child.children)) { continue; }
+
+            this.#walkPath(child, entry, operation);
+         }
+      }
+
+      operation(entry, parentEntry);
+   }
+
+   /**
+    * Recursively walks the navigation index / tree for just tree nodes invoking the given operation.
+    *
+    * @param {TreeOperation}  operation - Tree entry operation to apply.
+    */
+   #walkTree(operation)
+   {
+      // Depth first search for path setting a new variable `opened` for all leaves up to path entry.
+      for (const entry of this.#navData.index)
+      {
+         if (!Array.isArray(entry.children)) { continue; }
+
+         this.#walkPath(entry, void 0, operation);
+      }
+   }
 }
+
+/**
+ * @typedef {((
+ *    entry: import('./types').DMTNavigationElement,
+ *    parentEntry?: import('./types').DMTNavigationElement) => void
+ * )} TreeOperation A function to invoke for tree nodes when walking the tree.
+ */

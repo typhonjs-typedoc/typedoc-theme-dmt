@@ -15,14 +15,6 @@
    export let entry;
 
    /**
-    * To properly support nested categories / groups it is necessary to prepend the parent path to the storage key as
-    * the folder stores are reactive. This prevents opening / closing all categories of the same name.
-    *
-    * @type {string}
-    */
-   export let parentPath = '';
-
-   /**
     * Forwarded onto the summary `Entry` to not render the SVG icon for top level modules / namespaces.
     *
     * @type {boolean}
@@ -31,19 +23,9 @@
 
    const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
 
-   // Retrieve the storage prepend string from global DMT options or generate a random string.
-   const storagePrepend = globalThis?.dmtOptions?.storagePrepend ??
-    `docs-${Math.random().toString(36).substring(2, 18)}`;
+   const storageKey = entry.storageKey;
 
-   const storageKey = `${storagePrepend}-nav-${entry.path ?? `${parentPath}-${entry.text}`}`;
-
-   // Set storage key to DMTNavigationEntry.
-   entry.storageKey = storageKey;
-
-   const store = dmtSessionStorage.getStore(storageKey, false);
-
-   // Force store / opened value depending on result of `openCurrentPath`.
-   if (typeof entry.opened === 'boolean' && entry.opened) { $store = true; }
+   const store = storageKey ? dmtSessionStorage.getStore(storageKey, false) : void 0;
 
    const folderProps = {
       options: { focusIndicator: true },
@@ -55,7 +37,7 @@
    <Entry {entry} {removeIcon} {storageKey} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}
-         <svelte:self entry={child} parentPath={entry.path ?? entry.text} />
+         <svelte:self entry={child} />
       {:else}
          <Entry entry={child} />
       {/if}

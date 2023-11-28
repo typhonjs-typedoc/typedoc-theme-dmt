@@ -35,6 +35,13 @@ export class NavigationData
    dmtSessionStorage;
 
    /**
+    * Indicates if there are entries with children / tree nodes present.
+    *
+    * @type {boolean}
+    */
+   hasTree = false;
+
+   /**
     * The navigation index.
     *
     * @type {import('./types').DMTNavigationElement[]}
