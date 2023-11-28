@@ -37,9 +37,9 @@ export class NavigationData
    /**
     * Indicates if there are entries with children / tree nodes present.
     *
-    * @type {boolean}
+    * @type {import('svelte/store').Writable<boolean>}
     */
-   hasTree = false;
+   hasTreeStore = writable(false);
 
    /**
     * The navigation index.

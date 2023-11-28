@@ -132,13 +132,19 @@ export class NavigationState
       // Retrieve the storage prepend string from global DMT options or use a default key.
       const storagePrepend = globalThis?.dmtOptions?.storagePrepend ?? 'docs-unnamed';
 
+      const dmtSessionStorage = this.#navData.dmtSessionStorage;
+
       const operation = (entry, parentEntry) =>
       {
-         this.#navData.hasTree = true;
+         this.#navData.hasTreeStore.set(true);
 
          // Set storage key to DMTNavigationEntry.
          const parentPath = parentEntry ? parentEntry.path ?? parentEntry.text : '';
          entry.storageKey = `${storagePrepend}-nav-${entry.path ?? `${parentPath}-${entry.text}`}`;
+
+         // Pre-create the session storage stores as TJSSvgFolder doesn't render hidden child content. This allows
+         // the `NavigationBar` component access to all stores immediately.
+         dmtSessionStorage.getStore(entry.storageKey, false);
       }
 
       this.#walkTree(operation);

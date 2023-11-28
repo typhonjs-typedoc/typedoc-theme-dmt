@@ -5,6 +5,7 @@
 
    import Entry               from './Entry.svelte';
    import Folder              from './Folder.svelte';
+   import NavigationBar       from './NavigationBar.svelte';
 
    import { NavigationData }  from './NavigationData.js';
 
@@ -35,6 +36,8 @@
 
    setContext('#navigationData', navigationData);
 
+   const hasTreeStore = navigationData.hasTreeStore;
+
    // Determine if the top level icon for namespace / module folders is removed.
    const removeTopLevelIcon = typeof globalThis?.dmtOptions?.removeNavTopLevelIcon === 'boolean' ?
     globalThis.dmtOptions.removeNavTopLevelIcon : false;
@@ -46,6 +49,9 @@
 <svelte:window on:hashchange={navigationData.state.onHashchange} />
 
 <div bind:this={navigationEl} class=dmt-navigation-content>
+   {#if $hasTreeStore}
+      <NavigationBar />
+   {/if}
    {#each navigationData.index as entry (entry.path)}
       {#if Array.isArray(entry.children)}
          <Folder {entry} removeIcon={removeTopLevelIcon} />
