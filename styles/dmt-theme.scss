@@ -85,6 +85,16 @@
   }
 }
 
+// Make sure anchor links are visible when keyboard focused.
+a.tsd-anchor-icon:focus-visible > svg {
+  visibility: visible;
+}
+
+// Make accordion summaries outlined when keyboard focused.
+summary.tsd-accordion-summary:focus-visible {
+  outline: revert;
+}
+
 // This expands the space of the anchor icon allowing additional elements to be added right aligned.
 .tsd-panel.tsd-member .tsd-anchor-link .tsd-anchor-icon {
   margin-right: auto;
