@@ -1,4 +1,4 @@
-import { tick } from 'svelte';
+import { nextAnimationFrame } from '#runtime/util/animate';
 
 /**
  * Provides the ability to walk the navigation index and manage state for initial opened state for entries and ensuring
@@ -33,9 +33,13 @@ export class NavigationState
     *
     * @param {string}   pathURL - The path URL to locate.
     *
+    * @param {object}   [opts] - Optional parameters.
+    *
+    * @param {boolean}  [opts.setCurrent=true] - If the path is found in the index set it to the current path.
+    *
     * @returns {boolean} If entry for path URL is found and operation applied.
     */
-   ensureCurrentPath(pathURL)
+   ensureCurrentPath(pathURL, { setCurrent = true } = {})
    {
       // Sets `opened` for all entry tree nodes from the path URL given.
       const operation = (entry) =>
@@ -43,7 +47,11 @@ export class NavigationState
          if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true); }
       }
 
-      return this.#searchTree(pathURL, operation);
+      const result = this.#searchTree(pathURL, operation);
+
+      if (result && setCurrent) { this.#navData.setCurrentPathURL(pathURL); }
+
+      return result;
    }
 
    // Internal implementation ----------------------------------------------------------------------------------------
@@ -86,8 +94,13 @@ export class NavigationState
          {
             // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
             // without the hash fragment.
-            const noHashURL = pathURL.split('#')[0];
-            if (noHashURL) { navigationState.ensureCurrentPath(noHashURL); }
+            const match = pathURL.split('#');
+
+            // No hash URL
+            if (match[0]) { navigationState.ensureCurrentPath(match[0]); }
+
+            // Manually scroll to hash fragment.
+            navigationState.#scrollContentToHash(match[1]);
          }
       }
 
@@ -162,10 +175,50 @@ export class NavigationState
     */
    async #onHashchange(event)
    {
-      const newURLPath = event.newURL.replace(this.#navData.baseURL, '');
+      const newPathURL = event.newURL.replace(this.#navData.baseURL, '');
 
       // Ensure any tree nodes are open for `newURLPath`.
-      if (this.ensureCurrentPath(newURLPath)) { this.#navData.setCurrentPathURL(newURLPath); }
+      if (!this.ensureCurrentPath(newPathURL) && newPathURL.includes('#'))
+      {
+         // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
+         // without the hash fragment.
+         const noHashURL = newPathURL.split('#')[0];
+         if (noHashURL) { this.ensureCurrentPath(noHashURL); }
+      }
+   }
+
+   /**
+    * Scrolls the current page to the given hash fragment.
+    * TODO: This is a workaround attempt for a Chromium / Chrome bug where hash fragments are not properly scrolled to.
+    * Hash fragment scrolling into view works fine w/ Firefox.
+    *
+    * I have deemed it currently not worth having a workaround in place, but left the workaround attempt for a later
+    * review.
+    *
+    * See:
+    * https://bugs.chromium.org/p/chromium/issues/detail?id=1417660
+    * https://bugs.chromium.org/p/chromium/issues/detail?id=833617
+    *
+    * @param {string}   hashFragment - Target hash fragment.
+    */
+   #scrollContentToHash(hashFragment)
+   {
+      // if (typeof hashFragment !== 'string') { return; }
+      //
+      // nextAnimationFrame().then(() =>
+      // {
+      //    const targetEl = document.querySelector(`div.col-content a[href*="#${hashFragment}"]`);
+      //    const contentEl = document.querySelector('div.container.container-main');
+      //
+      //    if (targetEl && contentEl)
+      //    {
+      //       contentEl.focus();
+      //       contentEl.scrollTo({
+      //          top: targetEl.getBoundingClientRect().top - 60,
+      //          behavior: 'instant'
+      //       });
+      //    }
+      // });
    }
 
    /**
@@ -262,18 +315,7 @@ export class NavigationState
 
          // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
          // Note: Firefox does without manual scrolling.
-         const hashFragment = match[1];
-         const targetElement = document.querySelector(`div.col-content a[href*="#${hashFragment}"]`);
-         const contentEl = document.querySelector('div.container.container-main');
-
-         if (targetElement && contentEl)
-         {
-            contentEl.focus();
-            contentEl.scrollTo({
-               top: targetElement.getBoundingClientRect().top - 60,
-               behavior: 'instant'
-            });
-         }
+         this.#scrollContentToHash(match[1]);
       }
 
       // Modify all content links with hash fragments.
