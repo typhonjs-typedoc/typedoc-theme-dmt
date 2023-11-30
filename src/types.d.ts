@@ -5,14 +5,16 @@
  * @module
  */
 
-import type lunr                 from 'lunr';
-import type { ReflectionKind }   from 'typedoc';
+import type lunr                    from 'lunr';
+import type { ReflectionKind }      from 'typedoc';
 
-import type { TrieSearch }       from '#runtime/data/struct/search/trie';
+import type { NavigationElement }   from 'typedoc';
+
+import type { TrieSearch }          from '#runtime/data/struct/search/trie';
 
 import type {
    inflateAndUnpack,
-   inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
+   inflateAndUnpackB64 }            from '#runtime/data/format/msgpack/compress';
 
 /**
  * Provides the main search document entry structure.
@@ -70,6 +72,23 @@ export interface SearchQuickDocument
    u: string;
 }
 
+export type DMTComponentData = {
+   /**
+    * Default navigation links
+    */
+   navigationLinks?: Record<string, string>;
+
+   /**
+    * Default navigation index.
+    */
+   navigationIndex?: NavigationElement[];
+
+   /**
+    * Default sidebar links.
+    */
+   sidebarLinks?: Record<string, string>;
+}
+
 /**
  * Defines the global DMT options available in the frontend runtime.
  */
@@ -78,6 +97,11 @@ export type DMTGlobalOptions = {
     * The base path from the current page.
     */
    basePath: string;
+
+   /**
+    * When true and there is more than one top level tree node navigation controls are displayed.
+    */
+   navControls: boolean;
 
    /**
     * Removes the top level namespace / module SVG icon. This is useful when documenting packages w/ sub-path exports.
@@ -115,6 +139,18 @@ export type DMTGlobalOptions = {
  */
 declare global {
    interface Window {
+      /**
+       * Provides the compressed MessagePack global component data.
+       */
+      dmtComponentDataBCMP: string,
+
+      /**
+       * Loaded DMT Svelte components.
+       */
+      dmtComponents: {
+         navigation: { ensureCurrentPath: () => void }
+      };
+
       /**
        * Provides `inflateAndUnpack` to inflate and unpack MessagePack binary data.
        */
