@@ -18,7 +18,7 @@
   --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - 1.5rem);
 
   // A defined max-height for the col-sidebar when it displays.
-  --dmt-sidebar-max-height: calc(100vh - var(--dmt-header-height) - 0.5rem);
+  --dmt-sidebar-max-height: calc(100vh - var(--dmt-header-height));
 }
 
 
@@ -141,7 +141,6 @@ header.tsd-page-toolbar {
 .site-menu {
   margin-top: 0;
   max-height: var(--dmt-sidebar-max-height);
-  padding-top: 0.5rem;
   padding-left: 0.1rem; // For outline
   top: 0;
 
@@ -180,7 +179,7 @@ header.tsd-page-toolbar {
 @media (min-width: 770px) and (max-width: 1399px) {
   .col-sidebar {
     max-height: var(--dmt-sidebar-max-height);
-    padding-top: 0.75rem;
+    padding-top: 0;
     top: 0;
   }
 }
@@ -319,14 +318,30 @@ nav.tsd-navigation {
     display: none;
   }
 
+  // When displayed on the left
   .page-menu {
-    padding-top: 0;       // When displayed on the left
+    margin-bottom: 0.75rem;
     padding-right: 1rem;
     position: static;     // Must remove sticky!
   }
 
   .site-menu {
     max-height: unset;    // This is tricky, but col-sidebar becomes the parent, so unset max-height.
+  }
+}
+
+// Correct default theme styles to have same layout when mobile menu is transitioning.
+@media (max-width: 769px) {
+  .from-has-menu .col-sidebar {
+    padding: 0 0 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .has-menu .col-sidebar {
+    padding: 0 0 0 1rem;
+    gap: 0.5rem;
   }
 }
 
