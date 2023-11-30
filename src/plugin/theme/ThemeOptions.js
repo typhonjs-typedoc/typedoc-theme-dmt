@@ -11,6 +11,7 @@ export class ThemeOptions
 {
    /** @type {DMTOptions} */
    #options = {
+      navControls: true,
       removeBreadcrumb: false,
       removeNavTopLevelIcon: false,
       search: true,
@@ -31,6 +32,13 @@ export class ThemeOptions
          help: `${ID} Specify the file path or URL of the favicon file.`,
          type: ParameterType.String,
          defaultValue: null
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtNavControls',
+         help: `${ID} When true and there is more than one top level tree node navigation controls are displayed.`,
+         type: ParameterType.Boolean,
+         defaultValue: true
       });
 
       app.options.addDeclaration({
@@ -109,6 +117,9 @@ export class ThemeOptions
    /** @returns {{filepath?: string, filename?: string, url?: string}} favicon option */
    get favicon() { return this.#options.favicon; }
 
+   /** @returns {boolean} Display top level navigation controls */
+   get navControls() { return this.#options.navControls; }
+
    /** @returns {boolean} removeBreadcrumb option */
    get removeBreadcrumb() { return this.#options.removeBreadcrumb; }
 
@@ -134,6 +145,7 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
+      this.#options.navControls = app.options.getValue('dmtNavControls');
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.removeNavTopLevelIcon = app.options.getValue('dmtRemoveNavTopLevelIcon');
       this.#options.search = app.options.getValue('dmtSearch');
@@ -199,6 +211,8 @@ export class ThemeOptions
  * @typedef {object} DMTOptions
  *
  * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
+ *
+ * @property {boolean} navControls When true and there is more than one tree node navigation controls are displayed.
  *
  * @property {boolean} removeBreadcrumb When true the entire breadcrumb is removed.
  *

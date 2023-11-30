@@ -36,7 +36,7 @@
 
    setContext('#navigationData', navigationData);
 
-   const hasTreeStore = navigationData.hasTreeStore;
+   const topLevelNodesStore = navigationData.topLevelNodesStore;
 
    // Determine if the top level icon for namespace / module folders is removed.
    const removeTopLevelIcon = typeof globalThis?.dmtOptions?.removeNavTopLevelIcon === 'boolean' ?
@@ -48,10 +48,11 @@
 <svelte:options accessors={true}/>
 <svelte:window on:hashchange={navigationData.state.onHashchange} />
 
+{#if $topLevelNodesStore > 1 && globalThis.dmtOptions.navControls}
+   <NavigationBar />
+{/if}
+
 <div bind:this={navigationEl} class=dmt-navigation-content>
-   {#if $hasTreeStore}
-      <NavigationBar />
-   {/if}
    {#each navigationData.index as entry (entry.path)}
       {#if Array.isArray(entry.children)}
          <Folder {entry} removeIcon={removeTopLevelIcon} />
@@ -72,6 +73,7 @@
       --tjs-folder-summary-padding: 0;
       --tjs-folder-summary-width: 100%;
 
+      padding-top: 0.25rem;
       touch-action: pan-y;
    }
 </style>

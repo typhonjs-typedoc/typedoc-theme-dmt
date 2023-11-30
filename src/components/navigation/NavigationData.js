@@ -35,11 +35,11 @@ export class NavigationData
    dmtSessionStorage;
 
    /**
-    * Indicates if there are entries with children / tree nodes present.
+    * Indicates the count of top level nodes if there are entries with children / tree nodes present.
     *
-    * @type {import('svelte/store').Writable<boolean>}
+    * @type {import('svelte/store').Writable<number>}
     */
-   hasTreeStore = writable(false);
+   topLevelNodesStore = writable(0);
 
    /**
     * The navigation index.

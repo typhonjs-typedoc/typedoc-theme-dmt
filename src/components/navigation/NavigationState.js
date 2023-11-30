@@ -134,9 +134,11 @@ export class NavigationState
 
       const dmtSessionStorage = this.#navData.dmtSessionStorage;
 
+      let topLevelNodes = 0;
+
       const operation = (entry, parentEntry) =>
       {
-         this.#navData.hasTreeStore.set(true);
+         if (!parentEntry) { topLevelNodes++; }
 
          // Set storage key to DMTNavigationEntry.
          const parentPath = parentEntry ? parentEntry.path ?? parentEntry.text : '';
@@ -148,6 +150,8 @@ export class NavigationState
       }
 
       this.#walkTree(operation);
+
+      this.#navData.topLevelNodesStore.set(topLevelNodes);
    }
 
    /**

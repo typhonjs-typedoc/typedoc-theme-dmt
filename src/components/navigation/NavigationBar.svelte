@@ -56,7 +56,7 @@
       gap: 0.5em;
       padding: 0.25em 0.25em;
       height: fit-content;
-      width: 100%;
+      width: inherit;
       background: var(--color-background);
       border-bottom: var(--dmt-container-border);
    }
