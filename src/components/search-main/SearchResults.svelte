@@ -19,6 +19,9 @@
 <ul bind:this={resultsEl} transition:slideFade|global={{ duration: 100 }}>
 {#each results as result (result.id)}
    <li class="{result.classes}" class:selected={result.id === $storeCurrentId}>
+      {#if result.kind}
+         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${result.kind}`}></use></svg>
+      {/if}
       <a href="{result.href}" on:click={() => $storeVisible = false}>
          <span class=parent>{@html result.name}</span>
       </a>
@@ -32,6 +35,9 @@
    }
 
    li {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
       padding: 0 10px;
       background-color: var(--color-background);
       text-overflow: ellipsis;
