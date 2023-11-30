@@ -26,20 +26,28 @@ globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ?
  globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {};
 
-new Navigation({
+const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
    props: {
       navigationIndex: dmtComponentData?.navigationIndex,
       sidebarLinks: dmtComponentData?.sidebarLinks
    }
-})
+});
+
+// Stores references to DMT Svelte components.
+globalThis.dmtComponents = {
+   navigation
+};
 
 // Only load main search index if enabled.
 if (globalThis?.dmtOptions?.search)
 {
    loadMainSearchData().then((result) =>
    {
-      if (result) { new SearchMain({ target: document.querySelector('#dmt-search-main') }); }
+      if (result)
+      {
+         globalThis.dmtComponents.searchMain = new SearchMain({ target: document.querySelector('#dmt-search-main') });
+      }
    });
 }
 
