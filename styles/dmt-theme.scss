@@ -6,7 +6,7 @@
   --dmt-container-padding: 1rem;
 
   // For member / variable / function sections.  Alas there are element margins to further manipulate.
-  --dmt-container-padding-member: 0.25rem 0.25rem 0 0.5rem;
+  --dmt-container-padding-member: 0.5rem;
 
   --dmt-header-height: 42px;
 
@@ -253,6 +253,7 @@ nav.tsd-navigation {
   }
 
   // Module Index Panels -----------------------------------
+
   section.tsd-index-section .tsd-index-list {
     background: var(--dmt-container-background);
     border: var(--dmt-container-border);
@@ -274,7 +275,12 @@ nav.tsd-navigation {
     margin-bottom: 2rem;
   }
 
+  li.tsd-description, ul.tsd-signatures, .tsd-returns-title p {
+    margin-bottom: 0;
+  }
+
   // Function parameters -----------------------------------
+
   ul.tsd-parameter-list {
     background: var(--dmt-container-background);
     border: var(--dmt-container-border);
@@ -286,6 +292,18 @@ nav.tsd-navigation {
     h5:first-child {
       margin-top: 0;
     }
+
+    h5:last-child {
+      margin-top: 0;
+    }
+
+    // Remove background / border / box-shadow from embedded parameters.
+    ul.tsd-parameters {
+      background: unset;
+      border: unset;
+      border-radius: unset;
+      box-shadow: unset;
+    }
   }
 
   // Various internal parameter lists ----------------------
@@ -296,9 +314,14 @@ nav.tsd-navigation {
     box-shadow: var(--dmt-container-box-shadow);
     padding: var(--dmt-container-padding-member);
     padding-left: 1.5rem;
+    margin-bottom: 0;
 
     h5:first-child {
       margin-top: 0;
+    }
+
+    h5:last-child {
+      margin-bottom: 0;
     }
   }
 
