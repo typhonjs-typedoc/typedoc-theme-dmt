@@ -4,7 +4,7 @@
 
    const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
 
-   const allSessionStores = [...dmtSessionStorage.values()];
+   const allSessionStores = [...dmtSessionStorage.stores()];
 
    // Create a derived store from all session storage stores; on any update reduce all values and set `storeAllOpen`
    // to whether all folders are opened or not. This controls the icon and title in the reactive statements below.
@@ -19,7 +19,7 @@
    function onClick()
    {
       const flippedState = !$storeAllOpen;
-      for (const store of dmtSessionStorage.values()) { store.set(flippedState); }
+      for (const store of dmtSessionStorage.stores()) { store.set(flippedState); }
    }
 </script>
 
@@ -48,13 +48,17 @@
 
    section {
       display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+
       align-items: center;
       gap: 0.5em;
-      height: 2.5em;
+      padding: 0.25em 0.25em;
+      height: fit-content;
       width: 100%;
-      /*background: red;*/
-      border-bottom: 1px var(--color-accent) solid;
-      box-shadow: var(--dmt-header-box-shadow);
+      background: var(--color-background);
+      border-bottom: var(--dmt-container-border);
    }
 
    svg {

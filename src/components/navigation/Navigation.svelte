@@ -71,5 +71,7 @@
       --tjs-folder-summary-margin: 0;
       --tjs-folder-summary-padding: 0;
       --tjs-folder-summary-width: 100%;
+
+      touch-action: pan-y;
    }
 </style>
