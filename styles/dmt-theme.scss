@@ -189,6 +189,12 @@ nav.tsd-navigation {
   padding-bottom: 1rem; // This allows the bottom most element in the nav bar to be visible above browser URL hint.
 }
 
+/* Content style tweaks --------------------------------------------------------------------------------------------- */
+
+.tsd-navigation a.current, .tsd-page-navigation a.current {
+  border-radius: 0.25rem;
+}
+
 /* CQ Content ------------------------------------------------------------------------------------------------------- */
 
 @container col-content (min-width: 0) {
@@ -332,7 +338,6 @@ nav.tsd-navigation {
     content: "";
   }
 }
-
 
 /* Sidebar ---------------------------------------------------------------------------------------------------------- */
 
