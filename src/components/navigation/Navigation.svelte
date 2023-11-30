@@ -52,7 +52,7 @@
 <svelte:options accessors={true}/>
 <svelte:window on:hashchange={navigationData.state.onHashchange} />
 
-{#if typeof sidebarLinks === 'object'}
+{#if typeof sidebarLinks === 'object' && Object.keys(sidebarLinks) > 1}
    <SidebarLinks {sidebarLinks} />
 {/if}
 
