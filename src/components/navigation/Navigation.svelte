@@ -1,14 +1,14 @@
 <script>
-   import {
-      setContext,
-      tick }                  from 'svelte';
+   import { setContext }         from 'svelte';
 
-   import Entry               from './Entry.svelte';
-   import Folder              from './Folder.svelte';
-   import NavigationBar       from './NavigationBar.svelte';
-   import SidebarLinks        from './SidebarLinks.svelte';
+   import { nextAnimationFrame } from '#runtime/util/animate';
 
-   import { NavigationData }  from './NavigationData.js';
+   import Entry                  from './Entry.svelte';
+   import Folder                 from './Folder.svelte';
+   import NavigationBar          from './NavigationBar.svelte';
+   import SidebarLinks           from './SidebarLinks.svelte';
+
+   import { NavigationData }     from './NavigationData.js';
 
    /** @type {import('./types').DMTNavigationElement[]} */
    export let navigationIndex = [];
@@ -30,7 +30,9 @@
 
       if (result && focus)
       {
-         tick().then(() => navigationEl.querySelector(`a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
+         // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
+         nextAnimationFrame().then(
+          () => navigationEl.querySelector(`a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
       }
 
       return result;
@@ -40,7 +42,19 @@
 
    setContext('#navigationData', navigationData);
 
-   const topLevelNodesStore = navigationData.topLevelNodesStore;
+   const {
+      currentPathURLStore,
+      topLevelNodesStore } = navigationData;
+
+   $: if ($currentPathURLStore)
+   {
+      // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
+      nextAnimationFrame().then(() =>
+      {
+         const targetEl = navigationEl.querySelector(`a[href*="${navigationData.currentPathURL}"]`);
+         if (targetEl) { targetEl.scrollIntoView({ block: 'center', inline: 'center' }); }
+      });
+   }
 
    // Determine if the top level icon for namespace / module folders is removed.
    const removeTopLevelIcon = typeof globalThis?.dmtOptions?.removeNavTopLevelIcon === 'boolean' ?
@@ -52,7 +66,7 @@
 <svelte:options accessors={true}/>
 <svelte:window on:hashchange={navigationData.state.onHashchange} />
 
-{#if typeof sidebarLinks === 'object' && Object.keys(sidebarLinks) > 1}
+{#if typeof sidebarLinks === 'object' && Object.keys(sidebarLinks).length}
    <SidebarLinks {sidebarLinks} />
 {/if}
 
