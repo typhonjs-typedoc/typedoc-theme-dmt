@@ -6,11 +6,15 @@
    import Entry               from './Entry.svelte';
    import Folder              from './Folder.svelte';
    import NavigationBar       from './NavigationBar.svelte';
+   import SidebarLinks        from './SidebarLinks.svelte';
 
    import { NavigationData }  from './NavigationData.js';
 
    /** @type {import('./types').DMTNavigationElement[]} */
    export let navigationIndex = [];
+
+   /** @type {Record<string, string>} */
+   export let sidebarLinks = void 0;
 
    /**
     * Exposes `ensureCurrentPath` externally to the component.
@@ -47,6 +51,10 @@
 
 <svelte:options accessors={true}/>
 <svelte:window on:hashchange={navigationData.state.onHashchange} />
+
+{#if typeof sidebarLinks === 'object'}
+   <SidebarLinks {sidebarLinks} />
+{/if}
 
 {#if $topLevelNodesStore > 1 && globalThis.dmtOptions.navControls}
    <NavigationBar />
