@@ -42,13 +42,8 @@ globalThis.dmtComponents = {
 // Only load main search index if enabled.
 if (globalThis?.dmtOptions?.search)
 {
-   loadMainSearchData().then((result) =>
-   {
-      if (result)
-      {
-         globalThis.dmtComponents.searchMain = new SearchMain({ target: document.querySelector('#dmt-search-main') });
-      }
-   });
+   loadMainSearchData();
+   globalThis.dmtComponents.searchMain = new SearchMain({ target: document.querySelector('#dmt-search-main') });
 }
 
 // TODO: Work in progress

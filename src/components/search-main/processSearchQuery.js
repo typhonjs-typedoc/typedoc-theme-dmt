@@ -12,6 +12,8 @@
  */
 export function processSearchQuery(query)
 {
+   if (!globalThis.dmtSearchMainIndex || !globalThis.dmtSearchMainRows) { return []; }
+
    const searchText = query.trim();
 
    if (searchText.length === 0) { return []; }

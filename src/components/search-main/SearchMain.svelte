@@ -1,12 +1,11 @@
 <script>
    import { setContext }   from 'svelte';
-
    import { writable }     from 'svelte/store';
 
    import SearchButton     from './SearchButton.svelte';
    import SearchField      from './SearchField.svelte';
 
-   /** @type {Writable<boolean>} */
+   /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = writable(false);
 
    setContext('#visible', storeVisible)
@@ -39,7 +38,6 @@
 <style>
    div {
       position: absolute;
-      overflow: hidden;
       right: -40px;
 
       box-sizing: border-box;
