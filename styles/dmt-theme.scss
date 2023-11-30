@@ -136,6 +136,7 @@ header.tsd-page-toolbar {
 .col-content {
   height: fit-content;
   margin-top: 0.75rem;
+  touch-action: pan-y;   // Only allow vertical panning for touch devices.
 }
 
 .site-menu {
