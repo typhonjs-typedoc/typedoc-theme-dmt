@@ -135,6 +135,9 @@
    /** @type {TJSFolderData} */
    export let folder = void 0;
 
+   /** @type {boolean} */
+   export let animate = void 0;
+
    /** @type {string} */
    export let id = void 0;
 
@@ -172,6 +175,9 @@
 
    let detailsEl, labelEl, summaryEl, svgEl;
    let storeUnsubscribe;
+
+   $: animate = isObject(folder) && typeof folder.animate === 'boolean' ? folder.animate :
+    typeof animate === 'boolean' ? animate : true;
 
    $: id = isObject(folder) && typeof folder.id === 'string' ? folder.id :
     typeof id === 'string' ? id : void 0;
@@ -406,7 +412,7 @@ changing the open state.  -->
          on:openAny
          on:closeAny
 
-         use:toggleDetails={{ store, clickActive: false }}
+         use:toggleDetails={{ store, animate, clickActive: false }}
          use:applyStyles={styles}
          data-id={id}
          data-label={label}
@@ -550,6 +556,7 @@ changing the open state.  -->
       background-blend-mode: var(--tjs-folder-contents-background-blend-mode, initial);
       background: var(--tjs-folder-contents-background, none);
       border: var(--tjs-folder-contents-border, none);
+      border-left: var(--tjs-folder-contents-border-left, none);
       margin: var(--tjs-folder-contents-margin, 0 0 0 -0.4em);
       padding: var(--tjs-folder-contents-padding, 0 0 0 calc(var(--tjs-folder-summary-font-size, 1em) * 0.8));
    }

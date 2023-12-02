@@ -57,8 +57,8 @@
    }
 
    // Determine if the top level icon for namespace / module folders is removed.
-   const removeIcon = typeof globalThis?.dmtOptions?.removeNavTopLevelIcon === 'boolean' ?
-    globalThis.dmtOptions.removeNavTopLevelIcon : false;
+   const removeIcon = typeof globalThis?.dmtOptions?.navRemoveTopLevelIcon === 'boolean' ?
+    globalThis.dmtOptions.navRemoveTopLevelIcon : false;
 
    const indentIcon = !removeIcon ? 'indent-icon' : 'indent-no-icon';
 

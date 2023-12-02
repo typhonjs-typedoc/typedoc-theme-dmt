@@ -99,6 +99,11 @@ export type DMTGlobalOptions = {
    basePath: string;
 
    /**
+    * When true navigation uses WAAPI to animate folder open / close state.
+    */
+   navAnimate: boolean;
+
+   /**
     * When true and there is more than one top level tree node navigation controls are displayed.
     */
    navControls: boolean;
@@ -106,7 +111,7 @@ export type DMTGlobalOptions = {
    /**
     * Removes the top level namespace / module SVG icon. This is useful when documenting packages w/ sub-path exports.
     */
-   removeNavTopLevelIcon: boolean;
+   navRemoveTopLevelIcon: boolean;
 
    /**
     * The `dmtSearch` option; when true the main search index is active.

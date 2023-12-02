@@ -11,9 +11,10 @@ export class ThemeOptions
 {
    /** @type {DMTOptions} */
    #options = {
+      navAnimate: true,
       navControls: true,
+      navRemoveTopLevelIcon: false,
       removeBreadcrumb: false,
-      removeNavTopLevelIcon: false,
       search: true,
       searchLimit: 10,
       searchQuick: false,
@@ -35,6 +36,13 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
+         name: 'dmtNavAnimate',
+         help: `${ID} When true navigation uses WAAPI to animate folder open / close state.`,
+         type: ParameterType.Boolean,
+         defaultValue: true
+      });
+
+      app.options.addDeclaration({
          name: 'dmtNavControls',
          help: `${ID} When true and there is more than one top level tree node navigation controls are displayed.`,
          type: ParameterType.Boolean,
@@ -42,15 +50,15 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
-         name: 'dmtRemoveBreadcrumb',
-         help: `${ID} When true the entire breadcrumb is removed.`,
+         name: 'dmtNavRemoveTopLevelIcon',
+         help: `${ID} When true the top level SVG icon for all module / namespace entries is removed.`,
          type: ParameterType.Boolean,
          defaultValue: false
       });
 
       app.options.addDeclaration({
-         name: 'dmtRemoveNavTopLevelIcon',
-         help: `${ID} When true the top level SVG icon for each entry / namespace is removed.`,
+         name: 'dmtRemoveBreadcrumb',
+         help: `${ID} When true the entire breadcrumb is removed.`,
          type: ParameterType.Boolean,
          defaultValue: false
       });
@@ -117,14 +125,17 @@ export class ThemeOptions
    /** @returns {{filepath?: string, filename?: string, url?: string}} favicon option */
    get favicon() { return this.#options.favicon; }
 
+   /** @returns {boolean} Animate navigation folders w/ WAAPI */
+   get navAnimate() { return this.#options.navAnimate; }
+
    /** @returns {boolean} Display top level navigation controls */
    get navControls() { return this.#options.navControls; }
 
+   /** @returns {boolean} navRemoveTopLevelIcon option */
+   get navRemoveTopLevelIcon() { return this.#options.navRemoveTopLevelIcon; }
+
    /** @returns {boolean} removeBreadcrumb option */
    get removeBreadcrumb() { return this.#options.removeBreadcrumb; }
-
-   /** @returns {boolean} removeNavTopLevelIcon option */
-   get removeNavTopLevelIcon() { return this.#options.removeNavTopLevelIcon; }
 
    /** @returns {boolean} search option */
    get search() { return this.#options.search; }
@@ -145,9 +156,10 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
+      this.#options.navAnimate = app.options.getValue('dmtNavAnimate');
       this.#options.navControls = app.options.getValue('dmtNavControls');
+      this.#options.navRemoveTopLevelIcon = app.options.getValue('dmtNavRemoveTopLevelIcon');
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
-      this.#options.removeNavTopLevelIcon = app.options.getValue('dmtRemoveNavTopLevelIcon');
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
       this.#options.searchQuick = app.options.getValue('dmtSearchQuick');
@@ -212,11 +224,13 @@ export class ThemeOptions
  *
  * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
  *
+ * @property {boolean} navAnimate When true navigation uses WAAPI to animate folder open / close state.
+
  * @property {boolean} navControls When true and there is more than one tree node navigation controls are displayed.
  *
- * @property {boolean} removeBreadcrumb When true the entire breadcrumb is removed.
+ * @property {boolean} navRemoveTopLevelIcon When true the top level SVG icon for each entry / namespace is removed.
  *
- * @property {boolean} removeNavTopLevelIcon When true the top level SVG icon for each entry / namespace is removed.
+ * @property {boolean} removeBreadcrumb When true the entire breadcrumb is removed.
  *
  * @property {boolean} search When true the main search index is enabled.
  *
