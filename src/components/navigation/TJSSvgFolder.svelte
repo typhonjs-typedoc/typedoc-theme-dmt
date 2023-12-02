@@ -498,6 +498,7 @@ changing the open state.  -->
    }
 
    summary svg {
+      flex-shrink: 0;
       width: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1.25em));
       height: var(--tjs-folder-summary-chevron-size, var(--tjs-folder-summary-font-size, 1.25em));
       color: var(--tjs-folder-summary-chevron-color, currentColor);
