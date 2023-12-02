@@ -1,9 +1,15 @@
 <script>
    /** @type {Record<string, string>} */
-   export let sidebarLinks = void 0;
+   export let navigationLinks = {};
+
+   /** @type {Record<string, string>} */
+   export let sidebarLinks = {};
 </script>
 
 <section>
+   {#each Object.keys(navigationLinks) as key (navigationLinks[key])}
+      <a href={`${navigationLinks[key]}`} target=_blank><span>{key}</span></a>
+   {/each}
    {#each Object.keys(sidebarLinks) as key (sidebarLinks[key])}
       <a href={`${sidebarLinks[key]}`} target=_blank><span>{key}</span></a>
    {/each}

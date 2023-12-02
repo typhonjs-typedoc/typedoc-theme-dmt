@@ -14,6 +14,9 @@
    export let navigationIndex = [];
 
    /** @type {Record<string, string>} */
+   export let navigationLinks = void 0;
+
+   /** @type {Record<string, string>} */
    export let sidebarLinks = void 0;
 
    /**
@@ -69,9 +72,7 @@
 <svelte:options accessors={true}/>
 <svelte:window on:hashchange={navigationData.state.onHashchange} />
 
-{#if typeof sidebarLinks === 'object' && Object.keys(sidebarLinks).length}
-   <SidebarLinks {sidebarLinks} />
-{/if}
+<SidebarLinks {navigationLinks} {sidebarLinks} />
 
 {#if $topLevelNodesStore > 1 && globalThis.dmtOptions.navControls}
    <NavigationBar />

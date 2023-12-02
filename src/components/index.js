@@ -30,7 +30,8 @@ const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
    props: {
       navigationIndex: dmtComponentData?.navigationIndex,
-      sidebarLinks: dmtComponentData?.sidebarLinks
+      sidebarLinks: dmtComponentData?.sidebarLinks,
+      navigationLinks: dmtComponentData?.navigationLinks
    }
 });
 

@@ -130,6 +130,20 @@ export class PageRenderer
       // Remove default theme search results.
       $('ul.results').remove();
 
+      // Replace default toolbar links with DMT toolbar links --------------------------------------------------------
+
+      // Empty and assign a new ID to default theme toolbar links.
+      const tsdToolbarEl = $($('#tsd-toolbar-links').parent());
+      tsdToolbarEl.attr('id', 'dmt-toolbar');
+      tsdToolbarEl.empty();
+
+      // Clone title anchor and append to #dmt-toolbar.
+      const tsdTitleEl = $('#tsd-search a.title');
+      tsdToolbarEl.append(tsdTitleEl.clone());
+
+      // Remove old anchor.
+      tsdTitleEl.remove();
+
       // Move generator element to column content --------------------------------------------------------------------
 
       const generatorEl = $('.tsd-generator');
