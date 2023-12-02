@@ -1,4 +1,5 @@
 import Navigation                from './navigation/Navigation.svelte';
+import Toolbar                   from './toolbar/Toolbar.svelte';
 
 import SearchMain                from './search-main/SearchMain.svelte';
 // import SearchQuick               from './search-quick/SearchQuick.svelte';
@@ -35,9 +36,14 @@ const navigation = new Navigation({
    }
 });
 
+const toolbar = new Toolbar({
+   target: document.querySelector('#dmt-toolbar')
+})
+
 // Stores references to DMT Svelte components.
 globalThis.dmtComponents = {
-   navigation
+   navigation,
+   toolbar
 };
 
 // Only load main search index if enabled.
