@@ -77,7 +77,7 @@ export class PageRenderer
          basePath,
          navAnimate: this.#options.navAnimate,
          navControls: this.#options.navControls,
-         navRemoveTopLevelIcon: this.#options.navRemoveTopLevelIcon,
+         navTopModuleRemoveIcon: this.#options.navTopModuleRemoveIcon,
          search: this.#options.search,
          searchLimit: this.#options.searchLimit,
          searchQuick: this.#options.searchQuick,

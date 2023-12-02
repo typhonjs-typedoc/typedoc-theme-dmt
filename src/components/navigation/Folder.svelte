@@ -21,6 +21,8 @@
     */
    export let removeIcon = false;
 
+   export let parentIcon = false;
+
    const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
 
    // Determine if the top level icon for namespace / module folders is removed.
@@ -35,7 +37,9 @@
 
    const folder = {
       animate,
-      store
+      store,
+      // Dynamically set the folder margin based on whether the parent folder has a svg icon.
+      styles: parentIcon ? { '--tjs-folder-details-margin-left': '3.5px' } : void 0
    }
 </script>
 
@@ -43,7 +47,7 @@
    <Entry {entry} {removeIcon} {storageKey} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}
-         <svelte:self entry={child} />
+         <svelte:self entry={child} parentIcon={!removeIcon} />
       {:else}
          <Entry entry={child} {indentIcon} />
       {/if}

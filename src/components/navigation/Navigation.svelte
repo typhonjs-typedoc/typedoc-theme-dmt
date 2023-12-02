@@ -46,6 +46,12 @@
       currentPathURLStore,
       topLevelNodesStore } = navigationData;
 
+   // Determine if the top level icon for namespace / module folders is removed.
+   const removeIcon = typeof globalThis?.dmtOptions?.navTopModuleRemoveIcon === 'boolean' ?
+    globalThis.dmtOptions.navTopModuleRemoveIcon : false;
+
+   let navigationEl;
+
    $: if ($currentPathURLStore)
    {
       // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
@@ -56,13 +62,8 @@
       });
    }
 
-   // Determine if the top level icon for namespace / module folders is removed.
-   const removeIcon = typeof globalThis?.dmtOptions?.navRemoveTopLevelIcon === 'boolean' ?
-    globalThis.dmtOptions.navRemoveTopLevelIcon : false;
-
-   const indentIcon = !removeIcon ? 'indent-icon' : 'indent-no-icon';
-
-   let navigationEl;
+   // Always indent first level entries to match any module / namespace entries w/ children.
+   const indentIcon = 'indent-no-icon';
 </script>
 
 <svelte:options accessors={true}/>

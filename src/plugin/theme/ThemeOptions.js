@@ -13,7 +13,7 @@ export class ThemeOptions
    #options = {
       navAnimate: true,
       navControls: true,
-      navRemoveTopLevelIcon: false,
+      navTopModuleRemoveIcon: false,
       removeBreadcrumb: false,
       search: true,
       searchLimit: 10,
@@ -50,7 +50,7 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
-         name: 'dmtNavRemoveTopLevelIcon',
+         name: 'dmtNavTopModuleRemoveIcon',
          help: `${ID} When true the top level SVG icon for all module / namespace entries is removed.`,
          type: ParameterType.Boolean,
          defaultValue: false
@@ -131,8 +131,8 @@ export class ThemeOptions
    /** @returns {boolean} Display top level navigation controls */
    get navControls() { return this.#options.navControls; }
 
-   /** @returns {boolean} navRemoveTopLevelIcon option */
-   get navRemoveTopLevelIcon() { return this.#options.navRemoveTopLevelIcon; }
+   /** @returns {boolean} navTopModuleRemoveIcon option */
+   get navTopModuleRemoveIcon() { return this.#options.navTopModuleRemoveIcon; }
 
    /** @returns {boolean} removeBreadcrumb option */
    get removeBreadcrumb() { return this.#options.removeBreadcrumb; }
@@ -158,7 +158,7 @@ export class ThemeOptions
    {
       this.#options.navAnimate = app.options.getValue('dmtNavAnimate');
       this.#options.navControls = app.options.getValue('dmtNavControls');
-      this.#options.navRemoveTopLevelIcon = app.options.getValue('dmtNavRemoveTopLevelIcon');
+      this.#options.navTopModuleRemoveIcon = app.options.getValue('dmtNavTopModuleRemoveIcon');
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
@@ -228,7 +228,7 @@ export class ThemeOptions
 
  * @property {boolean} navControls When true and there is more than one tree node navigation controls are displayed.
  *
- * @property {boolean} navRemoveTopLevelIcon When true the top level SVG icon for each entry / namespace is removed.
+ * @property {boolean} navTopModuleRemoveIcon When true the top level SVG icon for each entry / namespace is removed.
  *
  * @property {boolean} removeBreadcrumb When true the entire breadcrumb is removed.
  *
