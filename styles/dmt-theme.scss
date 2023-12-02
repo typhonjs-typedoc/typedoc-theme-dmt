@@ -74,6 +74,11 @@
 
 /* Layout additions ------------------------------------------------------------------------------------------------- */
 
+// Default theme only defines width for vertical scroll bars and not height for horizontal scrollbars.
+*::-webkit-scrollbar {
+  height: 0.75rem;
+}
+
 // .tsd-page-title h1 is wrapped with this div. Allowing additional elements to be added right aligned.
 .dmt-title-header-flex {
   display: flex;
