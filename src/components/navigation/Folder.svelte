@@ -27,8 +27,10 @@
 
    const store = storageKey ? dmtSessionStorage.getStore(storageKey, false) : void 0;
 
+   const indentIcon = !removeIcon && entry.kind ? 'indent-icon' : 'indent-no-icon';
+
    const folderProps = {
-      options: { focusIndicator: true },
+      // options: { focusIndicator: true },
       store
    }
 </script>
@@ -39,7 +41,7 @@
       {#if Array.isArray(child.children)}
          <svelte:self entry={child} />
       {:else}
-         <Entry entry={child} />
+         <Entry entry={child} {indentIcon} />
       {/if}
    {/each}
 </TJSSvgFolder>

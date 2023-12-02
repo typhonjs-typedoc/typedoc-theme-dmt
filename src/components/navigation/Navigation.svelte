@@ -57,8 +57,10 @@
    }
 
    // Determine if the top level icon for namespace / module folders is removed.
-   const removeTopLevelIcon = typeof globalThis?.dmtOptions?.removeNavTopLevelIcon === 'boolean' ?
+   const removeIcon = typeof globalThis?.dmtOptions?.removeNavTopLevelIcon === 'boolean' ?
     globalThis.dmtOptions.removeNavTopLevelIcon : false;
+
+   const indentIcon = !removeIcon ? 'indent-icon' : 'indent-no-icon';
 
    let navigationEl;
 </script>
@@ -77,9 +79,10 @@
 <div bind:this={navigationEl} class=dmt-navigation-content>
    {#each navigationData.index as entry (entry.path)}
       {#if Array.isArray(entry.children)}
-         <Folder {entry} removeIcon={removeTopLevelIcon} />
+         <Folder {entry} {removeIcon} />
       {:else}
-         <Entry {entry} />
+         <!-- Potentially remove icons when entry.kind is `module` or `namespace` -->
+         <Entry {entry} {indentIcon} removeIcon={removeIcon && (entry?.kind === 2 || entry?.kind === 4)} />
       {/if}
    {/each}
 </div>
@@ -94,6 +97,10 @@
       --tjs-folder-summary-margin: 0;
       --tjs-folder-summary-padding: 0;
       --tjs-folder-summary-width: 100%;
+
+      --tjs-folder-contents-margin: var(--dmt-nav-folder-contents-margin, 0 0 0 7px);
+      --tjs-folder-contents-border-left: var(--dmt-nav-folder-contents-border-left, 2px solid rgba(0, 0, 0, 0.2));
+      --tjs-folder-contents-padding: var(--dmt-nav-folder-contents-padding, 0 0 0 9px);
 
       padding-top: 0.25rem;
       touch-action: pan-y;
