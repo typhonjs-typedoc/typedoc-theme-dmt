@@ -1,27 +1,19 @@
-import fs                     from 'node:fs';
-import path                   from 'node:path';
-
-import { fileURLToPath }      from 'node:url';
+import fs                  from 'node:fs';
+import path                from 'node:path';
+import { fileURLToPath }   from 'node:url';
 
 import {
    PageEvent,
-   RendererEvent }            from 'typedoc';
+   RendererEvent }         from 'typedoc';
 
-import { load }               from 'cheerio';
+import { load }            from 'cheerio';
 
-import { copyDirectory }      from '#utils';
+import { copyDirectory }   from '#utils';
 
 export class PageRenderer
 {
    /** @type {import('typedoc').Application} */
    #app;
-
-   /**
-    * Caches the initial Project / index.html navigation sidebar content.
-    *
-    * @type {string}
-    */
-   #navContent;
 
    /** @type {ThemeOptions} */
    #options;
@@ -36,10 +28,8 @@ export class PageRenderer
       this.#app = app;
       this.#options = options;
 
-      // this.#app.converter.once(Converter.EVENT_BEGIN, this.#parseOptions, this);
       this.#app.renderer.on(PageEvent.END, this.#handlePageEnd, this);
 
-      // this.#app.renderer.once(RendererEvent.BEGIN, this.#parseOptions, this);
       this.#app.renderer.once(RendererEvent.END, this.#handleRendererEnd, this);
    }
 
@@ -196,10 +186,6 @@ export class PageRenderer
    {
       const $ = load(page.contents);
 
-      // TODO: Potentially remove.
-      // Remove the `main.js` script as it is loaded after the DOM is loaded in the DMT components bundle.
-      // $('script[src*="/main.js"]').remove();
-
       // Remove the default theme navigation script.
       $('script[src*="/navigation.js"]').remove();
 
@@ -223,18 +209,18 @@ export class PageRenderer
    /**
     * Copy web components bundle to docs output assets directory.
     *
-    * @param {RendererEvent} output -
+    * @param {RendererEvent} event -
     */
-   #handleRendererEnd(output)
+   #handleRendererEnd(event)
    {
-      const outAssets = path.join(output.outputDirectory, 'assets', 'dmt');
+      const outAssets = path.join(event.outputDirectory, 'assets', 'dmt');
       const localDir = path.dirname(fileURLToPath(import.meta.url));
 
       if (this.#options?.favicon?.filepath && this.#options?.favicon?.filename)
       {
          this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmtFavicon' to output directory.`);
 
-         fs.copyFileSync(this.#options.favicon.filepath, path.join(output.outputDirectory,
+         fs.copyFileSync(this.#options.favicon.filepath, path.join(event.outputDirectory,
           this.#options.favicon.filename));
       }
 
@@ -254,7 +240,7 @@ export class PageRenderer
       // I'll attempt to submit a PR to TypeDoc for a new default theme option `searchEnabled` that will disable the
       // default theme search index creation and loading code.
 
-      const mainJSPath = path.join(output.outputDirectory, 'assets', 'main.js');
+      const mainJSPath = path.join(event.outputDirectory, 'assets', 'main.js');
       if (fs.existsSync(mainJSPath))
       {
          const mainData = fs.readFileSync(mainJSPath, 'utf-8');
@@ -274,36 +260,6 @@ export class PageRenderer
       else
       {
          this.#app.logger.error(`[typedoc-theme-default-modern] Could not locate 'main.js' asset.`);
-      }
-
-      // Update style.css default theme removing search field rule ---------------------------------------------------
-
-      // This can be a potentially fragile replacement. The regex below removes the `#tsd-search .field input` rule
-      // from the main styles as sadly it doesn't target a specific selector re `.field input`.
-
-      // See: https://github.com/TypeStrong/typedoc/blob/master/static/style.css#L869-L881
-
-      // I'll attempt to submit a PR to TypeDoc to provide a more specific selector.
-
-      const stylesPath = path.join(output.outputDirectory, 'assets', 'style.css');
-      if (fs.existsSync(stylesPath))
-      {
-         const stylesData = fs.readFileSync(stylesPath, 'utf-8');
-         const regex = /#tsd-search \.field input \{[\s\S]*?}/gm;
-
-         if (regex.test(stylesData))
-         {
-            fs.writeFileSync(stylesPath, stylesData.replace(regex, ''), 'utf-8');
-         }
-         else
-         {
-            this.#app.logger.error(
-             `[typedoc-theme-default-modern] Failed to remove rule in default theme 'styles.css' asset.`);
-         }
-      }
-      else
-      {
-         this.#app.logger.error(`[typedoc-theme-default-modern] Could not locate 'styles.css' asset.`);
       }
    }
 }
