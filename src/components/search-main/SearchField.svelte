@@ -15,19 +15,19 @@
    /**
     * Stores the current selected ID for navigating search query results in {@link SearchResults}.
     *
-    * @type {Writable<number|undefined>}
+    * @type {import('svelte/store').Writable<number|undefined>}
     */
    const storeCurrentId = writable(void 0);
 
    setContext('#currentId', storeCurrentId);
 
-   /** @type {Writable<boolean>} */
+   /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = getContext('#visible');
 
    /**
     * Stores the input query string from the main search input element.
     *
-    * @type {Writable<string>}
+    * @type {import('svelte/store').Writable<string>}
     */
    const storeQuery = writable('');
 
@@ -49,11 +49,15 @@
    // Focus input element on mount.
    onMount(() => inputEl.focus());
 
+   // Perform the search when the query input changes.
    $: {
       results = processSearchQuery($storeQuery);
       currentIndex = -1;
       storeCurrentId.set(void 0);
    }
+
+   // When the query string has some input, but results are empty use `invalidQuery` to apply an inline color of red.
+   $: invalidQuery = $storeQuery.length && !results?.length;
 
    /**
     * Detects navigation input modifying current selected ID.
@@ -93,7 +97,8 @@
             break;
 
          case 'Escape':
-            if ($storeVisible) { $storeVisible = false; }
+            // Only set visibility to false when the query is empty.
+            if ($storeVisible && !$storeQuery.length) { $storeVisible = false; }
             break;
 
          case 'Tab':
@@ -131,33 +136,37 @@
 
 <input bind:this={inputEl}
        bind:value={$storeQuery}
+       style:color={invalidQuery ? 'red' : null}
+       style:border-color={invalidQuery ? 'red' : null}
        type=search
        id=dmt-search-field
        aria-label=Search
        on:keydown={handleKeydown}
-       transition:slideFade={{ duration: 200 }}
->
+       transition:slideFade={{ duration: 200 }} />
+
 {#if results.length}
    <SearchResults {results} bind:resultsEl />
 {/if}
 
-<style>
+<style lang=scss>
    /* Provide a global override for non-specific default theme CSS. */
    #dmt-search-field, :global(#tsd-search .field input) {
-      box-sizing: border-box;
       position: relative;
       z-index: 10;
       width: 100%;
       height: 35px;
-      outline: 0;
-      right: 4px;
+
+      border: 1px solid var(--color-accent);
+      border-radius: 0.5em;
+      box-sizing: border-box;
       color: var(--color-text);
+      outline: 2px solid transparent;
+      right: 4px;
 
       /* revert unused */
       top: 0;
-      padding: 0;
+      padding: revert;
       opacity: 1;
-      border: revert;
       background: revert;
    }
 </style>

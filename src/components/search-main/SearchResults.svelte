@@ -9,10 +9,10 @@
    /** @type {HTMLUListElement} */
    export let resultsEl = void 0;
 
-   /** @type {Writable<number>} */
+   /** @type {import('svelte/store').Writable<number>} */
    const storeCurrentId = getContext('#currentId');
 
-   /** @type {Writable<boolean>} */
+   /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = getContext('#visible');
 
    function onClick(href)
