@@ -151,5 +151,12 @@
       outline: 0;
       right: 4px;
       color: var(--color-text);
+
+      /* Override styles from default theme */
+      top: 0;
+      padding: 0;
+      opacity: 1;
+      border: revert;
+      background: revert;
    }
 </style>

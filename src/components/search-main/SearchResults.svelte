@@ -14,26 +14,31 @@
 
    /** @type {Writable<boolean>} */
    const storeVisible = getContext('#visible');
+
+   function onClick(href)
+   {
+      $storeVisible = false;
+
+      globalThis.location.href = href;
+   }
 </script>
 
 <ul bind:this={resultsEl} transition:slideFade|global={{ duration: 100 }}>
 {#each results as result (result.id)}
-   <li class="{result.classes}" class:selected={result.id === $storeCurrentId}>
+   <!-- svelte-ignore a11y-click-events-have-key-events -->
+   <li class={result.classes}
+       class:selected={result.id === $storeCurrentId}
+       on:click={() => onClick(result.href)}
+       role=menuitem>
       {#if result.kind}
          <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${result.kind}`}></use></svg>
       {/if}
-      <a href="{result.href}" on:click={() => $storeVisible = false}>
-         <span class=parent>{@html result.name}</span>
-      </a>
+      <span class=parent>{@html result.name}</span>
    </li>
 {/each}
 </ul>
 
 <style>
-   a {
-      display: block;
-   }
-
    li {
       display: flex;
       gap: 0.25rem;
@@ -43,6 +48,7 @@
       text-overflow: ellipsis;
       overflow: hidden;
       transition: background 0.15s ease-in-out;
+      cursor: pointer;
    }
 
    li.selected {
