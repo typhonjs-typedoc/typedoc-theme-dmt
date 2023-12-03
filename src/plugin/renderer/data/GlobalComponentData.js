@@ -15,29 +15,78 @@ import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
 export class GlobalComponentData
 {
    /**
+    * @param {import('typedoc').RenderEvent} event -
+    *
     * @param {import('typedoc').Application} app -
     *
     * @param {ThemeOptions} options -
     */
-   static build(app, options)
+   static async build(event, app, options)
    {
-      // At the end of rendering dynamically generate the compressed navigation index.
-      app.renderer.postRenderAsyncJobs.push(async (event) =>
+      return this.#buildComponentData(event, app, options);
+   }
+
+   /**
+    * @param {import('typedoc').RenderEvent} event -
+    *
+    * @param {import('typedoc').Application} app -
+    *
+    * @param {ThemeOptions} options -
+    *
+    * @returns {Promise<void>}
+    */
+   static async #buildComponentData(event, app, options)
+   {
+      app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
+
+      const data = {
+         linksIcon: this.#processLinksIcon(event, options),
+         linksService: this.#processLinksService(event, options),
+         sidebarLinks: app.options.getValue('sidebarLinks'),
+         navigationIndex: app.renderer.theme?.getNavigation?.(event.project) ?? [],
+         navigationLinks: app.options.getValue('navigationLinks')
+      }
+
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'componentData.js'),
+       `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
+   }
+
+   /**
+    * @param {import('typedoc').RenderEvent} event -
+    *
+    * @param {ThemeOptions} options -
+    *
+    * @returns {DMTIconLink[]}
+    */
+   static #processLinksIcon(event, options)
+   {
+      const result = [];
+
+      return result;
+   }
+
+   /**
+    * @param {import('typedoc').RenderEvent} event -
+    *
+    * @param {ThemeOptions} options -
+    *
+    * @returns {DMTIconLink[]}
+    */
+   static #processLinksService(event, options)
+   {
+      const result = [];
+      const links = options.linksService;
+
+      if (!links.length) { return result; }
+
+      const outputDir = path.join(event.outputDirectory, 'assets', 'dmt', 'icons', 'service')
+      fs.mkdirSync(outputDir, { recursive: true });
+
+      for (const entry of links)
       {
-         app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
+         console.log(`!! GlobalComponentData - #processLinksService - entry: `, entry);
+      }
 
-         const data = {
-            sidebarLinks: app.options.getValue('sidebarLinks'),
-            navigationIndex: app.renderer.theme?.getNavigation?.(event.project) ?? [],
-            navigationLinks: app.options.getValue('navigationLinks')
-         }
-
-         fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'componentData.js'),
-          `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
-
-         // TODO: Remove after dev / testing.
-         fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'componentData.json'),
-          JSON.stringify(data, null, 2));
-      });
+      return result;
    }
 }
