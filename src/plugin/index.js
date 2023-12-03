@@ -3,8 +3,7 @@ import path                   from 'node:path';
 
 import {
    Converter,
-   RendererEvent
-} from 'typedoc';
+   RendererEvent }            from 'typedoc';
 
 import {
    GlobalComponentData,
@@ -40,8 +39,8 @@ export function load(app)
          app.renderer.on(RendererEvent.BEGIN, (event) => fs.mkdirSync(path.join(event.outputDirectory, 'assets',
           'dmt'), { recursive: true }));
 
-         // Generate compressed global component data.
-         GlobalComponentData.build(app, options);
+         // At the end of rendering generate the compressed global component data.
+         app.renderer.postRenderAsyncJobs.push(async (event) => GlobalComponentData.build(event, app, options));
 
          // Add DMT components.
          new PageRenderer(app, options);
