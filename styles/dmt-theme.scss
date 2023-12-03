@@ -195,6 +195,12 @@ header.tsd-page-toolbar {
   border-radius: 0.25rem;
 }
 
+// All default theme detail -> summary -> svg elements are marked with this class; add transition.
+// Note: adding this class programmatically prevents initial transition animation.
+.dmt-summary-svg {
+  transition: transform 0.1s;
+}
+
 /* CQ Content ------------------------------------------------------------------------------------------------------- */
 
 @container col-content (min-width: 0) {
@@ -237,7 +243,6 @@ header.tsd-page-toolbar {
 .container {
   padding: 0 1rem;
   margin: 0 auto;
-  touch-action: pan-x pan-y;
 
   // `Index` details element -------------------------------
 
@@ -407,16 +412,10 @@ header.tsd-page-toolbar {
     // Make the details content overflow / scrollbars.
     .tsd-accordion-details {
       overflow: auto;
-      height: 100%;
+      height: calc(100% - var(--dmt-header-height)); // Take into consideration header height and sticky position.
 
       ul {
-        padding-top: 0.25rem;
-        padding-left: 0.5rem;
-
-        li:last-child {
-          // Add additional padding to account for header height / sticky position.
-          padding-bottom: var(--dmt-header-height);
-        }
+        padding: 0.25rem 0 0.25rem 0.5rem;
       }
     }
   }
