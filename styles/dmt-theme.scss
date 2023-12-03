@@ -236,6 +236,12 @@ header.tsd-page-toolbar {
 
 #dmt-toolbar {
   display: flex;
+  align-items: center;
+
+  a.title {
+    height: 32px;
+    line-height:32px;
+  }
 }
 
 /* Main Container --------------------------------------------------------------------------------------------------- */
