@@ -1,3 +1,11 @@
+import { writable }              from 'svelte/store';
+
+import { toggleDetails }         from '#runtime/svelte/action/animate';
+
+import {
+   inflateAndUnpack,
+   inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
+
 import Navigation                from './navigation/Navigation.svelte';
 import Toolbar                   from './toolbar/Toolbar.svelte';
 
@@ -6,10 +14,6 @@ import SearchMain                from './search-main/SearchMain.svelte';
 
 import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
 // import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
-
-import {
-   inflateAndUnpack,
-   inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
 
 import {
    keyCommands,
@@ -49,6 +53,23 @@ if (globalThis?.dmtOptions?.search)
    globalThis.dmtComponents.searchMain = new SearchMain({ target: document.querySelector('#dmt-search-main') });
 }
 
+// Add WAAPI animation to all default theme details elements.
+if (globalThis?.dmtOptions.navAnimate)
+{
+   const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
+    'details.tsd-index-accordion');
+
+   for (const detailEl of detailElList)
+   {
+      // Add class to provide transition for svg chevron.
+      const svgEl = detailEl.querySelector('summary svg');
+      if (svgEl) { svgEl.classList.add('dmt-summary-svg'); }
+
+      toggleDetails(detailEl, { store: writable(detailEl.open) });
+   }
+}
+
+
 // TODO: Work in progress
 // // Only load quick search index if enabled.
 // if (globalThis?.dmtOptions?.searchQuick)
@@ -65,9 +86,6 @@ keyCommands();
 // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
 // element allowing intuitive scrolling.
 scrollActivation();
-
-// Dynamically load main script now as it will reach the elements loaded by any web components.
-// await import('../main.js');
 
 // Removes the `opacity: 0` inline style on `body` element after all scripts have loaded. This allows a smooth
 // transition for the `main.js` default template script to take effect along with loading web components before
