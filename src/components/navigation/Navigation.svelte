@@ -75,7 +75,7 @@
    <NavigationBar />
 {/if}
 
-<div bind:this={navigationEl} class=dmt-navigation-content>
+<div bind:this={navigationEl} class=dmt-navigation-content tabindex=-1>
    {#each navigationData.index as entry (entry.path)}
       {#if Array.isArray(entry.children)}
          <Folder {entry} {removeIcon} />
@@ -101,6 +101,7 @@
       --tjs-folder-contents-border-left: var(--dmt-nav-folder-contents-border-left, 2px solid rgba(0, 0, 0, 0.2));
       --tjs-folder-contents-padding: var(--dmt-nav-folder-contents-padding, 0 0 0 9px);
 
+      outline: transparent;
       overflow-x: auto;
       padding-top: 0.25rem;
       touch-action: pan-x pan-y;

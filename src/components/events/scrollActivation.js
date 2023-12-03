@@ -20,15 +20,15 @@
 export function scrollActivation()
 {
    // Direct focus target.
-   const navContainer = globalThis.document.querySelector('div.site-menu');
+   const navContainerEl = globalThis.document.querySelector('div.dmt-navigation-content');
 
    // Direct focus target / will be null when not on page.
-   const onThisPageInnerEl = globalThis.document.querySelector('details.tsd-page-navigation .tsd-accordion-details');
+   const onThisPageInnerEl = globalThis.document.querySelector('details.tsd-page-navigation .tsd-accordion-details');1
 
    // Ambient focus target for colContentEl.
-   const mainContainer = globalThis.document.querySelector('div.container.container-main');
+   const mainContainerEl = globalThis.document.querySelector('div.container.container-main');
 
-   // Focus targets that activate mainContainer.
+   // Focus targets that activate mainContainerEl.
    const colContentEl = globalThis.document.querySelector('div.col-content');
 
    /**
@@ -37,13 +37,13 @@ export function scrollActivation()
     *
     * @type {Set<Element|null>}
     */
-   const focusContainers = new Set([mainContainer, navContainer, onThisPageInnerEl, null]);
+   const focusContainers = new Set([mainContainerEl, navContainerEl, onThisPageInnerEl, null]);
 
    // Direct focus targets -------------------------------------------------------------------------------------------
 
-   if (navContainer)
+   if (navContainerEl)
    {
-      navContainer.addEventListener('pointerenter', (event) =>
+      navContainerEl.addEventListener('pointerenter', (event) =>
       {
          event.preventDefault();
          event.stopImmediatePropagation();
@@ -51,9 +51,9 @@ export function scrollActivation()
          const explicitlyFocusedEl = globalThis.document.querySelector(':focus-visible');
 
          // Abort if the explicitly focused element is not on of the target elements tracked.
-         if (globalThis.document.activeElement !== navContainer && focusContainers.has(explicitlyFocusedEl))
+         if (globalThis.document.activeElement !== navContainerEl && focusContainers.has(explicitlyFocusedEl))
          {
-            globalThis.requestAnimationFrame(() => navContainer.focus({ preventScroll: true }));
+            globalThis.requestAnimationFrame(() => navContainerEl.focus({ preventScroll: true }));
          }
       });
    }
@@ -76,7 +76,7 @@ export function scrollActivation()
       });
    }
 
-   // Indirect focus targets / activates mainContainer ---------------------------------------------------------------
+   // Indirect focus targets / activates mainContainerEl ---------------------------------------------------------------
 
    if (colContentEl)
    {
@@ -87,9 +87,9 @@ export function scrollActivation()
 
          const explicitlyFocusedEl = globalThis.document.querySelector(':focus-visible');
 
-         if (globalThis.document.activeElement !== mainContainer && focusContainers.has(explicitlyFocusedEl))
+         if (globalThis.document.activeElement !== mainContainerEl && focusContainers.has(explicitlyFocusedEl))
          {
-            globalThis.requestAnimationFrame(() => mainContainer.focus({ preventScroll: true }));
+            globalThis.requestAnimationFrame(() => mainContainerEl.focus({ preventScroll: true }));
          }
       });
    }

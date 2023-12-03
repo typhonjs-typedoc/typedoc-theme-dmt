@@ -148,9 +148,6 @@ export class PageRenderer
       // Main container
       $('div.container.container-main').attr('tabindex', -1);
 
-      // Nav sidebar
-      $('div.site-menu').attr('tabindex', -1);
-
       // On This Page / Inner Element
       $('details.tsd-page-navigation .tsd-accordion-details').attr('tabindex', -1);
    }
