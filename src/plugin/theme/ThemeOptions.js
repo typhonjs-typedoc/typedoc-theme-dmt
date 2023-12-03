@@ -1,16 +1,34 @@
-import fs                from 'node:fs';
-import path              from 'node:path';
-import { URL }           from 'node:url';
+import fs                  from 'node:fs';
+import path                from 'node:path';
+import { URL }             from 'node:url';
 
-import { ParameterType } from 'typedoc';
+import { isObject }        from '#runtime/util/object';
+
+import { ParameterType }   from 'typedoc';
 
 /**
  * Defines and stores parsed DMT options.
  */
 export class ThemeOptions
 {
+   static #ID = '[typedoc-theme-default-modern]';
+
+   /**
+    * @type {Map<string, FileOrURL>}
+    */
+   static #serviceLinks = new Map([
+      ['BitBucket', {}],
+      ['Discord', { filepath: './assets/icons/service/discord.png', filename: 'discord.png' }],
+      ['GitHub', {}],
+      ['GitLab', {}],
+      ['NPM', {}],
+   ]);
+
    /** @type {DMTOptions} */
    #options = {
+      favicon: {},
+      linksIcon: [],
+      linksService: [],
       navAnimate: true,
       navControls: true,
       navTopModuleRemoveIcon: false,
@@ -18,7 +36,7 @@ export class ThemeOptions
       search: true,
       searchLimit: 10,
       searchQuick: false,
-      SearchQuickLimit: 10,
+      searchQuickLimit: 10,
    };
 
    /**
@@ -32,6 +50,20 @@ export class ThemeOptions
          name: 'dmtFavicon',
          help: `${ID} Specify the file path or URL of the favicon file.`,
          type: ParameterType.String,
+         defaultValue: ''
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtLinksIcon',
+         help: `${ID} Places provided icon links in toolbar links.`,
+         type: ParameterType.Object,
+         defaultValue: null
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtLinksService',
+         help: `${ID} Places built-in icon links in toolbar links; supported services: BitBucket, Discord, GitHub, GitLab, NPM`,
+         type: ParameterType.Object,
          defaultValue: null
       });
 
@@ -122,8 +154,14 @@ export class ThemeOptions
       this.#parseOptions(app);
    }
 
-   /** @returns {{filepath?: string, filename?: string, url?: string}} favicon option */
+   /** @returns {FileOrURL} favicon option */
    get favicon() { return this.#options.favicon; }
+
+   /** @returns {DMTIconLink[]} linksIcon option */
+   get linksIcon() { return this.#options.linksIcon; }
+
+   /** @returns {DMTIconLink[]} linksService option */
+   get linksService() { return this.#options.linksService; }
 
    /** @returns {boolean} Animate navigation folders w/ WAAPI */
    get navAnimate() { return this.#options.navAnimate; }
@@ -167,55 +205,95 @@ export class ThemeOptions
 
       // Validate options --------------------------------------------------------------------------------------------
 
-      const ID = '[typedoc-theme-default-modern]';
+      this.#options.favicon = ThemeOptions.#validateFileOrURL(app, app.options.getValue('dmtFavicon'), 'dmtFavicon');
 
-      const dmtFavicon = app.options.getValue('dmtFavicon');
+      const linksIcon = app.options.getValue('dmtLinksIcon');
 
-      // Verify dmtFavicon path if defined.
-      if (typeof dmtFavicon === 'string' && dmtFavicon.length)
+      /** @type {Record<string, string>} */
+      const linksService = app.options.getValue('dmtLinksService');
+
+      if (isObject(linksService))
       {
-         try
+         for (const key in linksService)
          {
-            const favicon = {};
-
-            if (ThemeOptions.#isURL(dmtFavicon))
+            if (!ThemeOptions.#serviceLinks.has(key))
             {
-               favicon.url = dmtFavicon;
-            }
-            else
-            {
-               const faviconPath = path.resolve(dmtFavicon);
+               app.logger.warn(`${ThemeOptions.#ID} Unknown service link '${key}'; supported services: ${
+                [...ThemeOptions.#serviceLinks.keys()].join(', ')}`);
 
-               fs.accessSync(faviconPath, fs.constants.R_OK);
-
-               favicon.filepath = faviconPath;
-               favicon.filename = path.basename(faviconPath);
+               continue;
             }
 
-            this.#options.favicon = favicon;
-         }
-         catch (err)
-         {
-            app.logger.warn(`${ID} 'dmtFavicon' path / URL did not resolve: ${dmtFavicon}`);
+            if (!ThemeOptions.#isURL(linksService[key]))
+            {
+               app.logger.warn(`${ThemeOptions.#ID} Invalid URL for service link '${key}'.`);
+
+               continue;
+            }
+
+            this.#options.linksService.push({
+               asset: ThemeOptions.#serviceLinks.get(key),
+               title: key,
+               url: linksService[key]
+            });
          }
       }
 
       // Verify search limits.
       if (!Number.isInteger(this.#options.searchLimit) || this.#options.searchLimit < 1)
       {
-         app.logger.warn(
-          `${ID} 'dmtSearchLimit' must be a positive integer greater than '0'; setting to default of '10'`);
+         app.logger.warn(`${ThemeOptions.#ID
+          } 'dmtSearchLimit' must be a positive integer greater than '0'; setting to default of '10'`);
 
          this.#options.searchLimit = 10;
       }
 
       if (!Number.isInteger(this.#options.searchQuickLimit) || this.#options.searchQuickLimit < 1)
       {
-         app.logger.warn(
-          `${ID} 'dmtSearchQuickLimit' must be a positive integer greater than '0'; setting to default of '10'`);
+         app.logger.warn(`${ThemeOptions.#ID
+          } 'dmtSearchQuickLimit' must be a positive integer greater than '0'; setting to default of '10'`);
 
          this.#options.searchQuickLimit = 10;
       }
+   }
+
+   /**
+    * @param {import('typedoc').Application} app - Typedoc Application.
+    *
+    * @param {string}   pathOrURL - File path or URL to validate.
+    *
+    * @param {string}   optionName - Associated DMT option name.
+    *
+    * @returns {FileOrURL} Parsed FileOrURL object; may be empty.
+    */
+   static #validateFileOrURL(app, pathOrURL, optionName)
+   {
+      if (typeof pathOrURL !== 'string' || pathOrURL.length === 0) { return {}; }
+
+      const result = {};
+
+      try
+      {
+         if (ThemeOptions.#isURL(pathOrURL))
+         {
+            result.url = pathOrURL;
+         }
+         else
+         {
+            const filepath = path.resolve(pathOrURL);
+
+            fs.accessSync(filepath, fs.constants.R_OK);
+
+            result.filepath = filepath;
+            result.filename = path.basename(filepath);
+         }
+      }
+      catch (err)
+      {
+         app.logger.warn(`${ThemeOptions.#ID} '${optionName}' path / URL did not resolve: ${pathOrURL}`);
+      }
+
+      return result;
    }
 }
 
@@ -224,8 +302,12 @@ export class ThemeOptions
  *
  * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
  *
+ * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
+ *
+ * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
+ *
  * @property {boolean} navAnimate When true navigation uses WAAPI to animate folder open / close state.
-
+ *
  * @property {boolean} navControls When true and there is more than one tree node navigation controls are displayed.
  *
  * @property {boolean} navTopModuleRemoveIcon When true the top level SVG icon for each entry / namespace is removed.
