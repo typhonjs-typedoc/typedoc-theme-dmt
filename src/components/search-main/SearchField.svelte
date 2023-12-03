@@ -142,7 +142,8 @@
 {/if}
 
 <style>
-   #dmt-search-field {
+   /* Provide a global override for non-specific default theme CSS. */
+   #dmt-search-field, :global(#tsd-search .field input) {
       box-sizing: border-box;
       position: relative;
       z-index: 10;
@@ -152,7 +153,7 @@
       right: 4px;
       color: var(--color-text);
 
-      /* Override styles from default theme */
+      /* revert unused */
       top: 0;
       padding: 0;
       opacity: 1;
