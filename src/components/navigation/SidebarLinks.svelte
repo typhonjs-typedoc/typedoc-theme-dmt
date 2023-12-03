@@ -1,9 +1,12 @@
 <script>
-   /** @type {Record<string, string>} */
-   export let navigationLinks = {};
+   /** @type {DMTComponentData} */
+   export let dmtComponentData = void 0;
 
    /** @type {Record<string, string>} */
-   export let sidebarLinks = {};
+   const sidebarLinks = dmtComponentData?.sidebarLinks ?? {};
+
+   /** @type {Record<string, string>} */
+   const navigationLinks = dmtComponentData?.navigationLinks ?? {};
 </script>
 
 <section>

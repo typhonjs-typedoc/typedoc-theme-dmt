@@ -10,14 +10,11 @@
 
    import { NavigationData }     from './NavigationData.js';
 
+   /** @type {DMTComponentData} */
+   export let dmtComponentData = void 0;
+
    /** @type {import('./types').DMTNavigationElement[]} */
-   export let navigationIndex = [];
-
-   /** @type {Record<string, string>} */
-   export let navigationLinks = void 0;
-
-   /** @type {Record<string, string>} */
-   export let sidebarLinks = void 0;
+   const navigationIndex = dmtComponentData?.navigationIndex;
 
    /**
     * Exposes `ensureCurrentPath` externally to the component.
@@ -72,7 +69,7 @@
 <svelte:options accessors={true}/>
 <svelte:window on:hashchange={navigationData.state.onHashchange} />
 
-<SidebarLinks {navigationLinks} {sidebarLinks} />
+<SidebarLinks {dmtComponentData} />
 
 {#if $topLevelNodesStore > 1 && globalThis.dmtOptions.navControls}
    <NavigationBar />

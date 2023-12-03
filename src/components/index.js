@@ -23,21 +23,17 @@ import './componentData.js';
 globalThis.dmtInflateAndUnpack = inflateAndUnpack;
 globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 
-/** @type {DMTComponentData} */
-const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ?
+const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ? /** @type {DMTComponentData} */
  globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {};
 
 const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
-   props: {
-      navigationIndex: dmtComponentData?.navigationIndex,
-      sidebarLinks: dmtComponentData?.sidebarLinks,
-      navigationLinks: dmtComponentData?.navigationLinks
-   }
+   props: { dmtComponentData }
 });
 
 const toolbar = new Toolbar({
-   target: document.querySelector('#dmt-toolbar')
+   target: document.querySelector('#dmt-toolbar'),
+   props: { dmtComponentData }
 })
 
 // Stores references to DMT Svelte components.
