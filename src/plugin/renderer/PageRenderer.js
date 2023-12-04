@@ -143,6 +143,11 @@ export class PageRenderer
          generatorEl.remove();
       }
 
+      // Remove errant `tabindex` / `role` from index details summary header -----------------------------------------
+
+      // The details summary element is focusable!
+      $('details summary h5').attr('tabindex', null).attr('role', null);
+
       // Augment scroll containers making them programmatically focusable --------------------------------------------
 
       // Main container
