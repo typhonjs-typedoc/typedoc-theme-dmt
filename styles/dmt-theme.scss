@@ -23,7 +23,8 @@
   // Focus visible control
   --dmt-focus-visible-color: orange;
   --dmt-outline-focus-visible: 3px solid var(--dmt-focus-visible-color);
-  --tjs-default-focus-indicator-background: var(--dmt-focus-visible-color); // TJSSvgFolder component
+  --tjs-folder-summary-chevron-border-radius: 0.25rem;
+  --tjs-default-outline-focus-visible: var(--dmt-outline-focus-visible); // TJSSvgFolder component
 }
 
 

@@ -58,10 +58,10 @@
    }
 
    .indent-icon {
-      margin-left: var(--dmt-nav-entry-indent-icon, 33px);
+      margin-left: var(--dmt-nav-entry-indent-icon, 28px);
    }
 
    .indent-no-icon {
-      margin-left: var(--dmt-nav-entry-indent-no-icon, 24px);
+      margin-left: var(--dmt-nav-entry-indent-no-icon, 18px);
    }
 </style>

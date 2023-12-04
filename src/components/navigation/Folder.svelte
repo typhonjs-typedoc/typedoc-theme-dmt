@@ -39,7 +39,7 @@
       animate,
       store,
       options: {
-         focusIndicator: true
+         focusChevron: true
       },
       // Dynamically set the folder margin based on whether the parent folder has a svg icon.
       styles: parentIcon ? { '--tjs-folder-details-margin-left': '3.5px' } : void 0

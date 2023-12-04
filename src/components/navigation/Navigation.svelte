@@ -104,6 +104,7 @@
       outline: transparent;
       overflow-x: auto;
       padding-top: 0.25rem;
+      padding-left: 3px; /* space for chevron focus-visible outline */
       touch-action: pan-x pan-y;
    }
 
