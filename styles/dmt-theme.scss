@@ -19,6 +19,11 @@
 
   // A defined max-height for the col-sidebar when it displays.
   --dmt-sidebar-max-height: calc(100vh - var(--dmt-header-height));
+
+  // Focus visible control
+  --dmt-focus-visible-color: orange;
+  --dmt-outline-focus-visible: 3px solid var(--dmt-focus-visible-color);
+  --tjs-default-focus-indicator-background: var(--dmt-focus-visible-color); // TJSSvgFolder component
 }
 
 
@@ -191,14 +196,39 @@ header.tsd-page-toolbar {
 
 /* Content style tweaks --------------------------------------------------------------------------------------------- */
 
-.tsd-navigation a.current, .tsd-page-navigation a.current {
-  border-radius: 0.25rem;
-}
-
 // All default theme detail -> summary -> svg elements are marked with this class; add transition.
 // Note: adding this class programmatically prevents initial transition animation.
 .dmt-summary-svg {
   transition: transform 0.1s;
+}
+
+*:focus-visible {
+  outline: var(--dmt-outline-focus-visible);
+}
+
+details .tsd-accordion-summary {
+  &:focus-visible {
+    outline: var(--dmt-outline-focus-visible);
+  }
+
+  border-radius: 0.25rem;
+
+  // Align SVG
+  h3, h5 {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+// Ensure padding of navigation links; matches default theme; no changes as the nav folder layout depends on this.
+.tsd-navigation a, .tsd-navigation summary > span, .tsd-page-navigation a {
+  padding: 0.25rem;
+}
+
+// All links have a border radius.
+a {
+  border-radius: 0.25rem;
 }
 
 /* CQ Content ------------------------------------------------------------------------------------------------------- */
@@ -401,6 +431,11 @@ header.tsd-page-toolbar {
 
     margin: 0;
 
+    // Remove bad default theme style.
+    .tsd-accordion-summary {
+      width: inherit;
+    }
+
     .tsd-filter-visibility h4 {
       padding-top: 0.25rem;
     }
@@ -429,6 +464,10 @@ header.tsd-page-toolbar {
   // Styling for sidebar `On This Page` detail element open.
   details[open].tsd-index-accordion.tsd-page-navigation {
     padding: var(--dmt-container-padding) 0 0 var(--dmt-container-padding);
+
+    .tsd-accordion-summary {
+      width: calc(100% - 1rem);
+    }
   }
 
   // Both `Settings` and `On This Page`.
