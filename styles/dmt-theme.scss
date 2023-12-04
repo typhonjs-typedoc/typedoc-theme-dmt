@@ -70,6 +70,10 @@
 
 /* Container Queries ------------------------------------------------------------------------------------------------ */
 
+#dmt-toolbar {
+  container: dmt-toolbar / inline-size;
+}
+
 .col-content {
   container: col-content / inline-size;
 }
@@ -234,9 +238,15 @@ a {
 
 /* CQ Content ------------------------------------------------------------------------------------------------------- */
 
+@container dmt-toolbar (min-width: 0) {
+  .title {
+    font-size: clamp(0.75rem, 2.5cqi, 1rem);
+  }
+}
+
 @container col-content (min-width: 0) {
   .tsd-page-title h1 {
-    font-size: clamp(1rem, 4cqi, 3rem);
+    font-size: clamp(1rem, 3.5cqi, 2rem);
   }
 
   .tsd-kind-icon ~ span {
