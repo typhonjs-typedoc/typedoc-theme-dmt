@@ -1,12 +1,16 @@
 import { get }                from 'svelte/store';
 
+import { A11yHelper }         from '#runtime/util/browser';
+
 import { nextAnimationFrame } from "#runtime/util/animate";
 
 /**
  * Provides the following global keyboard commands:
+ * - <Alt-C>: Focus main content
  * - <Alt-E>: Expand / collapse all navigation folders.
- * - <Alt-I>: Go to main index.
+ * - <Alt-I>: Go to modules.html index.
  * - <Alt-N>: Scroll to current page in navigation panel and focus it.
+ * - <Alt-M>: Go to main index.html
  * - <Alt-O>: If available, focus first anchor in `On This Page` container.
  *
  * @param {INavigationData} navigationData - NavigationData instance.
@@ -20,13 +24,28 @@ export function keyCommands(navigationData)
 
       switch (event.code)
       {
+         case 'KeyC':
+            const mainContentEl = document.querySelector('.col-content');
+            if (mainContentEl)
+            {
+               const focusableEl = A11yHelper.getFirstFocusableElement(mainContentEl);
+               if (focusableEl) { focusableEl.focus({ focusVisible: true }); }
+            }
+            event.preventDefault();
+            break;
+
          case 'KeyE':
             navigationData.setStoresAllOpen(!get(navigationData.storeSessionAllOpen));
             event.preventDefault();
             break;
 
          case 'KeyI':
-            window.location.href = `${globalThis.dmtOptions.basePath}index.html`;
+            window.location.href = `${navigationData.baseURL}modules.html`;
+            event.preventDefault();
+            break;
+
+         case 'KeyM':
+            window.location.href = `${navigationData.baseURL}index.html`;
             event.preventDefault();
             break;
 
@@ -34,12 +53,11 @@ export function keyCommands(navigationData)
          {
             // Ensure current path is open and focus current path navigation entry.
             const currentPathURL = navigationData.currentPathURL;
-            if (navigationData.state.ensureCurrentPath(navigationData.currentPathURL))
-            {
-               // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
-               nextAnimationFrame().then(() => document.querySelector('.dmt-navigation-content')?.querySelector(
-                `a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
-            }
+            navigationData.state.ensureCurrentPath(navigationData.currentPathURL)
+
+            // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
+            nextAnimationFrame().then(() => document.querySelector('nav.tsd-navigation')?.querySelector(
+             `a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
             break;
          }
 
