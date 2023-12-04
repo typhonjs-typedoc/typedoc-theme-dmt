@@ -66,7 +66,7 @@ export class SearchQuickIndexPackr
          }
       }
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search-quick.cmp'),
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-search-quick.cmp'),
        packAndDeflate(navSearchDocuments));
    }
 }

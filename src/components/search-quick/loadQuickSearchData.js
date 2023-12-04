@@ -9,7 +9,7 @@ export async function loadQuickSearchData()
 {
    const dmtURL = import.meta.url.replace(/\/dmt-components.js/, '');
 
-   const response = await fetch(`${dmtURL}/search-quick.cmp`);
+   const response = await fetch(`${dmtURL}/dmt-search-quick.cmp`);
 
    if (!response.ok)
    {

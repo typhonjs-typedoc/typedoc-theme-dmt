@@ -24,7 +24,7 @@ import {
    scrollActivation }            from './events/index.js';
 
 // Loads compressed global component data.
-import './componentData.js';
+import './dmt-component-data.js';
 
 // Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
 // plugins that might work with compressed data.

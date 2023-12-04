@@ -47,7 +47,7 @@ export class GlobalComponentData
          navigationLinks: app.options.getValue('navigationLinks')
       }
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'componentData.js'),
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),
        `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
    }
 

@@ -9,7 +9,7 @@ export async function loadMainSearchData()
 {
    const dmtURL = import.meta.url.replace(/\/dmt-components.js/, '');
 
-   const response = await fetch(`${dmtURL}/search.cmp`);
+   const response = await fetch(`${dmtURL}/dmt-search.cmp`);
 
    if (!response.ok)
    {

@@ -126,7 +126,7 @@ export class SearchIndexPackr
 
       const index = builder.build();
 
-      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'search.cmp'),
+      fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-search.cmp'),
        packAndDeflate({ rows, index }));
    }
 
