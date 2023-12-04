@@ -164,7 +164,7 @@ export class NavigationState
 
       this.#walkTree(operation);
 
-      this.#navData.topLevelNodesStore.set(topLevelNodes);
+      this.#navData.storeTopLevelNodes.set(topLevelNodes);
    }
 
    /**

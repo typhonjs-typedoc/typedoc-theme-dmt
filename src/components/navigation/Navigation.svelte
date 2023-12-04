@@ -13,38 +13,14 @@
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
 
-   /** @type {import('./types').DMTNavigationElement[]} */
-   const navigationIndex = dmtComponentData?.navigationIndex;
-
-   /**
-    * Exposes `ensureCurrentPath` externally to the component.
-    *
-    * @param {object} [options] - Optional parameters.
-    *
-    * @param {boolean}  [focus=false] - Focus current path anchor element.
-    */
-   export function ensureCurrentPath({ focus = false } = {})
-   {
-      const currentPathURL = navigationData.currentPathURL;
-      const result = navigationData.state.ensureCurrentPath(navigationData.currentPathURL);
-
-      if (result && focus)
-      {
-         // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
-         nextAnimationFrame().then(
-          () => navigationEl.querySelector(`a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
-      }
-
-      return result;
-   }
-
-   const navigationData = new NavigationData(navigationIndex);
+   /** @type {INavigationData} */
+   const navigationData = dmtComponentData?.navigationData;
 
    setContext('#navigationData', navigationData);
 
    const {
       currentPathURLStore,
-      topLevelNodesStore } = navigationData;
+      storeTopLevelNodes } = navigationData;
 
    // Determine if the top level icon for namespace / module folders is removed.
    const removeIcon = typeof globalThis?.dmtOptions?.navTopModuleRemoveIcon === 'boolean' ?
@@ -71,7 +47,7 @@
 
 <SidebarLinks {dmtComponentData} />
 
-{#if $topLevelNodesStore > 1 && globalThis.dmtOptions.navControls}
+{#if $storeTopLevelNodes > 1 && globalThis.dmtOptions.navControls}
    <NavigationBar />
 {/if}
 

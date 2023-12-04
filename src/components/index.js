@@ -21,6 +21,7 @@ import {
 
 // Loads compressed global component data.
 import './componentData.js';
+import {NavigationData} from "./navigation/NavigationData.js";
 
 // Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
 // plugins that might work with compressed data.
@@ -29,6 +30,9 @@ globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 
 const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ? /** @type {DMTComponentData} */
  globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {};
+
+// Create navigation data / state.
+dmtComponentData.navigationData = new NavigationData(dmtComponentData.navigationIndex);
 
 const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
@@ -69,7 +73,6 @@ if (globalThis?.dmtOptions.navAnimate)
    }
 }
 
-
 // TODO: Work in progress
 // // Only load quick search index if enabled.
 // if (globalThis?.dmtOptions?.searchQuick)
@@ -81,7 +84,7 @@ if (globalThis?.dmtOptions.navAnimate)
 // }
 
 // Provides global keyboard commands.
-keyCommands();
+keyCommands(dmtComponentData.navigationData);
 
 // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
 // element allowing intuitive scrolling.

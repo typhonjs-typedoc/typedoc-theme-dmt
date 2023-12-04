@@ -5,83 +5,44 @@
  * @module
  */
 
-import type lunr                    from 'lunr';
-import type { ReflectionKind }      from 'typedoc';
-
-import type { NavigationElement }   from 'typedoc';
-
-import type { TrieSearch }          from '#runtime/data/struct/search/trie';
+import type { TrieSearch }             from '#runtime/data/struct/search/trie';
 
 import type {
    inflateAndUnpack,
-   inflateAndUnpackB64 }            from '#runtime/data/format/msgpack/compress';
+   inflateAndUnpackB64 }               from '#runtime/data/format/msgpack/compress';
 
-/**
- * Provides the main search document entry structure.
- */
-export interface SearchDocument {
-   /**
-    * The reflection kind.
-    */
-   k: ReflectionKind;
+import type lunr                       from 'lunr';
+import type { ReflectionKind }         from 'typedoc';
 
-   /**
-    * The reflection name.
-    */
-   n: string;
+import type { NavigationElement }      from 'typedoc';
 
-   /**
-    * The reflection url.
-    */
-   u: string;
-
-   /**
-    * Any reflection classes.
-    */
-   c?: string;
-
-   /**
-    * Any reflection parents.
-    */
-   p?: string;
-}
-
-/**
- * Provides the quick search document entry structure.
- */
-export interface SearchQuickDocument
-{
-   /**
-    * Index for trie-search.
-    */
-   i: number;
-
-   /**
-    * The TypeDoc reflection kind.
-    */
-   k: ReflectionKind;
-
-   /**
-    * The reflection name.
-    */
-   n: string;
-
-   /**
-    * The reflection url.
-    */
-   u: string;
-}
+import type { INavigationData }        from './components/navigation/types.ts';
 
 export type DMTComponentData = {
+   /**
+    * Resolved user icon links.
+    */
+   linksIcon: DMTIconLink[];
+
+   /**
+    * Resolved service icon links.
+    */
+   linksService: DMTIconLink[];
+
    /**
     * Default navigation links
     */
    navigationLinks?: Record<string, string>;
 
    /**
+    * NavigationData instance.
+    */
+   navigationData: INavigationData;
+
+   /**
     * Default navigation index.
     */
-   navigationIndex?: NavigationElement[];
+   navigationIndex: NavigationElement[];
 
    /**
     * Default sidebar links.
@@ -137,6 +98,99 @@ export type DMTGlobalOptions = {
     * Provides a key based on the package name or a random string to prepend to local / session storage keys.
     */
    storagePrepend: string;
+}
+
+/**
+ * Defines a toolbar icon link.
+ */
+export type DMTIconLink = {
+   /**
+    * Parsed local file or URL.
+    */
+   asset: FileOrURL;
+
+   /**
+    * Element title for hover / display.
+    */
+   title?: string;
+
+   /**
+    * Destination URL.
+    */
+   url: string;
+}
+
+export type FileOrURL = {
+   /**
+    * Fully resolved file path.
+    */
+   filepath?: string;
+
+   /**
+    * File name
+    */
+   filename?: string;
+
+   /**
+    * Valid URL.
+    */
+   url?: string;
+}
+
+/**
+ * Provides the main search document entry structure.
+ */
+export interface SearchDocument {
+   /**
+    * The reflection kind.
+    */
+   k: ReflectionKind;
+
+   /**
+    * The reflection name.
+    */
+   n: string;
+
+   /**
+    * The reflection url.
+    */
+   u: string;
+
+   /**
+    * Any reflection classes.
+    */
+   c?: string;
+
+   /**
+    * Any reflection parents.
+    */
+   p?: string;
+}
+
+/**
+ * Provides the quick search document entry structure.
+ */
+export interface SearchQuickDocument
+{
+   /**
+    * Index for trie-search.
+    */
+   i: number;
+
+   /**
+    * The TypeDoc reflection kind.
+    */
+   k: ReflectionKind;
+
+   /**
+    * The reflection name.
+    */
+   n: string;
+
+   /**
+    * The reflection url.
+    */
+   u: string;
 }
 
 /**

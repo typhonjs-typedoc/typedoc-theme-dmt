@@ -1,9 +1,14 @@
-import { writable }           from 'svelte/store';
+import {
+   derived,
+   writable }                 from 'svelte/store';
 
 import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
 import { NavigationState }    from './NavigationState.js';
 
+/**
+ * @implements {import('./types').INavigationData}
+ */
 export class NavigationData
 {
    /**
@@ -35,13 +40,6 @@ export class NavigationData
    dmtSessionStorage;
 
    /**
-    * Indicates the count of top level nodes if there are entries with children / tree nodes present.
-    *
-    * @type {import('svelte/store').Writable<number>}
-    */
-   topLevelNodesStore = writable(0);
-
-   /**
     * The navigation index.
     *
     * @type {import('./types').DMTNavigationElement[]}
@@ -69,6 +67,20 @@ export class NavigationData
     */
    state;
 
+   /**
+    * A derived store with the open / close state of all session stores.
+    *
+    * @type {import('svelte/store').Readable<boolean>}
+    */
+   storeSessionAllOpen;
+
+   /**
+    * Indicates the count of top level nodes if there are entries with children / tree nodes present.
+    *
+    * @type {import('svelte/store').Writable<number>}
+    */
+   storeTopLevelNodes = writable(0);
+
    constructor(navigationIndex)
    {
       this.index = navigationIndex;
@@ -88,6 +100,29 @@ export class NavigationData
       this.pathPrepend = '../'.repeat(depth);
 
       this.state = new NavigationState(this);
+
+      this.#createDerivedStores();
+   }
+
+   /**
+    * Creates derived stores after the navigation tree / index state has been initialized.
+    */
+   #createDerivedStores()
+   {
+      // Create a derived store from all session storage stores; on any update reduce all values and set state
+      // to whether all folders are opened or not.
+      this.storeSessionAllOpen = derived([...this.dmtSessionStorage.stores()],
+       (stores, set) => set(!!stores.reduce((previous, current) => previous & current, true)));
+   }
+
+   /**
+    * Closes or opens all navigation folders / session store state.
+    *
+    * @param {boolean}  state - New open / close state.
+    */
+   setStoresAllOpen(state)
+   {
+      for (const store of this.dmtSessionStorage.stores()) { store.set(state); }
    }
 
    /**

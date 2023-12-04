@@ -1,23 +1,7 @@
 <script>
    import { getContext } from 'svelte';
 
-   const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
-
-   /**
-    * Close all session storage states to close all folders.
-    */
-   function onClickCloseAll()
-   {
-      for (const store of dmtSessionStorage.stores()) { store.set(false); }
-   }
-
-   /**
-    * Opens all session storage states to open all folders.
-    */
-   function onClickOpenAll()
-   {
-      for (const store of dmtSessionStorage.stores()) { store.set(true); }
-   }
+   const navData = /** @type {NavigationData} */ getContext('#navigationData');
 </script>
 
 <section>
@@ -27,7 +11,7 @@
       </symbol>
    </svg>
 
-   <button on:click={onClickOpenAll}
+   <button on:click={() => navData.setStoresAllOpen(true)}
            on:pointerdown|stopPropagation
            title={'Open All'}>
       <svg>
@@ -35,7 +19,7 @@
       </svg>
    </button>
 
-   <button on:click={onClickCloseAll}
+   <button on:click={() => navData.setStoresAllOpen(false)}
            on:pointerdown|stopPropagation
            title={'Close All'}>
       <svg class=flipped-vertical>
