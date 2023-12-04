@@ -26,6 +26,11 @@ export type DMTComponentData = {
    dmtLocalStorage: TJSLocalStorage;
 
    /**
+    * True when a project `modules.html` is generated.
+    */
+   hasModulesIndex: boolean;
+
+   /**
     * Resolved user icon links.
     */
    linksIcon: DMTIconLink[];

@@ -1,11 +1,13 @@
 <script>
-   import { getContext } from 'svelte';
+   /** @type {DMTComponentData} */
+   export let dmtComponentData = void 0;
 
-   const navigationData = /** @type {NavigationData} */ getContext('#navigationData');
+   const { navigationData, hasModulesIndex } = dmtComponentData;
 
    const { storeTopLevelNodes } = navigationData;
 </script>
 
+{#if $storeTopLevelNodes > 0 || hasModulesIndex}
 <section>
    {#if $storeTopLevelNodes > 0}
       <svg style="display: none;">
@@ -31,10 +33,13 @@
       </button>
    {/if}
 
-   <a href={`${navigationData.baseURL}modules.html`} class:current={navigationData.currentPathURL === 'modules.html'}>
-      Index
-   </a>
+   {#if hasModulesIndex}
+      <a href={`${navigationData.baseURL}modules.html`} class:current={navigationData.currentPathURL === 'modules.html'}>
+         Module Index
+      </a>
+   {/if}
 </section>
+{/if}
 
 <style>
    a:not(:first-child) {

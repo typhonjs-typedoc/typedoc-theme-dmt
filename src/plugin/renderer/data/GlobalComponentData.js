@@ -40,6 +40,7 @@ export class GlobalComponentData
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
       const data = {
+         hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
          sidebarLinks: app.options.getValue('sidebarLinks'),

@@ -52,7 +52,7 @@
 
 <SidebarLinks {dmtComponentData} />
 
-<NavigationBar />
+<NavigationBar {dmtComponentData} />
 
 <div bind:this={navigationEl} class=dmt-navigation-content tabindex=-1>
    {#each navigationData.index as entry (entry.path)}

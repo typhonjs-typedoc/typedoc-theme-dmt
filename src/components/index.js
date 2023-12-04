@@ -31,8 +31,8 @@ import './dmt-component-data.js';
 globalThis.dmtInflateAndUnpack = inflateAndUnpack;
 globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 
-const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ? /** @type {DMTComponentData} */
- globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {};
+const dmtComponentData = /** @type {DMTComponentData} */ (typeof globalThis.dmtComponentDataBCMP === 'string' ?
+ globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {});
 
 // Create navigation data / state.
 dmtComponentData.navigationData = new NavigationData(dmtComponentData.navigationIndex);
@@ -82,7 +82,7 @@ if (globalThis?.dmtOptions?.search)
 // }
 
 // Provides global keyboard commands.
-keyCommands(dmtComponentData.navigationData);
+keyCommands(dmtComponentData);
 
 // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
 // element allowing intuitive scrolling.
