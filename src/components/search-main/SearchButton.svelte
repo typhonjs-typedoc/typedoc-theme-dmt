@@ -2,7 +2,7 @@
    import { getContext } from 'svelte';
 
    /** @type {import('svelte/store').Writable<boolean>} */
-   const storeVisible = getContext('#visible');
+   const storeVisible = getContext('#storeVisible');
 </script>
 
 <button on:click={() => $storeVisible = !$storeVisible}

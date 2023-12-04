@@ -5,11 +5,12 @@
  * @module
  */
 
-import type { TrieSearch }             from '#runtime/data/struct/search/trie';
-
 import type {
    inflateAndUnpack,
    inflateAndUnpackB64 }               from '#runtime/data/format/msgpack/compress';
+
+import type { TrieSearch }             from '#runtime/data/struct/search/trie';
+import type { TJSLocalStorage }        from '#runtime/svelte/store/web-storage';
 
 import type lunr                       from 'lunr';
 import type { ReflectionKind }         from 'typedoc';
@@ -19,6 +20,11 @@ import type { NavigationElement }      from 'typedoc';
 import type { INavigationData }        from './components/navigation/types.ts';
 
 export type DMTComponentData = {
+   /**
+    * Local storage store manager.
+    */
+   dmtLocalStorage: TJSLocalStorage;
+
    /**
     * Resolved user icon links.
     */

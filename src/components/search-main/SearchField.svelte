@@ -19,10 +19,13 @@
     */
    const storeCurrentId = writable(void 0);
 
-   setContext('#currentId', storeCurrentId);
+   setContext('#storeCurrentId', storeCurrentId);
 
    /** @type {import('svelte/store').Writable<boolean>} */
-   const storeVisible = getContext('#visible');
+   const storeVisible = getContext('#storeVisible');
+
+   /** @type {import('svelte/store').Writable<boolean>} */
+   const storeSettingAnimate = getContext('#storeSettingAnimate');
 
    /**
     * Stores the input query string from the main search input element.
@@ -30,6 +33,8 @@
     * @type {import('svelte/store').Writable<string>}
     */
    const storeQuery = writable('');
+
+   const animateTransition = $storeSettingAnimate ? slideFade : () => void 0;
 
    let currentIndex = 0;
 
@@ -142,7 +147,7 @@
        id=dmt-search-field
        aria-label=Search
        on:keydown={handleKeydown}
-       transition:slideFade={{ duration: 200 }} />
+       transition:animateTransition={{ duration: 200 }} />
 
 {#if results.length}
    <SearchResults {results} bind:resultsEl />

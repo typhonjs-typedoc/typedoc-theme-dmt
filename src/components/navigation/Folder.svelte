@@ -25,9 +25,7 @@
 
    const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
 
-   // Determine if the top level icon for namespace / module folders is removed.
-   const animate = typeof globalThis?.dmtOptions?.navAnimate === 'boolean' ?
-    globalThis.dmtOptions.navAnimate : true;
+   const storeSettingAnimate = getContext('#storeSettingAnimate');
 
    const storageKey = entry.storageKey;
 
@@ -36,7 +34,6 @@
    const indentIcon = !removeIcon && entry.kind ? 'indent-icon' : 'indent-no-icon';
 
    const folder = {
-      animate,
       store,
       options: {
          focusChevron: true
@@ -44,9 +41,12 @@
       // Dynamically set the folder margin based on whether the parent folder has a svg icon.
       styles: parentIcon ? { '--tjs-folder-details-margin-left': '3.5px' } : void 0
    }
+
+   // Theme animation local storage state.
+   $: animate = $storeSettingAnimate;
 </script>
 
-<TJSSvgFolder {folder}>
+<TJSSvgFolder {folder} {animate}>
    <Entry {entry} {removeIcon} {storageKey} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}

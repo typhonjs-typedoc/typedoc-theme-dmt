@@ -5,10 +5,14 @@
    import SearchButton     from './SearchButton.svelte';
    import SearchField      from './SearchField.svelte';
 
+   /** @type {DMTComponentData} */
+   export let dmtComponentData = void 0;
+
    /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = writable(false);
 
-   setContext('#visible', storeVisible)
+   setContext('#storeVisible', storeVisible)
+   setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore('docs-dmt-animate'));
 
    /**
     * Open search when <Alt-s> is pressed.

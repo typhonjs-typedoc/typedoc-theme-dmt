@@ -8,7 +8,7 @@
    import NavigationBar          from './NavigationBar.svelte';
    import SidebarLinks           from './SidebarLinks.svelte';
 
-   import { NavigationData }     from './NavigationData.js';
+   import { DetailsAnimation }   from './DetailsAnimation.js';
 
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
@@ -16,7 +16,11 @@
    /** @type {INavigationData} */
    const navigationData = dmtComponentData?.navigationData;
 
+   const detailsAnimation = new DetailsAnimation();
+   const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore('docs-dmt-animate');
+
    setContext('#navigationData', navigationData);
+   setContext('#storeSettingAnimate', storeSettingsAnimate);
 
    const {
       currentPathURLStore,
@@ -27,6 +31,9 @@
     globalThis.dmtOptions.navTopModuleRemoveIcon : false;
 
    let navigationEl;
+
+   // Handle setting animation state for default theme detail elements.
+   $: detailsAnimation.setEnabled($storeSettingsAnimate);
 
    $: if ($currentPathURLStore)
    {

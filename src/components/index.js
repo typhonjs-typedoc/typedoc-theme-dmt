@@ -1,18 +1,22 @@
-import { writable }              from 'svelte/store';
-
-import { toggleDetails }         from '#runtime/svelte/action/animate';
-
 import {
    inflateAndUnpack,
    inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
 
+import { DMTLocalStorage }       from './DMTLocalStorage.js';
+
 import Navigation                from './navigation/Navigation.svelte';
+import { NavigationData }        from './navigation/NavigationData.js';
+
+import SettingAnimation          from './settings/SettingAnimation.svelte';
+
 import Toolbar                   from './toolbar/Toolbar.svelte';
 
 import SearchMain                from './search-main/SearchMain.svelte';
-// import SearchQuick               from './search-quick/SearchQuick.svelte';
 
 import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
+
+// TODO: Implement SearchQuick
+// import SearchQuick               from './search-quick/SearchQuick.svelte';
 // import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
 
 import {
@@ -21,7 +25,6 @@ import {
 
 // Loads compressed global component data.
 import './componentData.js';
-import {NavigationData} from "./navigation/NavigationData.js";
 
 // Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
 // plugins that might work with compressed data.
@@ -34,6 +37,13 @@ const dmtComponentData = typeof globalThis.dmtComponentDataBCMP === 'string' ? /
 // Create navigation data / state.
 dmtComponentData.navigationData = new NavigationData(dmtComponentData.navigationIndex);
 
+dmtComponentData.dmtLocalStorage = new DMTLocalStorage();
+
+const settingAnimation = new SettingAnimation({
+   target: document.querySelector('.tsd-navigation.settings .tsd-accordion-details'),
+   props: { dmtComponentData }
+});
+
 const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
    props: { dmtComponentData }
@@ -42,11 +52,12 @@ const navigation = new Navigation({
 const toolbar = new Toolbar({
    target: document.querySelector('#dmt-toolbar'),
    props: { dmtComponentData }
-})
+});
 
 // Stores references to DMT Svelte components.
 globalThis.dmtComponents = {
    navigation,
+   settingAnimation,
    toolbar
 };
 
@@ -54,23 +65,10 @@ globalThis.dmtComponents = {
 if (globalThis?.dmtOptions?.search)
 {
    loadMainSearchData();
-   globalThis.dmtComponents.searchMain = new SearchMain({ target: document.querySelector('#dmt-search-main') });
-}
-
-// Add WAAPI animation to all default theme details elements.
-if (globalThis?.dmtOptions.navAnimate)
-{
-   const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
-    'details.tsd-index-accordion');
-
-   for (const detailEl of detailElList)
-   {
-      // Add class to provide transition for svg chevron.
-      const svgEl = detailEl.querySelector('summary svg');
-      if (svgEl) { svgEl.classList.add('dmt-summary-svg'); }
-
-      toggleDetails(detailEl, { store: writable(detailEl.open) });
-   }
+   globalThis.dmtComponents.searchMain = new SearchMain({
+      target: document.querySelector('#dmt-search-main'),
+      props: { dmtComponentData }
+   });
 }
 
 // TODO: Work in progress

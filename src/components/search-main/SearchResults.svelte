@@ -10,10 +10,15 @@
    export let resultsEl = void 0;
 
    /** @type {import('svelte/store').Writable<number>} */
-   const storeCurrentId = getContext('#currentId');
+   const storeCurrentId = getContext('#storeCurrentId');
 
    /** @type {import('svelte/store').Writable<boolean>} */
-   const storeVisible = getContext('#visible');
+   const storeSettingAnimate = getContext('#storeSettingAnimate');
+
+   /** @type {import('svelte/store').Writable<boolean>} */
+   const storeVisible = getContext('#storeVisible');
+
+   const animateTransition = $storeSettingAnimate ? slideFade : () => void 0;
 
    function onClick(href)
    {
@@ -23,7 +28,7 @@
    }
 </script>
 
-<ul bind:this={resultsEl} transition:slideFade|global={{ duration: 100 }}>
+<ul bind:this={resultsEl} transition:animateTransition|global={{ duration: 100 }}>
 {#each results as result (result.id)}
    <!-- svelte-ignore a11y-click-events-have-key-events -->
    <li class={result.classes}
