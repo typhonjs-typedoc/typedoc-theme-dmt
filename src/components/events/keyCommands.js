@@ -32,9 +32,7 @@ export function keyCommands(navigationData)
 
          case 'KeyN':
          {
-            // Invoke `ensureCurrentPath` from Navigation Svelte component.
-            // globalThis?.dmtComponents?.navigation?.ensureCurrentPath?.({ focus: true });
-
+            // Ensure current path is open and focus current path navigation entry.
             const currentPathURL = navigationData.currentPathURL;
             if (navigationData.state.ensureCurrentPath(navigationData.currentPathURL))
             {
