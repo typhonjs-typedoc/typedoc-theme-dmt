@@ -22,9 +22,7 @@
    setContext('#navigationData', navigationData);
    setContext('#storeSettingAnimate', storeSettingsAnimate);
 
-   const {
-      currentPathURLStore,
-      storeTopLevelNodes } = navigationData;
+   const { currentPathURLStore } = navigationData;
 
    // Determine if the top level icon for namespace / module folders is removed.
    const removeIcon = typeof globalThis?.dmtOptions?.navTopModuleRemoveIcon === 'boolean' ?
@@ -54,9 +52,7 @@
 
 <SidebarLinks {dmtComponentData} />
 
-{#if $storeTopLevelNodes > 1 && globalThis.dmtOptions.navControls}
-   <NavigationBar />
-{/if}
+<NavigationBar />
 
 <div bind:this={navigationEl} class=dmt-navigation-content tabindex=-1>
    {#each navigationData.index as entry (entry.path)}
