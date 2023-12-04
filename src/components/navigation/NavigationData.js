@@ -30,7 +30,7 @@ export class NavigationData
     *
     * @type {import('svelte/store').Writable<string>}
     */
-   currentPathURLStore;
+   storeCurrentPathURL;
 
    /**
     * The navigation session storage store manager.
@@ -95,7 +95,7 @@ export class NavigationData
       const depth = (this.initialPathURL.match(/\//) ?? []).length;
 
       this.currentPathURL = this.initialPathURL;
-      this.currentPathURLStore = writable(this.initialPathURL);
+      this.storeCurrentPathURL = writable(this.initialPathURL);
 
       this.pathPrepend = '../'.repeat(depth);
 
@@ -133,6 +133,6 @@ export class NavigationData
    setCurrentPathURL(pathURL)
    {
       this.currentPathURL = pathURL;
-      this.currentPathURLStore.set(pathURL);
+      this.storeCurrentPathURL.set(pathURL);
    }
 }

@@ -22,7 +22,7 @@
    setContext('#navigationData', navigationData);
    setContext('#storeSettingAnimate', storeSettingsAnimate);
 
-   const { currentPathURLStore } = navigationData;
+   const { storeCurrentPathURL } = navigationData;
 
    // Determine if the top level icon for namespace / module folders is removed.
    const removeIcon = typeof globalThis?.dmtOptions?.navTopModuleRemoveIcon === 'boolean' ?
@@ -33,7 +33,7 @@
    // Handle setting animation state for default theme detail elements.
    $: detailsAnimation.setEnabled($storeSettingsAnimate);
 
-   $: if ($currentPathURLStore)
+   $: if ($storeCurrentPathURL)
    {
       // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
       nextAnimationFrame().then(() =>

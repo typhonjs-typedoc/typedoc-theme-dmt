@@ -1,5 +1,3 @@
-import { nextAnimationFrame } from '#runtime/util/animate';
-
 /**
  * Provides the ability to walk the navigation index and manage state for initial opened state for entries and ensuring
  * opened state when URL hash changes occur.

@@ -39,7 +39,7 @@ export interface INavigationData {
     *
     * @type {import('svelte/store').Writable<string>}
     */
-   currentPathURLStore: Writable<string>;
+   storeCurrentPathURL: Writable<string>;
 
    /**
     * The navigation session storage store manager.
