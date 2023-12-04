@@ -35,8 +35,8 @@
 
    a {
       display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      overflow: var(--dmt-sidebarlinks-overflow, unset);
+      text-overflow: var(--dmt-sidebarlinks-text-overflow, ellipsis);
+      white-space: var(--dmt-sidebarlinks-white-space, normal);
    }
 </style>
