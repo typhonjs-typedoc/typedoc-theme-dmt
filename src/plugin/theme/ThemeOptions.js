@@ -29,7 +29,6 @@ export class ThemeOptions
       favicon: {},
       linksIcon: [],
       linksService: [],
-      navControls: true,
       navTopModuleRemoveIcon: false,
       removeBreadcrumb: false,
       search: true,
@@ -64,13 +63,6 @@ export class ThemeOptions
          help: `${ID} Places built-in icon links in toolbar links; supported services: BitBucket, Discord, GitHub, GitLab, NPM`,
          type: ParameterType.Object,
          defaultValue: null
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtNavControls',
-         help: `${ID} When true and there is more than one top level tree node navigation controls are displayed.`,
-         type: ParameterType.Boolean,
-         defaultValue: true
       });
 
       app.options.addDeclaration({
@@ -155,9 +147,6 @@ export class ThemeOptions
    /** @returns {DMTIconLink[]} linksService option */
    get linksService() { return this.#options.linksService; }
 
-   /** @returns {boolean} Display top level navigation controls */
-   get navControls() { return this.#options.navControls; }
-
    /** @returns {boolean} navTopModuleRemoveIcon option */
    get navTopModuleRemoveIcon() { return this.#options.navTopModuleRemoveIcon; }
 
@@ -183,7 +172,6 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
-      this.#options.navControls = app.options.getValue('dmtNavControls');
       this.#options.navTopModuleRemoveIcon = app.options.getValue('dmtNavTopModuleRemoveIcon');
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.search = app.options.getValue('dmtSearch');
@@ -293,8 +281,6 @@ export class ThemeOptions
  * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
  *
  * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
- *
- * @property {boolean} navControls When true and there is more than one tree node navigation controls are displayed.
  *
  * @property {boolean} navTopModuleRemoveIcon When true the top level SVG icon for each entry / namespace is removed.
  *

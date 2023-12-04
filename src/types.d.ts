@@ -66,11 +66,6 @@ export type DMTGlobalOptions = {
    basePath: string;
 
    /**
-    * When true and there is more than one top level tree node navigation controls are displayed.
-    */
-   navControls: boolean;
-
-   /**
     * Removes the top level namespace / module SVG icon. This is useful when documenting packages w/ sub-path exports.
     */
    navTopModuleRemoveIcon: boolean;
