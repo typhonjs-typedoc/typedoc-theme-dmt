@@ -29,7 +29,6 @@ export class ThemeOptions
       favicon: {},
       linksIcon: [],
       linksService: [],
-      navAnimate: true,
       navControls: true,
       navTopModuleRemoveIcon: false,
       removeBreadcrumb: false,
@@ -65,13 +64,6 @@ export class ThemeOptions
          help: `${ID} Places built-in icon links in toolbar links; supported services: BitBucket, Discord, GitHub, GitLab, NPM`,
          type: ParameterType.Object,
          defaultValue: null
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtNavAnimate',
-         help: `${ID} When true navigation uses WAAPI to animate folder open / close state.`,
-         type: ParameterType.Boolean,
-         defaultValue: true
       });
 
       app.options.addDeclaration({
@@ -163,9 +155,6 @@ export class ThemeOptions
    /** @returns {DMTIconLink[]} linksService option */
    get linksService() { return this.#options.linksService; }
 
-   /** @returns {boolean} Animate navigation folders w/ WAAPI */
-   get navAnimate() { return this.#options.navAnimate; }
-
    /** @returns {boolean} Display top level navigation controls */
    get navControls() { return this.#options.navControls; }
 
@@ -194,7 +183,6 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
-      this.#options.navAnimate = app.options.getValue('dmtNavAnimate');
       this.#options.navControls = app.options.getValue('dmtNavControls');
       this.#options.navTopModuleRemoveIcon = app.options.getValue('dmtNavTopModuleRemoveIcon');
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
@@ -305,8 +293,6 @@ export class ThemeOptions
  * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
  *
  * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
- *
- * @property {boolean} navAnimate When true navigation uses WAAPI to animate folder open / close state.
  *
  * @property {boolean} navControls When true and there is more than one tree node navigation controls are displayed.
  *

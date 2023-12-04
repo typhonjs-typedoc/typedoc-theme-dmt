@@ -66,11 +66,6 @@ export type DMTGlobalOptions = {
    basePath: string;
 
    /**
-    * When true navigation uses WAAPI to animate folder open / close state.
-    */
-   navAnimate: boolean;
-
-   /**
     * When true and there is more than one top level tree node navigation controls are displayed.
     */
    navControls: boolean;
