@@ -21,10 +21,12 @@
     */
    function handleKeydown(event)
    {
+      if (!event.altKey || event.repeat) { return; }
+
       switch (event.code)
       {
          case 'KeyS':
-            if (event.altKey) { $storeVisible = true; }
+            $storeVisible = true;
             break;
       }
    }

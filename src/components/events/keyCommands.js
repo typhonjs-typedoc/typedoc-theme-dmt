@@ -16,7 +16,7 @@ export function keyCommands(navigationData)
    // Direct focus target.
    globalThis.document.addEventListener('keydown', (event) =>
    {
-      if (!event.altKey) { return; }
+      if (!event.altKey || event.repeat) { return; }
 
       switch (event.code)
       {
