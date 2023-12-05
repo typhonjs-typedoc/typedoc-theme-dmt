@@ -1,8 +1,10 @@
 <script>
+   import { localConstants } from '#constants';
+
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
 
-   const storeAnimation = dmtComponentData.dmtLocalStorage.getStore('docs-dmt-animate');
+   const storeAnimation = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate, true);
 </script>
 
 <label class=tsd-filter-input>

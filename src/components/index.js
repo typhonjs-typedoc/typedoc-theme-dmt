@@ -2,7 +2,11 @@ import {
    inflateAndUnpack,
    inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
 
-import { DMTLocalStorage }       from './DMTLocalStorage.js';
+import { TJSLocalStorage }       from '#runtime/svelte/store/web-storage';
+
+import {
+   keyCommands,
+   scrollActivation }            from './events';
 
 import Navigation                from './navigation/Navigation.svelte';
 import { NavigationData }        from './navigation/NavigationData.js';
@@ -19,10 +23,6 @@ import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
 // import SearchQuick               from './search-quick/SearchQuick.svelte';
 // import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
 
-import {
-   keyCommands,
-   scrollActivation }            from './events/index.js';
-
 // Loads compressed global component data.
 import './dmt-component-data.js';
 
@@ -37,7 +37,9 @@ const dmtComponentData = /** @type {DMTComponentData} */ (typeof globalThis.dmtC
 // Create navigation data / state.
 dmtComponentData.navigationData = new NavigationData(dmtComponentData.navigationIndex);
 
-dmtComponentData.dmtLocalStorage = new DMTLocalStorage();
+dmtComponentData.dmtLocalStorage = new TJSLocalStorage();
+
+// Mount Svelte components -------------------------------------------------------------------------------------------
 
 const settingAnimation = new SettingAnimation({
    target: document.querySelector('.tsd-navigation.settings .tsd-accordion-details'),
@@ -81,6 +83,8 @@ if (globalThis?.dmtOptions?.search)
 //    });
 // }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 // Provides global keyboard commands.
 keyCommands(dmtComponentData);
 
@@ -89,8 +93,6 @@ keyCommands(dmtComponentData);
 scrollActivation();
 
 // Removes the `opacity: 0` inline style on `body` element after all scripts have loaded. This allows a smooth
-// transition for the `main.js` default template script to take effect along with loading web components before
-// the page is initially visible. There is no flicker as this is handled by a rAF callback.
-// globalThis.requestAnimationFrame(() => globalThis.document.querySelector('body').style = null);
-
+// transition for the `main.js` default template script to take effect before the page is initially visible. There is
+// minimal flicker.
 document.querySelector('body').style = null;

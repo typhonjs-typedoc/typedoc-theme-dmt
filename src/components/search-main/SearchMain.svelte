@@ -1,9 +1,11 @@
 <script>
-   import { setContext }   from 'svelte';
-   import { writable }     from 'svelte/store';
+   import { setContext }      from 'svelte';
+   import { writable }        from 'svelte/store';
 
-   import SearchButton     from './SearchButton.svelte';
-   import SearchField      from './SearchField.svelte';
+   import SearchButton        from './SearchButton.svelte';
+   import SearchField         from './SearchField.svelte';
+
+   import { localConstants }  from '#constants';
 
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
@@ -12,7 +14,7 @@
    const storeVisible = writable(false);
 
    setContext('#storeVisible', storeVisible)
-   setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore('docs-dmt-animate'));
+   setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
 
    /**
     * Open search when <Alt-s> is pressed.

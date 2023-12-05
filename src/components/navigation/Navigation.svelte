@@ -10,6 +10,8 @@
 
    import { DetailsAnimation }   from './DetailsAnimation.js';
 
+   import { localConstants }     from '#constants';
+
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
 
@@ -17,7 +19,7 @@
    const navigationData = dmtComponentData?.navigationData;
 
    const detailsAnimation = new DetailsAnimation();
-   const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore('docs-dmt-animate');
+   const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate);
 
    setContext('#navigationData', navigationData);
    setContext('#storeSettingAnimate', storeSettingsAnimate);
