@@ -13,6 +13,13 @@ export class PathMap
    #depth;
 
    /**
+    * Max depth of path maps.
+    *
+    * @type {number}
+    */
+   #depthMax;
+
+   /**
     * @type {PathMapData}
     */
    #map = new Map();
@@ -21,6 +28,12 @@ export class PathMap
     * @returns {PathMapData}
     */
    get map() { return this.#map; }
+
+   constructor(depthMax, depth = 0)
+   {
+      this.#depthMax = depthMax;
+      this.#depth = depth;
+   }
 
    /**
     * @param {import('typedoc').NavigationElement} node -
@@ -42,10 +55,28 @@ export class PathMap
 
       const pathArray = this.#map.get(rootPath);
 
+      if (subPath)
+      {
+         const rootPathRegex = new RegExp(`^${rootPath}`);
+         node.text = node.text.replace(rootPathRegex, '');
+      }
+
       pathArray.push({
          subPath,
          node
       });
+   }
+
+   #createChildMap()
+   {
+      if (this.#child) { return this.#child; }
+
+      if (this.#depth < this.#depthMax - 1)
+      {
+         this.#child = new PathMap(this.#depthMax, this.#depth + 1);
+      }
+
+      return this.#child;
    }
 
    *process()
@@ -65,18 +96,12 @@ export class PathMap
             targetNode = entries[indexNoSubPath].node;
             entries.splice(indexNoSubPath, 1);
 
-            if (entries.length && !Array.isArray(targetNode.children))
-            { targetNode.children = []; }
+            if (entries.length && !Array.isArray(targetNode.children)) { targetNode.children = []; }
          }
-
-         const rootPathRegex = new RegExp(`^${rootPath}`);
 
          for (const entry of entries)
          {
             const node = entry.node;
-
-            if (entry.subPath) { node.text = node.text.replace(rootPathRegex, ''); }
-
             targetNode.children.unshift(node);
          }
 

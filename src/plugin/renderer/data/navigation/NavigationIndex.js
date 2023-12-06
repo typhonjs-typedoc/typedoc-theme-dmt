@@ -14,7 +14,7 @@ export class NavigationIndex
     */
    static topLevelModule(index)
    {
-      const pathMap = new PathMap();
+      const pathMap = new PathMap(1);
 
       for (let i = index.length; --i >= 0;)
       {
