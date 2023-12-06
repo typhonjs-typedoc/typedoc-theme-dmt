@@ -217,11 +217,16 @@ header.tsd-page-toolbar {
 }
 
 details .tsd-accordion-summary {
+  // Special handling of focus-visible state.
   &:focus-visible {
-    outline: var(--dmt-outline-focus-visible);
-  }
+    outline: none; // No outline of summary element
 
-  border-radius: 0.25rem;
+    // Outline SVG instead.
+    svg {
+      outline: var(--dmt-outline-focus-visible);
+      border-radius: 0.25rem;
+    }
+  }
 
   // Align SVG
   h3, h5 {
