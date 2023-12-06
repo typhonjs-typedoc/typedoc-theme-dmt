@@ -303,6 +303,16 @@ a {
   padding: 0 1rem;
   margin: 0 auto;
 
+  // Add border radius to signature blocks.
+  .tsd-signature {
+    border-radius: 0.5rem;
+  }
+
+  // Except inside `.tsd-signatures`.
+  .tsd-signatures .tsd-signature {
+    border-radius: 0;
+  }
+
   // `Index` details element -------------------------------
 
   .tsd-panel-group.tsd-index-group details {
