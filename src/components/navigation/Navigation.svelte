@@ -47,6 +47,16 @@
 
    // Always indent first level entries to match any module / namespace entries w/ children.
    const indentIcon = 'indent-no-icon';
+
+   /**
+    * Prevents the space key from scrolling the tree view; for Chrome.
+    *
+    * @param {KeyboardEvent} event - Keyboard Event.
+    */
+   function onKeydown(event)
+   {
+      if (event.code === 'Space') { event.preventDefault(); }
+   }
 </script>
 
 <svelte:options accessors={true}/>
@@ -56,7 +66,11 @@
 
 <NavigationBar {dmtComponentData} />
 
-<div bind:this={navigationEl} class=dmt-navigation-content tabindex=-1>
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div bind:this={navigationEl}
+     class=dmt-navigation-content
+     on:keydown|capture={onKeydown}
+     tabindex=-1>
    {#each navigationData.index as entry (entry.path)}
       {#if Array.isArray(entry.children)}
          <Folder {entry} />

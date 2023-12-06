@@ -50,8 +50,8 @@ export function keyCommands(dmtComponentData)
             if (hasModulesIndex)
             {
                window.location.href = `${navigationData.baseURL}modules.html`;
-               event.preventDefault();
             }
+            event.preventDefault();
             break;
 
          case 'KeyN':
@@ -63,6 +63,7 @@ export function keyCommands(dmtComponentData)
             // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
             nextAnimationFrame().then(() => document.querySelector('nav.tsd-navigation')?.querySelector(
              `a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
+            event.preventDefault();
             break;
          }
 
@@ -77,9 +78,9 @@ export function keyCommands(dmtComponentData)
                {
                   detailsEl.open = true;
                   setTimeout(() => anchorEl.focus({ focusVisible: true }), 0);
-                  event.preventDefault();
                }
             }
+            event.preventDefault();
             break;
          }
       }
