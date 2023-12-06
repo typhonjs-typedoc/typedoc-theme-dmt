@@ -137,8 +137,9 @@ header.tsd-page-toolbar {
   top: 0;
 }
 
+// Unset default theme max-width allowing full expansion. Add max-width to .col-content instead and
 .container {
-  max-width: 2000px;
+  max-width: unset;
 }
 
 .container.container-main {
@@ -151,6 +152,7 @@ header.tsd-page-toolbar {
 .col-content {
   height: fit-content;
   margin-top: 0.75rem;
+  max-width: 1300px;
 }
 
 .site-menu {
@@ -403,6 +405,16 @@ a {
   // Remove trailing `/`
   .tsd-breadcrumb li:last-child:after {
     content: "";
+  }
+}
+
+// For 4k / large screen sizes. Cap grid columns then expand left margin and right padding to center content while
+// keeping the main container scrollbar pinned to the far right side of the screen.
+@media (min-width: 2190px) {
+  .container-main {
+    grid-template-columns: minmax(0, 520px) minmax(0, 1300px) 1fr;
+    margin-left: calc((100% - 2190px) / 2);
+    padding-right: calc((100% - 2190px) / 2);
   }
 }
 
