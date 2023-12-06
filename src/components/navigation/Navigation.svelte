@@ -27,8 +27,8 @@
    const { storeCurrentPathURL } = navigationData;
 
    // Determine if the top level icon for namespace / module folders is removed.
-   const removeIcon = typeof globalThis?.dmtOptions?.navRemoveModuleIcon === 'boolean' ?
-    globalThis.dmtOptions.navRemoveModuleIcon : false;
+   const removeIcon = typeof globalThis?.dmtOptions?.navModuleRemoveIcon === 'boolean' ?
+    globalThis.dmtOptions.navModuleRemoveIcon : false;
 
    let navigationEl;
 

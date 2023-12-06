@@ -73,7 +73,7 @@ export type DMTGlobalOptions = {
    /**
     * When true SVG icons for all navigation module entries are removed.
     */
-   navRemoveModuleIcon: boolean;
+   navModuleRemoveIcon: boolean;
 
    /**
     * The `dmtSearch` option; when true the main search index is active.

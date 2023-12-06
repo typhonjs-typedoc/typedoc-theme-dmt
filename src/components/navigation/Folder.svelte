@@ -24,8 +24,8 @@
 
    const store = storageKey ? dmtSessionStorage.getStore(storageKey, false) : void 0;
 
-   const removeIcon = typeof globalThis?.dmtOptions?.navRemoveModuleIcon === 'boolean' &&
-    (entry.kind === void 0 || entry.kind === 2) ? globalThis.dmtOptions.navRemoveModuleIcon : false;
+   const removeIcon = typeof globalThis?.dmtOptions?.navModuleRemoveIcon === 'boolean' &&
+    (entry.kind === void 0 || entry.kind === 2) ? globalThis.dmtOptions.navModuleRemoveIcon : false;
 
    const indentIcon = !removeIcon && entry.kind ? 'indent-icon' : 'indent-no-icon';
 
