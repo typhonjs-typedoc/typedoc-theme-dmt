@@ -29,7 +29,7 @@ export class ThemeOptions
       favicon: {},
       linksIcon: [],
       linksService: [],
-      navTopModuleRemoveIcon: false,
+      navRemoveModuleIcon: false,
       removeBreadcrumb: false,
       search: true,
       searchLimit: 10,
@@ -66,8 +66,8 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
-         name: 'dmtNavTopModuleRemoveIcon',
-         help: `${ID} When true the top level SVG icon for all module / namespace entries is removed.`,
+         name: 'dmtNavRemoveModuleIcon',
+         help: `${ID} When true SVG icons for all navigation module entries are removed.`,
          type: ParameterType.Boolean,
          defaultValue: false
       });
@@ -147,8 +147,8 @@ export class ThemeOptions
    /** @returns {DMTIconLink[]} linksService option */
    get linksService() { return this.#options.linksService; }
 
-   /** @returns {boolean} navTopModuleRemoveIcon option */
-   get navTopModuleRemoveIcon() { return this.#options.navTopModuleRemoveIcon; }
+   /** @returns {boolean} navRemoveModuleIcon option */
+   get navRemoveModuleIcon() { return this.#options.navRemoveModuleIcon; }
 
    /** @returns {boolean} removeBreadcrumb option */
    get removeBreadcrumb() { return this.#options.removeBreadcrumb; }
@@ -172,7 +172,7 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
-      this.#options.navTopModuleRemoveIcon = app.options.getValue('dmtNavTopModuleRemoveIcon');
+      this.#options.navRemoveModuleIcon = app.options.getValue('dmtNavRemoveModuleIcon');
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
@@ -282,7 +282,7 @@ export class ThemeOptions
  *
  * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
  *
- * @property {boolean} navTopModuleRemoveIcon When true the top level SVG icon for each entry / namespace is removed.
+ * @property {boolean} navRemoveModuleIcon When true SVG icons for all navigation module entries are removed.
  *
  * @property {boolean} removeBreadcrumb When true the entire breadcrumb is removed.
  *

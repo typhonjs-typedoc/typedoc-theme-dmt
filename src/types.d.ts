@@ -71,9 +71,9 @@ export type DMTGlobalOptions = {
    basePath: string;
 
    /**
-    * Removes the top level namespace / module SVG icon. This is useful when documenting packages w/ sub-path exports.
+    * When true SVG icons for all navigation module entries are removed.
     */
-   navTopModuleRemoveIcon: boolean;
+   navRemoveModuleIcon: boolean;
 
    /**
     * The `dmtSearch` option; when true the main search index is active.

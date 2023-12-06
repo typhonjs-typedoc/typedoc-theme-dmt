@@ -14,13 +14,6 @@
    /** @type {import('./types').DMTNavigationElement} */
    export let entry;
 
-   /**
-    * Forwarded onto the summary `Entry` to not render the SVG icon for top level modules / namespaces.
-    *
-    * @type {boolean}
-    */
-   export let removeIcon = false;
-
    export let parentIcon = false;
 
    const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
@@ -30,6 +23,9 @@
    const storageKey = entry.storageKey;
 
    const store = storageKey ? dmtSessionStorage.getStore(storageKey, false) : void 0;
+
+   const removeIcon = typeof globalThis?.dmtOptions?.navRemoveModuleIcon === 'boolean' &&
+    (entry.kind === void 0 || entry.kind === 2) ? globalThis.dmtOptions.navRemoveModuleIcon : false;
 
    const indentIcon = !removeIcon && entry.kind ? 'indent-icon' : 'indent-no-icon';
 
@@ -52,7 +48,7 @@
       {#if Array.isArray(child.children)}
          <svelte:self entry={child} parentIcon={!removeIcon} />
       {:else}
-         <Entry entry={child} {indentIcon} />
+         <Entry entry={child} {indentIcon} removeIcon={removeIcon && child?.kind === 2} />
       {/if}
    {/each}
 </TJSSvgFolder>
