@@ -29,7 +29,8 @@ export class ThemeOptions
       favicon: {},
       linksIcon: [],
       linksService: [],
-      navRemoveModuleIcon: false,
+      navModuleDepth: Number.MAX_SAFE_INTEGER,
+      navRemoveModuleIcon: true,
       removeBreadcrumb: false,
       search: true,
       searchLimit: 10,
@@ -66,10 +67,17 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
-         name: 'dmtNavRemoveModuleIcon',
+         name: 'dmtNavModuleDepth',
          help: `${ID} When true SVG icons for all navigation module entries are removed.`,
+         type: ParameterType.Number,
+         defaultValue: Number.MAX_SAFE_INTEGER
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtNavRemoveModuleIcon',
+         help: `${ID} The depth where the navigation index begins concatenating module paths.`,
          type: ParameterType.Boolean,
-         defaultValue: false
+         defaultValue: true
       });
 
       app.options.addDeclaration({
@@ -147,6 +155,9 @@ export class ThemeOptions
    /** @returns {DMTIconLink[]} linksService option */
    get linksService() { return this.#options.linksService; }
 
+   /** @returns {number} navModuleDepth option */
+   get navModuleDepth() { return this.#options.navModuleDepth; }
+
    /** @returns {boolean} navRemoveModuleIcon option */
    get navRemoveModuleIcon() { return this.#options.navRemoveModuleIcon; }
 
@@ -172,6 +183,7 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
+      this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
       this.#options.navRemoveModuleIcon = app.options.getValue('dmtNavRemoveModuleIcon');
       this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.search = app.options.getValue('dmtSearch');
@@ -182,6 +194,15 @@ export class ThemeOptions
       // Validate options --------------------------------------------------------------------------------------------
 
       this.#options.favicon = ThemeOptions.#validateFileOrURL(app, app.options.getValue('dmtFavicon'), 'dmtFavicon');
+
+      // Verify `navModuleDepth`.
+      if (!Number.isInteger(this.#options.navModuleDepth) || this.#options.navModuleDepth < 0)
+      {
+         app.logger.warn(`${ThemeOptions.#ID
+         } 'dmtNavModuleDepth' must be an integer greater than or equal to '0'; setting to default.`);
+
+         this.#options.navModuleDepth = Number.MAX_SAFE_INTEGER;
+      }
 
       const linksIcon = app.options.getValue('dmtLinksIcon');
 
@@ -281,6 +302,8 @@ export class ThemeOptions
  * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
  *
  * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
+ *
+ * @property {number} navModuleDepth The depth where the navigation index begins concatenating module paths.
  *
  * @property {boolean} navRemoveModuleIcon When true SVG icons for all navigation module entries are removed.
  *

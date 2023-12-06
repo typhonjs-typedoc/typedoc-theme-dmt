@@ -3,6 +3,8 @@ import path                   from 'node:path';
 
 import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
 
+import { NavigationIndex }    from './navigation/NavigationIndex.js';
+
 /**
  * Exports all global component data to a MessagePack file to `/assets/dmt/componentData.js`.
  *
@@ -44,7 +46,7 @@ export class GlobalComponentData
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
          sidebarLinks: app.options.getValue('sidebarLinks'),
-         navigationIndex: app.renderer.theme?.getNavigation?.(event.project) ?? [],
+         navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
          navigationLinks: app.options.getValue('navigationLinks')
       }
 
