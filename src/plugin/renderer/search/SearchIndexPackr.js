@@ -59,9 +59,19 @@ export class SearchIndexPackr
 
       if (indexEvent.isDefaultPrevented) { return; }
 
+      // Custom trimmer function that allows leading `#` and `@`.
+      const customTrimmer = function (token) {
+         return token.update(function (s) {
+            return s.replace(/^[^\w#@]+/, '').replace(/[^\w#@]+$/, '');
+         });
+      };
+
+      // Register the custom trimmer in lunr pipeline.
+      lunr.Pipeline.registerFunction(customTrimmer, 'customTrimmer');
+
       /** @type {import('lunr').Builder} */
       const builder = new lunr.Builder();
-      builder.pipeline.add(lunr.trimmer);
+      builder.pipeline.add(customTrimmer);
 
       builder.ref('i');
       for (const [key, boost] of Object.entries(indexEvent.searchFieldWeights))
