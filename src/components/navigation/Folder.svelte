@@ -27,7 +27,7 @@
 
    const removeIcon = !navModuleIcon && (entry.kind === void 0 || entry.kind === 2);
 
-   const indentIcon = !removeIcon && entry.kind ? 'indent-icon' : 'indent-no-icon';
+   const indentIcon = !removeIcon ? 'indent-icon' : 'indent-no-icon';
 
    const folder = {
       store,
