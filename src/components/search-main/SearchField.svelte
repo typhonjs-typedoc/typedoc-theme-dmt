@@ -24,6 +24,9 @@
    /** @type {string} */
    const basePath = getContext('#basePath');
 
+   /** @type {boolean} */
+   const navModuleIcon = getContext('#navModuleIcon');
+
    /** @type {number} */
    const searchLimit = getContext('#searchLimit');
 
@@ -41,6 +44,12 @@
    const storeQuery = writable('');
 
    const animateTransition = $storeSettingAnimate ? slideFade : () => void 0;
+
+   const queryOptions = {
+      basePath,
+      navModuleIcon,
+      searchLimit
+   }
 
    let currentIndex = 0;
 
@@ -62,7 +71,7 @@
 
    // Perform the search when the query input changes.
    $: {
-      results = processSearchQuery($storeQuery, basePath, searchLimit);
+      results = processSearchQuery($storeQuery, queryOptions);
       currentIndex = -1;
       storeCurrentId.set(void 0);
    }

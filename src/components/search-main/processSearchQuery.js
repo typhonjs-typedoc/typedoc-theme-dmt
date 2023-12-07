@@ -8,13 +8,17 @@
 /**
  * @param {string}   query - A search query.
  *
- * @param {string}   basePath - The current relative base path.
+ * @param {object}   options - Options.
  *
- * @param {number}   [searchLimit=10] - Limit search results to the given value.
+ * @param {string}   options.basePath - The current relative base path.
+ *
+ * @param {boolean}  options.navModuleIcon - Include SVG icon / kind in results for modules.
+ *
+ * @param {number}   [options.searchLimit=10] - Limit search results to the given value.
  *
  * @returns {ProcessedSearchDocument[]} Processed query results.
  */
-export function processSearchQuery(query, basePath, searchLimit = 10)
+export function processSearchQuery(query, { basePath, navModuleIcon = true, searchLimit = 10 } = {})
 {
    if (!globalThis.dmtSearchMainIndex || !globalThis.dmtSearchMainRows) { return []; }
 
@@ -64,9 +68,12 @@ export function processSearchQuery(query, basePath, searchLimit = 10)
          )}.</span>${name}`;
       }
 
+      // Don't include kind when theme option `navModuleIcon` is false and result is a `Module`.
+      const kind = !navModuleIcon && row.k === 2 ? void 0 : row.k;
+
       processedDocuments.push({
          id: index,
-         kind: row.k,
+         kind,
          classes: row.c ?? '', // classes
          href: `${basePath}${row.u}`, // URL
          name

@@ -14,6 +14,7 @@
    const storeVisible = writable(false);
 
    setContext('#basePath', dmtComponentData.basePath)
+   setContext('#navModuleIcon', dmtComponentData.navModuleIcon)
    setContext('#searchLimit', dmtComponentData.searchLimit ?? 10)
    setContext('#storeVisible', storeVisible)
    setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
