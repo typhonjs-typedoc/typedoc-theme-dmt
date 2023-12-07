@@ -21,6 +21,10 @@
 
    setContext('#storeCurrentId', storeCurrentId);
 
+   /** @type {string} */
+   const basePath = getContext('#basePath');
+
+   /** @type {number} */
    const searchLimit = getContext('#searchLimit');
 
    /** @type {import('svelte/store').Writable<boolean>} */
@@ -58,7 +62,7 @@
 
    // Perform the search when the query input changes.
    $: {
-      results = processSearchQuery($storeQuery, searchLimit);
+      results = processSearchQuery($storeQuery, basePath, searchLimit);
       currentIndex = -1;
       storeCurrentId.set(void 0);
    }

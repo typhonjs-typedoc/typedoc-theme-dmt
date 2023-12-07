@@ -21,6 +21,13 @@ export type DMTNavigationElement = NavigationElement & {
 
 export interface INavigationData {
    /**
+    * The relative path prepend for all entry path links.
+    *
+    * @type {string}
+    */
+   basePath: string;
+
+   /**
     * The documentation base URL.
     *
     * @type {string}
@@ -61,13 +68,6 @@ export interface INavigationData {
     * @type {string}
     */
    initialPathURL: string;
-
-   /**
-    * The relative path prepend for all entry path links.
-    *
-    * @type {string}
-    */
-   pathPrepend: string;
 
    /**
     * Navigation state control.

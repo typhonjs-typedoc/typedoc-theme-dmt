@@ -34,6 +34,15 @@ globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 const dmtComponentData = /** @type {DMTComponentData} */ (typeof globalThis.dmtComponentDataBCMP === 'string' ?
  globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {});
 
+// Setup additional runtime component data ---------------------------------------------------------------------------
+
+dmtComponentData.baseURL = import.meta.url.replace(/assets\/dmt\/dmt-components.js/, '');
+dmtComponentData.initialPathURL = globalThis.location.href.replace(dmtComponentData.baseURL, '');
+
+// Find the path URL match without any additional URL fragment.
+const depth = (dmtComponentData.initialPathURL.match(/\//) ?? []).length;
+dmtComponentData.basePath = '../'.repeat(depth);
+
 // Create navigation data / state.
 dmtComponentData.navigationData = new NavigationData(dmtComponentData);
 

@@ -21,6 +21,16 @@ import type { INavigationData }        from './components/navigation/types.ts';
 
 export type DMTComponentData = {
    /**
+    * Relative path to the documentation root from current page.
+    */
+   basePath: string;
+
+   /**
+    * Full base URL to documentation root.
+    */
+   baseURL: string;
+
+   /**
     * Local storage store manager.
     */
    dmtLocalStorage: TJSLocalStorage;
@@ -29,6 +39,11 @@ export type DMTComponentData = {
     * True when a project `modules.html` is generated.
     */
    hasModulesIndex: boolean;
+
+   /**
+    * Initial path URL for current page.
+    */
+   initialPathURL: string;
 
    /**
     * Resolved user icon links.
@@ -89,16 +104,6 @@ export type DMTComponentData = {
     * Provides a key based on the package name or a random string to prepend to local / session storage keys.
     */
    storagePrepend: string;
-}
-
-/**
- * Defines the global DMT options available in the frontend runtime.
- */
-export type DMTGlobalOptions = {
-   /**
-    * The base path from the current page.
-    */
-   basePath: string;
 }
 
 /**
@@ -240,10 +245,5 @@ declare global {
        * When quick search is enabled provides a TrieSearch instance for the navigation reflections plus sidebar links.
        */
       dmtSearchQuickNav?: TrieSearch<SearchQuickDocument>;
-
-      /**
-       * Defines DMT plugin options used at the global scope. Configured in DMT plugin / `PageRenderer.#addAssets`.
-       */
-      dmtOptions: DMTGlobalOptions
    }
 }

@@ -55,19 +55,6 @@ export class PageRenderer
       // Append DMT components script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-components.js" type="module" />`));
 
-      /**
-       * Configures the global options available in frontend runtime.
-       *
-       * @type {DMTGlobalOptions}
-       */
-      const dmtGlobalOptions = {
-         basePath
-      };
-
-      // Append DMT options for search index enabled state; if not enabled loading code is disabled.
-      headEl.append(
-       $(`<script type="application/javascript">globalThis.dmtOptions = ${JSON.stringify(dmtGlobalOptions)}</script>`));
-
       if (this.#options?.favicon?.url)
       {
          // Append favicon URL to the head element.

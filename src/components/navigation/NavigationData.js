@@ -12,6 +12,13 @@ import { NavigationState }    from './NavigationState.js';
 export class NavigationData
 {
    /**
+    * The relative path prepend for all entry path links.
+    *
+    * @type {string}
+    */
+   basePath;
+
+   /**
     * The documentation base URL.
     *
     * @type {string}
@@ -54,13 +61,6 @@ export class NavigationData
    initialPathURL;
 
    /**
-    * The relative path prepend for all entry path links.
-    *
-    * @type {string}
-    */
-   pathPrepend;
-
-   /**
     * Navigation state control.
     *
     * @type {import('./NavigationState').NavigationState}
@@ -91,6 +91,9 @@ export class NavigationData
     */
    constructor(dmtComponentData)
    {
+      this.basePath = dmtComponentData.basePath;
+      this.baseURL = dmtComponentData.baseURL;
+      this.initialPathURL = dmtComponentData.initialPathURL;
       this.index = dmtComponentData.navigationIndex;
 
       // Retrieve the storage prepend string from global DMT options or use a default key.
@@ -98,17 +101,8 @@ export class NavigationData
 
       this.dmtSessionStorage = new TJSSessionStorage();
 
-      // Determine the depth in the static HTML paths to adjust a prepended relative path for all navigation links.
-      this.baseURL = import.meta.url.replace(/assets\/dmt\/dmt-components.js/, '');
-      this.initialPathURL = globalThis.location.href.replace(this.baseURL, '');
-
-      // Find the path URL match without any additional URL fragment.
-      const depth = (this.initialPathURL.match(/\//) ?? []).length;
-
       this.currentPathURL = this.initialPathURL;
       this.storeCurrentPathURL = writable(this.initialPathURL);
-
-      this.pathPrepend = '../'.repeat(depth);
 
       this.state = new NavigationState(this);
 

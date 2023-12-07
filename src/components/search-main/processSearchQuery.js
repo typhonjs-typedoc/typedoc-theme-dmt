@@ -8,11 +8,13 @@
 /**
  * @param {string}   query - A search query.
  *
+ * @param {string}   basePath - The current relative base path.
+ *
  * @param {number}   [searchLimit=10] - Limit search results to the given value.
  *
  * @returns {ProcessedSearchDocument[]} Processed query results.
  */
-export function processSearchQuery(query, searchLimit = 10)
+export function processSearchQuery(query, basePath, searchLimit = 10)
 {
    if (!globalThis.dmtSearchMainIndex || !globalThis.dmtSearchMainRows) { return []; }
 
@@ -66,7 +68,7 @@ export function processSearchQuery(query, searchLimit = 10)
          id: index,
          kind: row.k,
          classes: row.c ?? '', // classes
-         href: `${globalThis.dmtOptions.basePath}${row.u}`, // URL
+         href: `${basePath}${row.u}`, // URL
          name
       });
    }
