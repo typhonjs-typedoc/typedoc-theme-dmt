@@ -30,6 +30,7 @@ export class ThemeOptions
       favicon: {},
       linksIcon: [],
       linksService: [],
+      moduleAsPackage: false,
       navModuleDepth: Number.MAX_SAFE_INTEGER,
       navModuleIcon: false,
       search: true,
@@ -71,6 +72,13 @@ export class ThemeOptions
          help: `${ID} Places built-in icon links in toolbar links; supported services: BitBucket, Discord, GitHub, GitLab, NPM`,
          type: ParameterType.Object,
          defaultValue: null
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtModuleAsPackage',
+         help: `${ID} When true 'Module' in page titles is replaced with 'Package'.`,
+         type: ParameterType.Boolean,
+         defaultValue: false
       });
 
       app.options.addDeclaration({
@@ -158,6 +166,9 @@ export class ThemeOptions
    /** @returns {DMTIconLink[]} linksService option */
    get linksService() { return this.#options.linksService; }
 
+   /** @returns {boolean} moduleAsPackage option */
+   get moduleAsPackage() { return this.#options.moduleAsPackage; }
+
    /** @returns {number} navModuleDepth option */
    get navModuleDepth() { return this.#options.navModuleDepth; }
 
@@ -184,6 +195,7 @@ export class ThemeOptions
    #parseOptions(app)
    {
       this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
+      this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
       this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
       this.#options.navModuleIcon = app.options.getValue('dmtNavModuleIcon');
       this.#options.search = app.options.getValue('dmtSearch');
@@ -302,6 +314,8 @@ export class ThemeOptions
  * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
  *
  * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
+ *
+ * @property {boolean} moduleAsPackage When true 'Module' in page titles is replaced with 'Package'.
  *
  * @property {number} navModuleDepth The depth where the navigation index begins concatenating module paths.
  *

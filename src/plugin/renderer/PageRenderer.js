@@ -4,6 +4,7 @@ import { fileURLToPath }   from 'node:url';
 
 import {
    PageEvent,
+   ReflectionKind,
    RendererEvent }         from 'typedoc';
 
 import { load }            from 'cheerio';
@@ -75,16 +76,27 @@ export class PageRenderer
     * Modifications for every page.
     *
     * @param {import('cheerio').Cheerio}  $ -
+    *
+    * @param {PageEvent}   page -
     */
-   #augmentGlobal($)
+   #augmentGlobal($, page)
    {
       // On load set opacity to 0 on the body as there is a DOMContentLoaded handler in the `dmt-nav-web-component`
       // bundle that on first rAF makes the body visible. This allows the default theme `main.js` script to load before
       // display along with the DMT web components providing a seamless load with no flicker.
       $('body').prop('style', 'opacity: 0');
 
+      const titleEl = $('.tsd-page-title h1');
+
+      // Potentially replace module page titles with `Package`.
+      if (this.#options.moduleAsPackage && page?.model?.kind === ReflectionKind.Module)
+      {
+         const titleText = titleEl.text();
+         if (typeof titleText === 'string') { titleEl.text(titleText.replace(/^Module (.*)/, 'Package $1')); }
+      }
+
       // Wrap the title header in a flex box to allow additional elements to be added right aligned.
-      $('.tsd-page-title h1').wrap('<div class="dmt-title-header-flex"></div>');
+      titleEl.wrap('<div class="dmt-title-header-flex"></div>');
 
       // Replace default main search with DMT main search ------------------------------------------------------------
 
@@ -176,7 +188,7 @@ export class PageRenderer
 
       // A few global modifications tweaks like the favicon and slight modifications to the layout to allow right
       // aligning of additional elements in flexbox layouts.
-      this.#augmentGlobal($);
+      this.#augmentGlobal($, page);
 
       // Further global modifications based on DMT options.
       this.#augmentGlobalOptions($);
