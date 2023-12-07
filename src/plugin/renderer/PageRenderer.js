@@ -217,29 +217,25 @@ export class PageRenderer
       this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying assets to output assets directory.`);
       copyDirectory(path.join(localDir, 'assets'), outAssets);
 
-      // Update main.js default theme removing `initSearch` function -------------------------------------------------
+      // Update main.js default theme removing `initSearch` / `initNav` functions ------------------------------------
 
       // TypeDoc 0.25.3+
 
-      // This can be a potentially fragile replacement. The regex below is anchored with a negative lookbehind
-      // assertion on `be;` which is the `initNav();` function minified. It removes the previous function call
-      // before / `initSearch();` which is `he();` minified. This works for mangled / minified code.
+      // This can be a potentially fragile replacement. The regex below removes any functions / content between
+      // `Object.defineProperty()` and the closing of the IIFE `})();`. This works for mangled / minified code.
 
       // See: https://github.com/TypeStrong/typedoc/blob/master/src/lib/output/themes/default/assets/bootstrap.ts#L25
-
-      // I'll attempt to submit a PR to TypeDoc for a new default theme option `searchEnabled` that will disable the
-      // default theme search index creation and loading code.
 
       const mainJSPath = path.join(event.outputDirectory, 'assets', 'main.js');
       if (fs.existsSync(mainJSPath))
       {
          const mainData = fs.readFileSync(mainJSPath, 'utf-8');
 
-         const regex = /he\(\);be\(\);/gm;
+         const regex = /(Object\.defineProperty\(window,"app",\{.*?}\);)\s*.*?(?=}\)\(\);)/gm;
 
          if (regex.test(mainData))
          {
-            fs.writeFileSync(mainJSPath, mainData.replace(regex, ''), 'utf-8');
+            fs.writeFileSync(mainJSPath, mainData.replace(regex, '$1'), 'utf-8');
          }
          else
          {
