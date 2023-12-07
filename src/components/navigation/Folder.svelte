@@ -24,8 +24,10 @@
 
    const store = storageKey ? dmtSessionStorage.getStore(storageKey, false) : void 0;
 
-   const removeIcon = typeof globalThis?.dmtOptions?.navModuleRemoveIcon === 'boolean' &&
-    (entry.kind === void 0 || entry.kind === 2) ? globalThis.dmtOptions.navModuleRemoveIcon : false;
+   const navModuleIcon = typeof globalThis?.dmtOptions?.navModuleIcon === 'boolean' ?
+    globalThis.dmtOptions.navModuleIcon : false;
+
+   const removeIcon = !navModuleIcon && (entry.kind === void 0 || entry.kind === 2);
 
    const indentIcon = !removeIcon && entry.kind ? 'indent-icon' : 'indent-no-icon';
 
@@ -48,7 +50,7 @@
       {#if Array.isArray(child.children)}
          <svelte:self entry={child} parentIcon={!removeIcon} />
       {:else}
-         <Entry entry={child} {indentIcon} removeIcon={removeIcon && child?.kind === 2} />
+         <Entry entry={child} {indentIcon} removeIcon={!navModuleIcon && child?.kind === 2} />
       {/if}
    {/each}
 </TJSSvgFolder>
