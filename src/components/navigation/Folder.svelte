@@ -18,14 +18,12 @@
 
    const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
 
+   const navModuleIcon = getContext('#navModuleIcon');
    const storeSettingAnimate = getContext('#storeSettingAnimate');
 
    const storageKey = entry.storageKey;
 
    const store = storageKey ? dmtSessionStorage.getStore(storageKey, false) : void 0;
-
-   const navModuleIcon = typeof globalThis?.dmtOptions?.navModuleIcon === 'boolean' ?
-    globalThis.dmtOptions.navModuleIcon : false;
 
    const removeIcon = !navModuleIcon && (entry.kind === void 0 || entry.kind === 2);
 

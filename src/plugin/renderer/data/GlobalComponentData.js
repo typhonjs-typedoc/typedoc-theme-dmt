@@ -46,6 +46,7 @@ export class GlobalComponentData
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
          sidebarLinks: app.options.getValue('sidebarLinks'),
+         navModuleIcon: options.navModuleIcon,
          navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
          navigationLinks: app.options.getValue('navigationLinks')
       }

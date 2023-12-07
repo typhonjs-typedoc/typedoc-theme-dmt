@@ -56,6 +56,11 @@ export type DMTComponentData = {
    navigationIndex: NavigationElement[];
 
    /**
+    * When true SVG icons for all navigation module entries are displayed.
+    */
+   navModuleIcon: boolean;
+
+   /**
     * Default sidebar links.
     */
    sidebarLinks?: Record<string, string>;
@@ -69,11 +74,6 @@ export type DMTGlobalOptions = {
     * The base path from the current page.
     */
    basePath: string;
-
-   /**
-    * When true SVG icons for all navigation module entries are displayed.
-    */
-   navModuleIcon: boolean;
 
    /**
     * The `dmtSearch` option; when true the main search index is active.

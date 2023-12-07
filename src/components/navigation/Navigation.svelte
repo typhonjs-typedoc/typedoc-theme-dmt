@@ -15,20 +15,16 @@
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
 
-   /** @type {INavigationData} */
-   const navigationData = dmtComponentData?.navigationData;
+   const { navigationData, navModuleIcon } = dmtComponentData;
 
    const detailsAnimation = new DetailsAnimation();
    const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate);
 
+   setContext('#navModuleIcon', navModuleIcon);
    setContext('#navigationData', navigationData);
    setContext('#storeSettingAnimate', storeSettingsAnimate);
 
    const { storeCurrentPathURL } = navigationData;
-
-   // Determine if the top level icon for namespace / module folders is removed.
-   const navModuleIcon = typeof globalThis?.dmtOptions?.navModuleIcon === 'boolean' ?
-    globalThis.dmtOptions.navModuleIcon : true;
 
    let navigationEl;
 
