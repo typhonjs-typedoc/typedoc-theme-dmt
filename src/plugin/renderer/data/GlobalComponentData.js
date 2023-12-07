@@ -45,6 +45,7 @@ export class GlobalComponentData
          hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
+         moduleAsPackage: options.moduleAsPackage,
          navModuleIcon: options.navModuleIcon,
          navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
          navigationLinks: app.options.getValue('navigationLinks'),

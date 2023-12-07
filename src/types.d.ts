@@ -56,6 +56,11 @@ export type DMTComponentData = {
    linksService: DMTIconLink[];
 
    /**
+    * When true 'Module' in page titles is replaced with 'Package'.
+    */
+   moduleAsPackage: boolean;
+
+   /**
     * Default navigation links
     */
    navigationLinks?: Record<string, string>;
