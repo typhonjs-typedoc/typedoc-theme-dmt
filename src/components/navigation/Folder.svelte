@@ -16,7 +16,7 @@
 
    export let parentIcon = false;
 
-   const { dmtSessionStorage } = /** @type {NavigationData} */ getContext('#navigationData');
+   const { dmtSessionStorage, state } = /** @type {NavigationData} */ getContext('#navigationData');
 
    const navModuleIcon = getContext('#navModuleIcon');
    const storeSettingAnimate = getContext('#storeSettingAnimate');
@@ -40,9 +40,29 @@
 
    // Theme animation local storage state.
    $: animate = $storeSettingAnimate;
+
+   /**
+    * Handle closing all child folders if the `Alt` key is pressed when this folder is closed.
+    *
+    * @param {{ event: MouseEvent | KeyboardEvent }} data - On close data.
+    */
+   function onClose(data)
+   {
+      if (data?.event?.altKey) { state.setChildFolderState(entry, false); }
+   }
+
+   /**
+    * Handle opening all child folders if the `Alt` key is pressed when this folder is opened.
+    *
+    * @param {{ event: MouseEvent | KeyboardEvent }} data - On open data.
+    */
+   function onOpen(data)
+   {
+      if (data?.event?.altKey) { state.setChildFolderState(entry, true); }
+   }
 </script>
 
-<TJSSvgFolder {folder} {animate}>
+<TJSSvgFolder {folder} {animate} {onClose} {onOpen}>
    <Entry {entry} {removeIcon} {storageKey} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}

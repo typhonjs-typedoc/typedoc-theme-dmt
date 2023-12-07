@@ -27,11 +27,20 @@
    const path = entry.path ? `${basePath}${entry.path}` : void 0;
 
    $: isCurrent = entry.path ? entry.path === $storeCurrentPathURL : false;
+
+   /**
+    * Disables default browser downloading when `Alt-Click` is pressed. This helps to protect users as `Alt-Click` on
+    * Folder components closes all children folders and this protects an easy mistake when clicking on an anchor.
+    */
+   function onClick()
+   {
+      globalThis.location.href = path;
+   }
 </script>
 
 {#if path}
    <a href={path}
-      on:click|stopPropagation
+      on:click|preventDefault|stopPropagation={onClick}
       class:current={isCurrent}
       class:indent-icon={indentIcon === 'indent-icon'}
       class:indent-no-icon={indentIcon === 'indent-no-icon'}

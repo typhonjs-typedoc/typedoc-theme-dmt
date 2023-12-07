@@ -52,6 +52,25 @@ export class NavigationState
       return result;
    }
 
+   /**
+    * Sets all session storage stores from the given entry. This supports `Alt-<Click>` action to open / close all
+    * child folders.
+    *
+    * @param {import('./types').DMTNavigationElement} fromEntry - The entry to start traversing tree.
+    *
+    * @param {boolean} state - New state.
+    */
+   setChildFolderState(fromEntry, state)
+   {
+      const operation = (entry) =>
+      {
+         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, state); }
+      }
+
+      this.#walkTreeFrom(operation, fromEntry);
+   }
+
+
    // Internal implementation ----------------------------------------------------------------------------------------
 
    /**
@@ -352,6 +371,19 @@ export class NavigationState
 
          this.#walkPath(entry, void 0, operation);
       }
+   }
+
+   /**
+    * Recursively walks the navigation index / tree for just tree nodes invoking the given operation from the given
+    * `entry`.
+    *
+    * @param {TreeOperation}  operation - Tree entry operation to apply.
+    *
+    * @param {import('./types').DMTNavigationElement} entry - The current entry.
+    */
+   #walkTreeFrom(operation, entry)
+   {
+      this.#walkPath(entry, void 0, operation);
    }
 }
 
