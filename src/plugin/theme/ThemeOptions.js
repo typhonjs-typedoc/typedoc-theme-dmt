@@ -26,12 +26,12 @@ export class ThemeOptions
 
    /** @type {DMTOptions} */
    #options = {
+      breadcrumb: true,
       favicon: {},
       linksIcon: [],
       linksService: [],
       navModuleDepth: Number.MAX_SAFE_INTEGER,
       navModuleIcon: false,
-      removeBreadcrumb: false,
       search: true,
       searchLimit: 10,
       searchQuick: false,
@@ -44,6 +44,13 @@ export class ThemeOptions
    static addDeclarations(app)
    {
       const ID = '[typedoc-theme-default-modern]';
+
+      app.options.addDeclaration({
+         name: 'dmtBreadcrumb',
+         help: `${ID} When true the breadcrumb is enabled.`,
+         type: ParameterType.Boolean,
+         defaultValue: true
+      });
 
       app.options.addDeclaration({
          name: 'dmtFavicon',
@@ -76,13 +83,6 @@ export class ThemeOptions
       app.options.addDeclaration({
          name: 'dmtNavModuleIcon',
          help: `${ID} When true SVG icons for all navigation module entries are displayed.`,
-         type: ParameterType.Boolean,
-         defaultValue: false
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtRemoveBreadcrumb',
-         help: `${ID} When true the entire breadcrumb is removed.`,
          type: ParameterType.Boolean,
          defaultValue: false
       });
@@ -146,6 +146,9 @@ export class ThemeOptions
       this.#parseOptions(app);
    }
 
+   /** @returns {boolean} breadcrumb option */
+   get breadcrumb() { return this.#options.breadcrumb; }
+
    /** @returns {FileOrURL} favicon option */
    get favicon() { return this.#options.favicon; }
 
@@ -160,9 +163,6 @@ export class ThemeOptions
 
    /** @returns {boolean} navModuleIcon option */
    get navModuleIcon() { return this.#options.navModuleIcon; }
-
-   /** @returns {boolean} removeBreadcrumb option */
-   get removeBreadcrumb() { return this.#options.removeBreadcrumb; }
 
    /** @returns {boolean} search option */
    get search() { return this.#options.search; }
@@ -183,9 +183,9 @@ export class ThemeOptions
     */
    #parseOptions(app)
    {
+      this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
       this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
       this.#options.navModuleIcon = app.options.getValue('dmtNavModuleIcon');
-      this.#options.removeBreadcrumb = app.options.getValue('dmtRemoveBreadcrumb');
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
       this.#options.searchQuick = app.options.getValue('dmtSearchQuick');
@@ -307,7 +307,7 @@ export class ThemeOptions
  *
  * @property {boolean} navModuleIcon When true SVG icons for all navigation module entries are displayed.
  *
- * @property {boolean} removeBreadcrumb When true the entire breadcrumb is removed.
+ * @property {boolean} breadcrumb When true the breadcrumb is enabled.
  *
  * @property {boolean} search When true the main search index is enabled.
  *

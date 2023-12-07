@@ -176,7 +176,7 @@ export class PageRenderer
       }
 
       // Remove all breadcrumb links.
-      if (this.#options.removeBreadcrumb) { $('.tsd-breadcrumb').remove(); }
+      if (!this.#options.breadcrumb) { $('.tsd-breadcrumb').remove(); }
    }
 
    /**
