@@ -55,9 +55,6 @@ export class PageRenderer
       // Append DMT components script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-components.js" type="module" />`));
 
-      // Use the project packageName or create a random string to prepend for all session storage keys.
-      const storagePrepend = `docs-${page?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
-
       /**
        * Configures the global options available in frontend runtime.
        *
@@ -68,8 +65,7 @@ export class PageRenderer
          search: this.#options.search,
          searchLimit: this.#options.searchLimit,
          searchQuick: this.#options.searchQuick,
-         searchQuickLimit: this.#options.searchQuickLimit,
-         storagePrepend
+         searchQuickLimit: this.#options.searchQuickLimit
       };
 
       // Append DMT options for search index enabled state; if not enabled loading code is disabled.

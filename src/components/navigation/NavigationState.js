@@ -135,15 +135,8 @@ export class NavigationState
     */
    #initializeTree()
    {
-      if (typeof globalThis?.dmtOptions?.storagePrepend !== 'string')
-      {
-         console.warn(`[typedoc-theme-default-modern] Could not find 'storagePrepend' DMT option.`);
-      }
-
-      // Retrieve the storage prepend string from global DMT options or use a default key.
-      const storagePrepend = globalThis?.dmtOptions?.storagePrepend ?? 'docs-unnamed';
-
       const dmtSessionStorage = this.#navData.dmtSessionStorage;
+      const storagePrepend = this.#navData.storagePrepend;
 
       let topLevelNodes = 0;
 

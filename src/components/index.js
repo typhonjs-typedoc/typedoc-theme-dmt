@@ -35,7 +35,7 @@ const dmtComponentData = /** @type {DMTComponentData} */ (typeof globalThis.dmtC
  globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {});
 
 // Create navigation data / state.
-dmtComponentData.navigationData = new NavigationData(dmtComponentData.navigationIndex);
+dmtComponentData.navigationData = new NavigationData(dmtComponentData);
 
 dmtComponentData.dmtLocalStorage = new TJSLocalStorage();
 

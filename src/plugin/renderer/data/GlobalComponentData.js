@@ -48,7 +48,8 @@ export class GlobalComponentData
          sidebarLinks: app.options.getValue('sidebarLinks'),
          navModuleIcon: options.navModuleIcon,
          navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
-         navigationLinks: app.options.getValue('navigationLinks')
+         navigationLinks: app.options.getValue('navigationLinks'),
+         storagePrepend: `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
       }
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),

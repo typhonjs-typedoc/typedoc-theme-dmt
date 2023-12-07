@@ -68,6 +68,11 @@ export class NavigationData
    state;
 
    /**
+    * @type {string}
+    */
+   storagePrepend;
+
+   /**
     * A derived store with the open / close state of all session stores.
     *
     * @type {import('svelte/store').Readable<boolean>}
@@ -81,9 +86,15 @@ export class NavigationData
     */
    storeTopLevelNodes = writable(0);
 
-   constructor(navigationIndex)
+   /**
+    * @param {DMTComponentData}  dmtComponentData - Global component data.
+    */
+   constructor(dmtComponentData)
    {
-      this.index = navigationIndex;
+      this.index = dmtComponentData.navigationIndex;
+
+      // Retrieve the storage prepend string from global DMT options or use a default key.
+      this.storagePrepend = dmtComponentData.storagePrepend ?? 'docs-unnamed';
 
       this.dmtSessionStorage = new TJSSessionStorage();
 
