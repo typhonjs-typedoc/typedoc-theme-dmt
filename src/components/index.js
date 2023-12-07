@@ -11,7 +11,7 @@ import {
 import Navigation                from './navigation/Navigation.svelte';
 import { NavigationData }        from './navigation/NavigationData.js';
 
-import SettingAnimation          from './settings/SettingAnimation.svelte';
+import DMTSettings               from './settings/DMTSettings.svelte';
 
 import Toolbar                   from './toolbar/Toolbar.svelte';
 
@@ -50,7 +50,7 @@ dmtComponentData.dmtLocalStorage = new TJSLocalStorage();
 
 // Mount Svelte components -------------------------------------------------------------------------------------------
 
-const settingAnimation = new SettingAnimation({
+const dmtSettings = new DMTSettings({
    target: document.querySelector('.tsd-navigation.settings .tsd-accordion-details'),
    props: { dmtComponentData }
 });
@@ -67,8 +67,8 @@ const toolbar = new Toolbar({
 
 // Stores references to DMT Svelte components.
 globalThis.dmtComponents = {
+   dmtSettings,
    navigation,
-   settingAnimation,
    toolbar
 };
 
