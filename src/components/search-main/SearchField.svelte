@@ -27,6 +27,9 @@
    /** @type {boolean} */
    const navModuleIcon = getContext('#navModuleIcon');
 
+   /** @type {boolean} */
+   const searchFullName = getContext('#searchFullName');
+
    /** @type {number} */
    const searchLimit = getContext('#searchLimit');
 
@@ -48,6 +51,7 @@
    const queryOptions = {
       basePath,
       navModuleIcon,
+      searchFullName,
       searchLimit
    }
 
@@ -71,7 +75,7 @@
 
    // Perform the search when the query input changes.
    $: {
-      results = processSearchQuery($storeQuery, queryOptions);
+      results = processSearchQuery($storeQuery,  { ...queryOptions });
       currentIndex = -1;
       storeCurrentId.set(void 0);
    }

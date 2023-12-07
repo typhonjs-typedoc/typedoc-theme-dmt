@@ -34,6 +34,7 @@ export class ThemeOptions
       navModuleDepth: Number.MAX_SAFE_INTEGER,
       navModuleIcon: false,
       search: true,
+      searchFullName: false,
       searchLimit: 10,
       searchQuick: false,
       searchQuickLimit: 10,
@@ -100,6 +101,13 @@ export class ThemeOptions
          help: `${ID} When true the main search index is enabled.`,
          type: ParameterType.Boolean,
          defaultValue: true
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtSearchFullName',
+         help: `${ID} When true the main search index stores parent reflection full names.`,
+         type: ParameterType.Boolean,
+         defaultValue: false
       });
 
       app.options.addDeclaration({
@@ -178,6 +186,9 @@ export class ThemeOptions
    /** @returns {boolean} search option */
    get search() { return this.#options.search; }
 
+   /** @returns {boolean} searchFullName option */
+   get searchFullName() { return this.#options.searchFullName; }
+
    /** @returns {number} search limit option */
    get searchLimit() { return this.#options.searchLimit; }
 
@@ -199,6 +210,7 @@ export class ThemeOptions
       this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
       this.#options.navModuleIcon = app.options.getValue('dmtNavModuleIcon');
       this.#options.search = app.options.getValue('dmtSearch');
+      this.#options.searchFullName = app.options.getValue('dmtSearchFullName');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
       this.#options.searchQuick = app.options.getValue('dmtSearchQuick');
       this.#options.searchQuickLimit = app.options.getValue('dmtSearchQuickLimit');
@@ -324,6 +336,8 @@ export class ThemeOptions
  * @property {boolean} breadcrumb When true the breadcrumb is enabled.
  *
  * @property {boolean} search When true the main search index is enabled.
+ *
+ * @property {boolean} searchFullName When true the main search index stores parent reflection full names.
  *
  * @property {number} searchLimit A positive integer greater than 0 providing a limit on main search query results.
  *

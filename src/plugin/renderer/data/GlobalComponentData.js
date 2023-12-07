@@ -49,6 +49,7 @@ export class GlobalComponentData
          navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
          navigationLinks: app.options.getValue('navigationLinks'),
          search: options.search,
+         searchFullName: options.searchFullName,
          searchLimit: options.searchLimit,
          searchQuick: options.searchQuick,
          searchQuickLimit: options.searchQuickLimit,

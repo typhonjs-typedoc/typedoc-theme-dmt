@@ -81,6 +81,11 @@ export type DMTComponentData = {
    search: boolean;
 
    /**
+    * When true the main search index stores parent reflection full names.
+    */
+   searchFullName: boolean;
+
+   /**
     * The `dmtSearchLimit` option; The max number of documents returned in the main search query processing.
     */
    searchLimit: number;
@@ -171,6 +176,11 @@ export interface SearchDocument {
     * Any reflection parents.
     */
    p?: string;
+
+   /**
+    * The parent reflection kind.
+    */
+   pk?: number;
 }
 
 /**

@@ -22,6 +22,9 @@ export class SearchIndexPackr
    #app;
 
    /** @type {boolean} */
+   #searchFullName;
+
+   /** @type {boolean} */
    #searchInComments;
 
    /**
@@ -34,6 +37,7 @@ export class SearchIndexPackr
       this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this);
 
       this.#searchInComments = this.#app.options.getValue('searchInComments');
+      this.#searchFullName = this.#app.options.getValue('dmtSearchFullName');
    }
 
    /**
@@ -113,7 +117,12 @@ export class SearchIndexPackr
             c: this.#app.renderer.theme.getReflectionClasses(reflection),
          };
 
-         if (parent) { row.p = parent.getFullName(); }
+         if (parent)
+         {
+            // Depending on options store full name or just the parent name.
+            row.p = this.#searchFullName ? parent.getFriendlyFullName() : parent.name;
+            row.pk = parent.kind;
+         }
 
          const externalSearchField = indexEvent.searchFields[rows.length];
 

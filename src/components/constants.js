@@ -3,7 +3,7 @@
  * @type {DMTLocalConstants} Defines all the local storage static constants.
  */
 const localConstants = {
-   dmtThemeAnimate: 'docs-dmt-theme-animate',
+   dmtThemeAnimate: 'docs-dmt-theme-animate'
 };
 
 export { localConstants };

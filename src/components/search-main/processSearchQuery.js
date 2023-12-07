@@ -12,13 +12,16 @@
  *
  * @param {string}   options.basePath - The current relative base path.
  *
- * @param {boolean}  options.navModuleIcon - Include SVG icon / kind in results for modules.
+ * @param {boolean}  [options.navModuleIcon=true] - Include SVG icon / kind in results for modules.
+ *
+ * @param {boolean}  [options.searchFullName=false] - Include SVG icon / kind in results for modules.
  *
  * @param {number}   [options.searchLimit=10] - Limit search results to the given value.
  *
  * @returns {ProcessedSearchDocument[]} Processed query results.
  */
-export function processSearchQuery(query, { basePath, navModuleIcon = true, searchLimit = 10 } = {})
+export function processSearchQuery(query, { basePath, navModuleIcon = true, searchFullName = false,
+ searchLimit = 10 } = {})
 {
    if (!globalThis.dmtSearchMainIndex || !globalThis.dmtSearchMainRows) { return []; }
 
@@ -60,7 +63,9 @@ export function processSearchQuery(query, { basePath, navModuleIcon = true, sear
       // TypeDoc may set this variable for debugging.
       if (globalThis?.DEBUG_SEARCH_WEIGHTS) { name += ` (score: ${indexResult.score.toFixed(2)})`; }
 
-      if (row.p) // parent
+      // parent; always include parent full name when `searchFullName` option is true otherwise avoid showing module /
+      // package parents.
+      if (row.p && (searchFullName || row.pk !== 2))
       {
          name = `<span class="parent">${boldMatches(
           row.p,

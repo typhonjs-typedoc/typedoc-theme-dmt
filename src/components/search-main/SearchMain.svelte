@@ -15,6 +15,7 @@
 
    setContext('#basePath', dmtComponentData.basePath)
    setContext('#navModuleIcon', dmtComponentData.navModuleIcon)
+   setContext('#searchFullName', dmtComponentData.searchFullName)
    setContext('#searchLimit', dmtComponentData.searchLimit ?? 10)
    setContext('#storeVisible', storeVisible)
    setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
