@@ -14,7 +14,7 @@
  *
  * @param {boolean}  [options.navModuleIcon=true] - Include SVG icon / kind in results for modules.
  *
- * @param {boolean}  [options.searchFullName=false] - Include SVG icon / kind in results for modules.
+ * @param {boolean}  [options.searchFullName=false] - Always include parent reflection full name.
  *
  * @param {number}   [options.searchLimit=10] - Limit search results to the given value.
  *
