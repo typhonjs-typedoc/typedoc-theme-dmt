@@ -61,26 +61,6 @@ export type DMTComponentData = {
    navModuleIcon: boolean;
 
    /**
-    * Default sidebar links.
-    */
-   sidebarLinks?: Record<string, string>;
-
-   /**
-    * Provides a key based on the package name or a random string to prepend to local / session storage keys.
-    */
-   storagePrepend: string;
-}
-
-/**
- * Defines the global DMT options available in the frontend runtime.
- */
-export type DMTGlobalOptions = {
-   /**
-    * The base path from the current page.
-    */
-   basePath: string;
-
-   /**
     * The `dmtSearch` option; when true the main search index is active.
     */
    search: boolean;
@@ -99,6 +79,26 @@ export type DMTGlobalOptions = {
     * The `dmtSearchQuickLimit` option; The max number of documents returned in the main search query processing.
     */
    searchQuickLimit: number;
+
+   /**
+    * Default sidebar links.
+    */
+   sidebarLinks?: Record<string, string>;
+
+   /**
+    * Provides a key based on the package name or a random string to prepend to local / session storage keys.
+    */
+   storagePrepend: string;
+}
+
+/**
+ * Defines the global DMT options available in the frontend runtime.
+ */
+export type DMTGlobalOptions = {
+   /**
+    * The base path from the current page.
+    */
+   basePath: string;
 }
 
 /**

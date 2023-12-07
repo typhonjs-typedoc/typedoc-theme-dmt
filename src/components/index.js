@@ -64,7 +64,7 @@ globalThis.dmtComponents = {
 };
 
 // Only load main search index if enabled.
-if (globalThis?.dmtOptions?.search)
+if (dmtComponentData.search)
 {
    loadMainSearchData();
    globalThis.dmtComponents.searchMain = new SearchMain({
@@ -75,7 +75,7 @@ if (globalThis?.dmtOptions?.search)
 
 // TODO: Work in progress
 // // Only load quick search index if enabled.
-// if (globalThis?.dmtOptions?.searchQuick)
+// if (dmtComponentData.searchQuick)
 // {
 //    loadQuickSearchData().then((result) =>
 //    {

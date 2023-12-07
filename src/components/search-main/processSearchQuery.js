@@ -8,9 +8,11 @@
 /**
  * @param {string}   query - A search query.
  *
+ * @param {number}   [searchLimit=10] - Limit search results to the given value.
+ *
  * @returns {ProcessedSearchDocument[]} Processed query results.
  */
-export function processSearchQuery(query)
+export function processSearchQuery(query, searchLimit = 10)
 {
    if (!globalThis.dmtSearchMainIndex || !globalThis.dmtSearchMainRows) { return []; }
 
@@ -40,7 +42,7 @@ export function processSearchQuery(query)
 
    indexResults.sort((a, b) => b.score - a.score);
 
-   for (let c = Math.min(globalThis.dmtOptions.searchLimit ?? 10, indexResults.length), i = 0; i < c; i++)
+   for (let c = Math.min(searchLimit, indexResults.length), i = 0; i < c; i++)
    {
       const indexResult = indexResults[i];
       const index = Number(indexResult.ref);

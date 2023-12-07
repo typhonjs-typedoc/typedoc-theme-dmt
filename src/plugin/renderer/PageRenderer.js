@@ -61,11 +61,7 @@ export class PageRenderer
        * @type {DMTGlobalOptions}
        */
       const dmtGlobalOptions = {
-         basePath,
-         search: this.#options.search,
-         searchLimit: this.#options.searchLimit,
-         searchQuick: this.#options.searchQuick,
-         searchQuickLimit: this.#options.searchQuickLimit
+         basePath
       };
 
       // Append DMT options for search index enabled state; if not enabled loading code is disabled.

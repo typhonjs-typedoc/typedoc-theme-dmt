@@ -13,6 +13,7 @@
    /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = writable(false);
 
+   setContext('#searchLimit', dmtComponentData.searchLimit ?? 10)
    setContext('#storeVisible', storeVisible)
    setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
 

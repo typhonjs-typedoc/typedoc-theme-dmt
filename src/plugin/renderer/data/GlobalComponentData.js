@@ -45,10 +45,14 @@ export class GlobalComponentData
          hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
-         sidebarLinks: app.options.getValue('sidebarLinks'),
          navModuleIcon: options.navModuleIcon,
          navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
          navigationLinks: app.options.getValue('navigationLinks'),
+         search: options.search,
+         searchLimit: options.searchLimit,
+         searchQuick: options.searchQuick,
+         searchQuickLimit: options.searchQuickLimit,
+         sidebarLinks: app.options.getValue('sidebarLinks'),
          storagePrepend: `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
       }
 
