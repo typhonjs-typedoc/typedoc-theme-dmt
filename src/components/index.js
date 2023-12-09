@@ -106,4 +106,4 @@ scrollActivation();
 // Removes the `opacity: 0` inline style on `body` element after all scripts have loaded. This allows a smooth
 // transition for the `main.js` default template script to take effect before the page is initially visible. There is
 // minimal flicker.
-document.querySelector('body').style = null;
+globalThis.requestAnimationFrame(() => document.querySelector('body').style = null);
