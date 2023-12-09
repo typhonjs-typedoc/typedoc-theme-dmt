@@ -3,6 +3,8 @@ import path                   from 'node:path';
 
 import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
 
+import { ReflectionKind }     from 'typedoc';
+
 import { NavigationIndex }    from './navigation/NavigationIndex.js';
 
 /**
@@ -49,6 +51,7 @@ export class GlobalComponentData
          navModuleIcon: options.navModuleIcon,
          navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
          navigationLinks: app.options.getValue('navigationLinks'),
+         ReflectionKind: this.#getReflectionKind(),
          search: options.search,
          searchFullName: options.searchFullName,
          searchLimit: options.searchLimit,
@@ -60,6 +63,30 @@ export class GlobalComponentData
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),
        `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
+   }
+
+   /**
+    * Build TypeDoc reflection kind object with just key / values that are a power of 2. This represents all the
+    * SVG icon types defined.
+    *
+    * @returns {{}}
+    */
+   static #getReflectionKind()
+   {
+      const result = {};
+
+      function isPowerOfTwo(n) { return n > 0 && (n & (n - 1)) === 0; }
+
+      for (const [key, value] of Object.entries(ReflectionKind))
+      {
+         if (isNaN(Number(key)) && isPowerOfTwo(value))
+         {
+            result[key] = value;
+            result[value] = key;
+         }
+      }
+
+      return result;
    }
 
    /**
