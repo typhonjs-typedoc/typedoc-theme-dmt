@@ -122,7 +122,13 @@ export class GlobalComponentData
 
       for (const entry of links)
       {
-         console.log(`!! GlobalComponentData - #processLinksService - entry: `, entry);
+         fs.copyFileSync(entry.asset.filepath, path.join(outputDir, entry.asset.filename));
+
+         result.push({
+            dmtPath: `icons/service/${entry.asset.filename}`,
+            title: entry.title,
+            url: entry.url
+         });
       }
 
       return result;

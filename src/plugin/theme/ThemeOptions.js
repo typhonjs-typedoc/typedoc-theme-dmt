@@ -1,6 +1,8 @@
 import fs                  from 'node:fs';
 import path                from 'node:path';
-import { URL }             from 'node:url';
+import {
+   fileURLToPath,
+   URL }                   from 'node:url';
 
 import { isObject }        from '#runtime/util/object';
 
@@ -12,17 +14,6 @@ import { ParameterType }   from 'typedoc';
 export class ThemeOptions
 {
    static #ID = '[typedoc-theme-default-modern]';
-
-   /**
-    * @type {Map<string, FileOrURL>}
-    */
-   static #serviceLinks = new Map([
-      ['BitBucket', {}],
-      ['Discord', { filepath: './assets/icons/service/discord.png', filename: 'discord.png' }],
-      ['GitHub', {}],
-      ['GitLab', {}],
-      ['NPM', {}],
-   ]);
 
    /** @type {DMTOptions} */
    #options = {
@@ -232,33 +223,7 @@ export class ThemeOptions
 
       /** @type {Record<string, string>} */
       const linksService = app.options.getValue('dmtLinksService');
-
-      if (isObject(linksService))
-      {
-         for (const key in linksService)
-         {
-            if (!ThemeOptions.#serviceLinks.has(key))
-            {
-               app.logger.warn(`${ThemeOptions.#ID} Unknown service link '${key}'; supported services: ${
-                [...ThemeOptions.#serviceLinks.keys()].join(', ')}`);
-
-               continue;
-            }
-
-            if (!ThemeOptions.#isURL(linksService[key]))
-            {
-               app.logger.warn(`${ThemeOptions.#ID} Invalid URL for service link '${key}'.`);
-
-               continue;
-            }
-
-            this.#options.linksService.push({
-               asset: ThemeOptions.#serviceLinks.get(key),
-               title: key,
-               url: linksService[key]
-            });
-         }
-      }
+      if (isObject(linksService)) { this.#validateLinksService(linksService, app); }
 
       // Verify search limits.
       if (!Number.isInteger(this.#options.searchLimit) || this.#options.searchLimit < 1)
@@ -316,7 +281,53 @@ export class ThemeOptions
 
       return result;
    }
+
+   /**
+    * @param {Record<string, string>}        linksService - Service link option.
+    *
+    * @param {import('typedoc').Application} app - TypeDoc Application.
+    */
+   #validateLinksService(linksService, app)
+   {
+      for (const key in linksService)
+      {
+         if (!s_SERVICE_LINKS.has(key))
+         {
+            app.logger.warn(`${ThemeOptions.#ID} Unknown service link '${key}'; supported services: ${
+             [...s_SERVICE_LINKS.keys()].join(', ')}`);
+
+            continue;
+         }
+
+         if (!ThemeOptions.#isURL(linksService[key]))
+         {
+            app.logger.warn(`${ThemeOptions.#ID} Invalid URL for service link '${key}'.`);
+
+            continue;
+         }
+
+         this.#options.linksService.push({
+            asset: s_SERVICE_LINKS.get(key),
+            title: key,
+            url: linksService[key]
+         });
+      }
+   }
 }
+
+const s_ASSET_PATH = fileURLToPath(import.meta.url.replace(/dist\/index\.js$/, 'assets/'));
+
+/**
+ * @type {Map<string, FileOrURL>}
+ */
+const s_SERVICE_LINKS = new Map([
+   ['BitBucket', { filepath: path.join(s_ASSET_PATH, 'icons/service/bitbucket.png'), filename: 'bitbucket.png' }],
+   ['Discord', { filepath: path.join(s_ASSET_PATH, 'icons/service/discord.png'), filename: 'discord.png' }],
+   ['GitHub', { filepath: path.join(s_ASSET_PATH, 'icons/service/github.png'), filename: 'github.png' }],
+   ['GitLab', { filepath: path.join(s_ASSET_PATH, 'icons/service/gitlab.png'), filename: 'gitlab.png' }],
+   ['NPM', { filepath: path.join(s_ASSET_PATH, 'icons/service/npm.png'), filename: 'npm.png' }],
+]);
+
 
 /**
  * @typedef {object} DMTOptions
