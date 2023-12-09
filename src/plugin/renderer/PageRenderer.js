@@ -127,7 +127,11 @@ export class PageRenderer
       const generatorEl = $('.tsd-generator');
       if (generatorEl.length)
       {
-         $('.col-content').append(generatorEl.clone());
+         const newGeneratorEl = generatorEl.clone();
+         newGeneratorEl.find('p').append(
+          ' and the <a href="https://www.npmjs.com/package/@typhonjs-typedoc/typedoc-theme-dmt" target="_blank">Default Modern Theme</a>');
+
+         $('.col-content').append(newGeneratorEl);
          generatorEl.remove();
       }
 
