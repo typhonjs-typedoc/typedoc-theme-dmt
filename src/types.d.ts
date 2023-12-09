@@ -37,6 +37,11 @@ export type DMTComponentData = {
    dmtLocalStorage: TJSLocalStorage;
 
    /**
+    * Full URL to assets/dmt.
+    */
+   dmtURL: string;
+
+   /**
     * True when a project `modules.html` is generated.
     */
    hasModulesIndex: boolean;

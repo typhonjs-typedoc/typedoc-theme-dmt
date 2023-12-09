@@ -37,6 +37,8 @@ const dmtComponentData = /** @type {DMTComponentData} */ (typeof globalThis.dmtC
 // Setup additional runtime component data ---------------------------------------------------------------------------
 
 dmtComponentData.baseURL = import.meta.url.replace(/assets\/dmt\/dmt-components.js/, '');
+dmtComponentData.dmtURL = import.meta.url.replace(/dmt-components.js/, '');
+
 dmtComponentData.initialPathURL = globalThis.location.href.replace(dmtComponentData.baseURL, '');
 
 // Find the path URL match without any additional URL fragment.
