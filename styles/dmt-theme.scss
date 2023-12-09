@@ -482,6 +482,11 @@ a {
     .tsd-filter-visibility h4 {
       padding-top: 0.25rem;
     }
+
+    // Style all following svg elements from the checkbox input having focus-visible.
+    input[type=checkbox]:focus-visible + svg {
+      outline: var(--dmt-outline-focus-visible);
+    }
   }
 
   // Styling for sidebar `On This Page`
