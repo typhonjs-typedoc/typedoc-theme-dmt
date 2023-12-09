@@ -13,9 +13,10 @@ import type { TrieSearch }             from '#runtime/data/struct/search/trie';
 import type { TJSLocalStorage }        from '#runtime/svelte/store/web-storage';
 
 import type lunr                       from 'lunr';
-import type { ReflectionKind }         from 'typedoc';
 
-import type { NavigationElement }      from 'typedoc';
+import type {
+   NavigationElement,
+   ReflectionKind }                    from 'typedoc';
 
 import type { INavigationData }        from './components/navigation/types.ts';
 
@@ -84,6 +85,11 @@ export type DMTComponentData = {
     * The `dmtSearch` option; when true the main search index is active.
     */
    search: boolean;
+
+   /**
+    * TypeDoc ReflectionKind
+    */
+   ReflectionKind: Record<string, string|number>;
 
    /**
     * When true the main search index stores parent reflection full names.

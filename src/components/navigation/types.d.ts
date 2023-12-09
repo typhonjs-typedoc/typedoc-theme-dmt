@@ -77,6 +77,13 @@ export interface INavigationData {
    state: NavigationState;
 
    /**
+    * Whether the help panel is open / closed.
+    *
+    * @type {import('svelte/store').Writable<boolean>}
+    */
+   storeHelpPanelOpen: Writable<boolean>;
+
+   /**
     * A derived store with the open / close state of all session stores.
     *
     * @type {import('svelte/store').Readable<boolean>}

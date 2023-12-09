@@ -42,6 +42,11 @@ export function keyCommands(dmtComponentData)
             break;
 
          case 'KeyH':
+            navigationData.storeHelpPanelOpen.set(!get(navigationData.storeHelpPanelOpen))
+            event.preventDefault();
+            break;
+
+         case 'KeyI':
             window.location.href = `${navigationData.baseURL}index.html`;
             event.preventDefault();
             break;
