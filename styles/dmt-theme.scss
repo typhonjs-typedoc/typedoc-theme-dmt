@@ -1,7 +1,8 @@
 :root {
+  --dmt-box-shadow-color: rgba(0, 0, 0, 0.5);
   --dmt-container-border-radius: 0.5rem;
-  --dmt-container-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.5);
-  --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.5);
+  --dmt-container-box-shadow: 0 0 0.15rem var(--dmt-box-shadow-color);
+  --dmt-container-box-shadow-floating: 0 0 0.75rem var(--dmt-box-shadow-color);
   --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
   --dmt-container-padding: 1rem;
 
@@ -29,42 +30,38 @@
 
 
 :root[data-theme="dark"] {
+  --dmt-box-shadow-color: rgba(0, 0, 0, 0.6);
   --dmt-container-background: rgba(0, 0, 0, 0.1);
   --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
   --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
   --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
-  --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.6);
-  --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.6);
 }
 
 :root[data-theme="light"] {
+  --dmt-box-shadow-color: rgba(0, 0, 0, 0.3);
   --dmt-container-background: rgba(0, 0, 0, 0.05);
   --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
   --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
   --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
-  --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.3);
-  --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --dmt-box-shadow-color: rgba(0, 0, 0, 0.6);
     --dmt-container-background: rgba(0, 0, 0, 0.1);
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
     --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
     --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
-    --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.6);
-    --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.6);
   }
 }
 
 @media (prefers-color-scheme: light) {
   :root {
+    --dmt-box-shadow-color: rgba(0, 0, 0, 0.3);
     --dmt-container-background: rgba(0, 0, 0, 0.05);
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
     --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
     --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
-    --dmt-header-box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.3);
-    --dmt-container-box-shadow-floating: 0 0 0.75rem rgba(0, 0, 0, 0.3);
   }
 }
 
