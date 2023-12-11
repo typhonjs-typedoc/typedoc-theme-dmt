@@ -151,17 +151,17 @@ export type FileOrURL = {
    /**
     * Fully resolved file path.
     */
-   filepath?: string;
+   filepath: string;
 
    /**
     * File name
     */
-   filename?: string;
-
+   filename: string;
+} | {
    /**
     * Valid URL.
     */
-   url?: string;
+   url: string;
 }
 
 /**
