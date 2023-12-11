@@ -9,11 +9,11 @@
 </script>
 
 <section>
-   <!--{#each linksIcon as entry (entry.url)}-->
-   <!--   <a href={entry.url} target="_blank" title={entry.title}>-->
-   <!--      <img src={`${dmtURL}${entry.dmtPath}`} alt={entry.title} />-->
-   <!--   </a>-->
-   <!--{/each}-->
+   {#each linksIcon as entry (entry.url)}
+      <a href={entry.url} target="_blank" title={entry.title}>
+         <img src={typeof entry.dmtPath === 'string' ? `${dmtURL}${entry.dmtPath}` : entry.iconURL} alt={entry.title} />
+      </a>
+   {/each}
 
    {#each linksService as entry (entry.url)}
       <a href={entry.url} target="_blank" title={entry.title}>
@@ -26,6 +26,7 @@
    a {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
    }
 
    a:focus-visible img {
@@ -43,8 +44,14 @@
 
    section {
       display: flex;
+      flex-wrap: nowrap;
+
       align-items: center;
       gap: 0.75rem;
+      margin-left: auto;
       margin-right: 0.5rem;
+      min-width: 0;
+      overflow: hidden;
+      padding-left: 0.5rem;
    }
 </style>

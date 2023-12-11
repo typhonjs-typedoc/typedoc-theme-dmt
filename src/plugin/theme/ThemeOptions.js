@@ -55,15 +55,24 @@ export class ThemeOptions
       app.options.addDeclaration({
          name: 'dmtLinksIcon',
          help: `${ID} Places provided icon links in toolbar links.`,
-         type: ParameterType.Object,
-         defaultValue: null
+         type: ParameterType.Mixed,
+         validate: (value) =>
+         {
+            if (!Array.isArray(value)) { throw new Error(`Expected an array of objects for 'dmtLinksIcon'`); }
+
+            for (const entry of value)
+            {
+               if (!isObject(entry)) { throw new Error(`Expected an array of objects for 'dmtLinksIcon'`); }
+            }
+         },
+         defaultValue: []
       });
 
       app.options.addDeclaration({
          name: 'dmtLinksService',
          help: `${ID} Places built-in icon links in toolbar links; supported services: BitBucket, Discord, GitHub, GitLab, NPM`,
          type: ParameterType.Object,
-         defaultValue: null
+         defaultValue: {}
       });
 
       app.options.addDeclaration({
@@ -156,7 +165,7 @@ export class ThemeOptions
    /** @returns {boolean} breadcrumb option */
    get breadcrumb() { return this.#options.breadcrumb; }
 
-   /** @returns {FileOrURL} favicon option */
+   /** @returns {FileOrURL | undefined} favicon option */
    get favicon() { return this.#options.favicon; }
 
    /** @returns {DMTIconLink[]} linksIcon option */
@@ -220,10 +229,11 @@ export class ThemeOptions
       }
 
       const linksIcon = app.options.getValue('dmtLinksIcon');
+      this.#validateLinksIcon(linksIcon, app);
 
       /** @type {Record<string, string>} */
       const linksService = app.options.getValue('dmtLinksService');
-      if (isObject(linksService)) { this.#validateLinksService(linksService, app); }
+      this.#validateLinksService(linksService, app);
 
       // Verify search limits.
       if (!Number.isInteger(this.#options.searchLimit) || this.#options.searchLimit < 1)
@@ -248,13 +258,14 @@ export class ThemeOptions
     *
     * @param {string}   pathOrURL - File path or URL to validate.
     *
-    * @param {string}   optionName - Associated DMT option name.
+    * @param {string}   [optionName] - Associated DMT option name; when defined posts a warning message on validation
+    *        failure.
     *
-    * @returns {FileOrURL} Parsed FileOrURL object; may be empty.
+    * @returns {FileOrURL | undefined} Parsed FileOrURL object or undefined.
     */
-   static #validateFileOrURL(app, pathOrURL, optionName)
+   static #validateFileOrURL(app, pathOrURL, optionName = void 0)
    {
-      if (typeof pathOrURL !== 'string' || pathOrURL.length === 0) { return {}; }
+      if (typeof pathOrURL !== 'string' || pathOrURL.length === 0) { return void 0; }
 
       const result = {};
 
@@ -276,10 +287,61 @@ export class ThemeOptions
       }
       catch (err)
       {
-         app.logger.warn(`${ThemeOptions.#ID} '${optionName}' path / URL did not resolve: ${pathOrURL}`);
+         if (optionName)
+         {
+            app.logger.warn(`${ThemeOptions.#ID} '${optionName}' path / URL did not resolve: ${pathOrURL}`);
+         }
+         return void 0;
       }
 
       return result;
+   }
+
+   /**
+    * @param {Record<string, string>[]}      linksIcon - Service link option.
+    *
+    * @param {import('typedoc').Application} app - TypeDoc Application.
+    */
+   #validateLinksIcon(linksIcon, app)
+   {
+      let cntr = -1;
+
+      for (const entry of linksIcon)
+      {
+         cntr++;
+
+         if (!isObject(entry))
+         {
+            app.logger.warn(`${ThemeOptions.#ID} [dmtLinksIcon]: Invalid entry[${cntr}] is not an object.`);
+            continue;
+         }
+
+         const asset = ThemeOptions.#validateFileOrURL(app, entry.icon);
+         if (!asset)
+         {
+            app.logger.warn(
+             `${ThemeOptions.#ID} [dmtLinksIcon]: Invalid entry[${cntr}].icon is not a valid file path or URL.`);
+            continue;
+         }
+
+         if (entry.title !== void 0 && typeof entry.title !== 'string')
+         {
+            app.logger.warn(`${ThemeOptions.#ID} [dmtLinksIcon]: Invalid entry[${cntr}].title is not a string.`);
+            continue;
+         }
+
+         if (!ThemeOptions.#isURL(entry.url))
+         {
+            app.logger.warn(`${ThemeOptions.#ID} [dmtLinksIcon]: Invalid entry[${cntr}].url is not an URL.`);
+            continue;
+         }
+
+         this.#options.linksIcon.push({
+            asset,
+            title: entry.title,
+            url: entry.url
+         });
+      }
    }
 
    /**
@@ -295,14 +357,12 @@ export class ThemeOptions
          {
             app.logger.warn(`${ThemeOptions.#ID} Unknown service link '${key}'; supported services: ${
              [...s_SERVICE_LINKS.keys()].join(', ')}`);
-
             continue;
          }
 
          if (!ThemeOptions.#isURL(linksService[key]))
          {
             app.logger.warn(`${ThemeOptions.#ID} Invalid URL for service link '${key}'.`);
-
             continue;
          }
 
@@ -332,7 +392,7 @@ const s_SERVICE_LINKS = new Map([
 /**
  * @typedef {object} DMTOptions
  *
- * @property {{ filepath?: string, filename?: string, url?: string }} [favicon] Parsed data about any defined favicon.
+ * @property {FileOrURL | undefined} [favicon] Parsed data about any defined favicon.
  *
  * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
  *

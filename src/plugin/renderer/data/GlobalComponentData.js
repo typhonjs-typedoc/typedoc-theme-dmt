@@ -2,6 +2,7 @@ import fs                     from 'node:fs';
 import path                   from 'node:path';
 
 import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
+import { isObject }           from '#runtime/util/object';
 
 import { ReflectionKind }     from 'typedoc';
 
@@ -99,6 +100,36 @@ export class GlobalComponentData
    static #processLinksIcon(event, options)
    {
       const result = [];
+      const links = options.linksIcon;
+
+      if (!links.length) { return result; }
+
+      const outputDir = path.join(event.outputDirectory, 'assets', 'dmt', 'icons', 'external')
+      fs.mkdirSync(outputDir, { recursive: true });
+
+      for (const entry of links)
+      {
+         if (!isObject(entry.asset)) { continue; }
+
+         if (entry.asset.filepath && entry.asset.filename)
+         {
+            fs.copyFileSync(entry.asset.filepath, path.join(outputDir, entry.asset.filename));
+
+            result.push({
+               dmtPath: `icons/external/${entry.asset.filename}`,
+               title: entry.title,
+               url: entry.url
+            });
+         }
+         else if (entry.asset.url)
+         {
+            result.push({
+               iconURL: entry.asset.url,
+               title: entry.title,
+               url: entry.url
+            });
+         }
+      }
 
       return result;
    }
