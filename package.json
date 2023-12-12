@@ -1,7 +1,7 @@
 {
   "name": "@typhonjs-typedoc/typedoc-theme-dmt",
-  "version": "0.1.0",
-  "description": "Provides a modern and customizable UX augmentation to the default TypeDoc theme. This theme is perfect for small to very large documentation efforts and approaches a ~90% reduction in disk space utilized and 80% speed up in generation.",
+  "version": "0.2.0-next.1",
+  "description": "Provides a modern and customizable UX augmentation to the default TypeDoc theme bringing enhanced features and usability.",
   "license": "MPL-2.0",
   "type": "module",
   "author": "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)",
@@ -11,6 +11,7 @@
   "sideEffects": false,
   "imports": {
     "#runtime/*": "@typhonjs-svelte/runtime-base/*",
+    "#constants": "./src/components/constants.js",
     "#utils": "./src/utils.js"
   },
   "exports": {
@@ -22,41 +23,44 @@
     "./package.json": "./package.json"
   },
   "dependencies" : {
-    "@rollup/plugin-node-resolve" : ">=15.x.x",
-    "@rollup/plugin-terser": ">=0.4.x",
-    "@rollup/plugin-virtual" : ">=3.x.x <4.0.0",
-    "cheerio": "^1.0.0-rc.12",
-    "rollup" : ">=3.x.x <4.0.0",
-    "svelte": ">=4.x.x",
-    "svelte-tag": ">=1.x.x"
+    "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs" : "^25.0.2",
-    "@types/lunr": "^2.3.4",
-    "@typhonjs-config/eslint-config" : "^0.6.0",
-    "@typhonjs-build-test/rollup-plugin-pkg-imports": "^0.0.2",
-    "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base#0.1.0",
-    "autoprefixer": "^10.4.14",
+    "@rollup/plugin-commonjs" : "^25.0.7",
+    "@rollup/plugin-node-resolve" : "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/lunr": "^2.3.7",
+    "@typhonjs-config/eslint-config" : "^0.6.3",
+    "@typhonjs-build-test/rollup-plugin-pkg-imports": "^0.0.4",
+    "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base",
+    "autoprefixer": "^10.4.16",
     "cssnano": "^6.0.1",
-    "eslint" : "^8.43.0",
+    "eslint" : "^8.55.0",
     "lunr": "^2.3.9",
-    "postcss": "^8.4.24",
-    "postcss-cli": "^10.1.0",
-    "postcss-preset-env": "^8.5.1",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "postcss-preset-env": "^9.3.0",
+    "rollup" : "^4.8.0",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-svelte": "^7.1.5",
-    "sass": "^1.63.6",
-    "svelte-preprocess" : "^5.0.4"
+    "rollup-plugin-svelte": "^7.1.6",
+    "sass": "^1.69.5",
+    "svelte": "^4.2.8",
+    "svelte-preprocess" : "^5.1.0"
   },
   "peerDependencies" : {
-    "typedoc": ">=0.24.8"
+    "typedoc": ">=0.25.1"
   },
   "bugs": "https://github.com/typhonjs-typedoc/typedoc-theme-dmt/issues",
   "homepage": "https://github.com/typhonjs-typedoc/typedoc-theme-dmt#readme",
   "repository": "github:typhonjs-typedoc/typedoc-theme-dmt",
   "files": [
+    "/assets",
     "/dist",
     "/types"
+  ],
+  "keywords" : [
+    "typedoc",
+    "typedoc-theme"
   ],
   "browserslist": [">5%", "not IE 11"],
   "scripts": {
