@@ -43,7 +43,7 @@ export default [
 
    {
       input: 'src/components/index.js',
-      external: ['../main.js', './navigationIndex.js'],   // `main.js` is loaded from this bundle.
+      external: ['./dmt-component-data.js'],
       output: {
          file: 'dist/assets/dmt-components.js',
          format: 'es',
