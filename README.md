@@ -6,30 +6,10 @@
 [![Discord](https://img.shields.io/discord/737953117999726592?label=TyphonJS%20Discord)](https://discord.gg/mnbgN8f)
 [![Twitch](https://img.shields.io/twitch/status/typhonrt?style=social)](https://www.twitch.tv/typhonrt)
 
-Provides a modern and customizable UX augmentation to the default TypeDoc theme; may I introduce you to the 
-"Default Modern Theme" / DMT. This theme is perfect for small to very large documentation efforts and approaches a ~90% 
-reduction in disk space utilized and 80% speed up in generation. The approach taken is not to provide a theme 
-replacement, but an augmentation of the output from the default theme.
-
-The main source of disk space utilization and doc generation time for the default TypeDoc theme is the left-hand navigation 
-panel. As the number of doc pages grows that index per page grows large and each static HTML page increases size. This 
-accounts for ~90% disk space utilized for generated docs. See this [TypeDoc issue](https://github.com/TypeStrong/typedoc/issues/2287) 
-for a discussion. The DMT caches the left-hand navigation and immediately turns off that aspect of TypeDoc during doc 
-generation creating a Svelte powered web component that is loaded for all pages eliminating the duplication of the nav 
-HTML per page. It looks and responds just like the default theme. Note that for TypeDoc `0.24.8+` you need to enable the 
-`navigation: { fullTree: true }` option to generate the full tree; this is a new undocumented TypeDoc option; see 
-configuration example below. 
-
-Additionally, the default main search index is altered to use compressed MessagePack instead of JSON reducing the search 
-index size just over 90%. A more attractive Svelte component also powers the main search index. Currently, the main 
-search index has the same functionality as the default theme, but I will be investigating options to make it more 
-powerful in future updates especially for large projects.    
-
-Other changes from the default theme include styles and usage of modern CSS features like `container queries` to provide 
-better font size changes for different screen orientations. There are additional keyboard hotkeys available: 
-- `<Alt-S>`: Show and focus the main search entry.
-- `<Alt-N>`: Focus the current selected item in the left-hand navigation panel (a11y).
-- `<Alt-O>`: Focus the first entry in the `On This Page` section (a11y). 
+Provides a customizable UX augmentation to the default TypeDoc theme bringing final mile fit and finish. The approach
+taken is not to provide a theme replacement, but an augmentation of the output from the default theme providing
+enhanced usability, features, and polish. A large benefit to this approach is that it allows the Default Modern Theme
+(DMT) to keep up with new releases and features of TypeDoc.
 
 ## Installation:
 
@@ -37,54 +17,106 @@ better font size changes for different screen orientations. There are additional
 ```json
 {
    "devDependencies": {
-      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.1.0",
-      "typedoc": "^0.24.8"
+      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.2.0-next.1",
+      "typedoc": "^0.25.0"
    }
 }
 ```
 
+## Features
+
+The Default Modern Theme (DMT) achieves enhanced usability through replacing several components of the default theme
+with Svelte powered implementations. This includes the navigation index and search capabilities. Other changes from
+the default theme include enhanced styles and usage of modern CSS features like `container queries` to provide
+better font size changes for different screen orientations.
+
+## Key Commands / Accessibility.
+
+The DMT styles enhance accessibility making keyboard navigation clear and concise.
+
+There are additional keyboard hotkeys available (for macOS "Alt" is the "Option / ⌥" key):
+- `<Alt-C>`: Focus main content.
+- `<Alt-E>`: Expand / collapse all navigation folders.
+- `<Alt-H>`: Go to home page / main index.html
+- `<Alt-M>`: If there is a `modules.html` index then go to it.
+- `<Alt-N>`: Scroll to current page in navigation panel and focus it.
+- `<Alt-O>`: If available, focus first anchor in `On This Page` container.
+- `<Alt-S>`: Show and focus the main search entry.
+
+When using the navigation index you may press `<Alt>` when opening / closing a folder and it will open or close all
+children folders underneath.
+
 ## Configuration:
 
-`typedoc.json` / includes extra DMT options / and comments (JSON5):
+`typedoc.json` / includes all extra DMT options with comments (JSON5):
 ```json5
 {
-  // Set a local file path or URL to set as the favicon.
-  "dmtFavicon": "./assets/favicon.ico",
-  // When true the entire module / file path breadcrumb is removed. 
-  "dmtRemoveBreadcrumb": false,
-  // When true the default module / namespace is removed from navigation and breadcrumbs.
-  "dmtRemoveDefaultModule": false,
-  // When true the top level SVG icon for each entry / namespace is removed. This works great for packages that 
-  // use sub-path exports / Node packages where it is not desirable to have the `namespace` icon in the main nav panel.
-  "dmtRemoveNavTopLevelIcon": false,
-  // When true the main search index is enabled. You may opt to turn off the main search index and not display the 
-  // search icon in the top link bar is removed.
-  "dmtSearch": true,
-  // A positive integer greater than 0 providing a limit on main search query results.
-  "dmtSearchLimit": 10,
-  // When true the quick search index is enabled. This feature is not complete, but will be in the next update.
-  "dmtSearchQuick": false,
-  // A positive integer greater than 0 providing a limit on quick search query results.
-  "dmtSearchQuickLimit": 10,
-  
-  // This is a new undocumented TypeDoc option for `0.24.8+` that is required to render the full navigation tree.
-  "navigation": { 
-     fullTree: true
-  },
-   
   // Add the DMT plugin.
   "plugin": [
     "@typhonjs-typedoc/typedoc-theme-dmt"
   ],
-   
+
   // Set the theme.
-  "theme": "default-modern"
+  "theme": "default-modern",
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  // The following options are specific to the Default Modern Theme. Default options are listed unless otherwise specified.
+
+  // When false the entire breadcrumb is removed.
+  "dmtBreadcrumb": true,
+
+  // Set a local file path or URL to set as the favicon.
+  "dmtFavicon": "./assets/favicon.ico",
+
+  // An array of user specified "icon links" that are placed in toolbar links. An example entry is included below.
+  "dmtLinksIcon": [
+    {
+      "icon": "./assets/icons/custom-icon.png", // File path or URL to image.
+      "title": "My Custom Link",                // Tooltip to display as "title".
+      "url": "<URL>"                            // URL for link.
+    }
+  ],
+
+  // An object with preconfigured "icon links" for popular services that are placed in toolbar links.
+  // All current services supported are listed, but choose the ones you use.
+  "dmtLinksService": {
+    "Discord": "<URL>",
+    "GitHub": "<URL>",
+    "BitBucket": "<URL>",
+    "GitLab": "<URL>",
+    "NPM": "<URL>"
+  },
+
+  // When true 'Module' in page titles and other areas of the documentation are replaced with 'Package'.
+  // This is handy if you are documenting a "Package" whether Node / NPM or otherwise.
+  "dmtModuleAsPackage": false,
+
+  // The depth where the navigation index begins concatenating module paths. DMT by default reorganizes modules paths
+  // into a complete tree structure. Setting this to `0` is the same as the default theme, but you have the option to
+  // choose at what depth concatenation of paths begins.
+  "dmtNavModuleDepth": "<NUMBER NO QUOTES>",
+
+  // With building a complete navigation tree showing the "Namespace" SVG icon for a module isn't as productive. By
+  // default, no icons are shown for modules. Set to true if you want the icons shown.
+  "dmtNavModuleIcon": false,
+
+  // When true the main search index is enabled. You may opt to turn off the main search index and not display the
+  // search icon in the top link bar is removed.
+  "dmtSearch": true,
+
+  // When true the main search index stores parent reflection full names. This is set to false by default because when
+  // using modules the full module path is shown in search results for all symbols.
+  "dmtSearchFullName": false,
+
+  // A positive integer greater than 0 providing a limit on main search query results.
+  "dmtSearchLimit": 10
 }
 ```
 
 ## Synergy:
-The DMT is used to generate complete API docs for the built-in Typescript library declarations. 
-[@typhonjs-typedoc/ts-lib-docs](https://www.npmjs.com/package/@typhonjs-typedoc/ts-lib-docs) provides several data 
+The DMT is used to generate complete API docs for the built-in Typescript library declarations.
+[@typhonjs-typedoc/ts-lib-docs](https://www.npmjs.com/package/@typhonjs-typedoc/ts-lib-docs) provides several data
 sources including a TypeDoc plugin that associates all symbols from the built-in TS lib declarations allowing complete
 end-to-end API docs for your project and the modern web.
 
@@ -95,5 +127,3 @@ end-to-end API docs for your project and the modern web.
 
 - Finish implementing new "quick search" Svelte component that provides an alternate quick way to search the navigation
 panel and local file being viewed.
-
-- Finish additional layout / style aspects that improve accessibility support and keyboard navigation.
