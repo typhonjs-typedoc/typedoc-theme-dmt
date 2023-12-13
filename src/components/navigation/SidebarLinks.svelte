@@ -7,8 +7,11 @@
 
    /** @type {Record<string, string>} */
    const navigationLinks = dmtComponentData?.navigationLinks ?? {};
+
+   const hasLinks = (Object.keys(sidebarLinks).length + Object.keys(navigationLinks).length) > 0;
 </script>
 
+{#if hasLinks}
 <section>
    {#each Object.keys(navigationLinks) as key (navigationLinks[key])}
       <a href={`${navigationLinks[key]}`} target=_blank><span>{key}</span></a>
@@ -17,6 +20,7 @@
       <a href={`${sidebarLinks[key]}`} target=_blank><span>{key}</span></a>
    {/each}
 </section>
+{/if}
 
 <style>
    section {
