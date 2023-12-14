@@ -49,7 +49,7 @@ export default [
          format: 'es',
          generatedCode: { constBindings: true },
          plugins: [terser()],
-         sourcemap: true
+         sourcemap: false
       },
       plugins: [
          svelte({
@@ -59,7 +59,7 @@ export default [
          postcss(postcssConfig({
             extract: 'dmt-components.css',
             compress: true,
-            sourceMap: true
+            sourceMap: false
          })),
 
          commonjs(),

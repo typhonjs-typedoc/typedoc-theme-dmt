@@ -65,6 +65,6 @@
   "browserslist": [">5%", "not IE 11"],
   "scripts": {
     "eslint": "eslint .",
-    "build": "rollup -c && sass ./styles/dmt-theme.scss ./dist/assets/dmt-theme.css && postcss ./dist/assets/dmt-theme.css -p sass -u autoprefixer postcss-preset-env cssnano -m -o ./dist/assets/dmt-theme.css"
+    "build": "rollup -c && sass --no-source-map ./styles/dmt-theme.scss ./dist/assets/dmt-theme.css && postcss ./dist/assets/dmt-theme.css --no-map -p sass -u autoprefixer postcss-preset-env cssnano -o ./dist/assets/dmt-theme.css"
   }
 }
