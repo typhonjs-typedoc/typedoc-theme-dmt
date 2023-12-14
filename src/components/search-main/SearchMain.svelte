@@ -32,6 +32,7 @@
       switch (event.code)
       {
          case 'KeyS':
+            event.preventDefault();
             $storeVisible = true;
             break;
       }
