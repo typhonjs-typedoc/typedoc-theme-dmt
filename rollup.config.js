@@ -9,6 +9,13 @@ import postcss             from 'rollup-plugin-postcss';
 import svelte              from 'rollup-plugin-svelte';
 import preprocess          from 'svelte-preprocess';
 
+const banner = `/**
+ * @module @typhonjs-typedoc/typedoc-theme-dmt
+ * @license MPL-2.0
+ * @see https://github.com/typhonjs-typedoc/typedoc-theme-dmt
+ */
+ `;
+
 /**
  * @type {import('rollup').RollupOptions[]}
  */
@@ -29,6 +36,7 @@ export default [
          'typedoc'
       ],
       output: {
+         banner,
          file: 'dist/index.js',
          format: 'es',
          generatedCode: { constBindings: true },
@@ -45,6 +53,7 @@ export default [
       input: 'src/components/index.js',
       external: ['./dmt-component-data.js'],
       output: {
+         banner,
          file: 'dist/assets/dmt-components.js',
          format: 'es',
          generatedCode: { constBindings: true },
