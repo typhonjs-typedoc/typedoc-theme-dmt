@@ -8,7 +8,8 @@ import { nextAnimationFrame } from "#runtime/util/animate";
  * Provides the following global keyboard commands:
  * - <Alt-C>: Focus main content
  * - <Alt-E>: Expand / collapse all navigation folders.
- * - <Alt-H>: Go to home page / main index.html
+ * - <Alt-H>: Open / close the help panel.
+ * - <Alt-I>: Go to home page / main index.html
  * - <Alt-M>: If there is a `modules.html` index then go to it.
  * - <Alt-N>: Scroll to current page in navigation panel and focus it.
  * - <Alt-O>: If available, focus first anchor in `On This Page` container.
