@@ -151,6 +151,49 @@ export class ModuleTreeMap
 
       return node;
    }
+
+   /**
+    * Post-processes a NavigationElement tree concatenating singular paths across multiple levels.
+    *
+    * @param {import('typedoc').NavigationElement[]}  tree - The built tree output of `buildTree`.
+    *
+    * @returns {import('typedoc').NavigationElement[]} The tree with singular paths concatenated.
+    */
+   static compactSingularPaths(tree)
+   {
+      return tree.map((node) => this.#compactSingularPaths(node));
+   }
+
+   /**
+    * Post-processes a single NavigationElement branch to concatenate singular paths across multiple levels.
+    *
+    * @param {import('typedoc').NavigationElement} node - The current node being processed.
+    *
+    * @returns {import('typedoc').NavigationElement} The processed node.
+    */
+   static #compactSingularPaths(node)
+   {
+      // Early out for leaf nodes.
+      if (!node || !node.children || node.children.length === 0 || node?.kind !== void 0) { return node; }
+
+      // Recursively process all children first.
+      node.children = node.children.map(child => this.#compactSingularPaths(child));
+
+      // Potentially compact current node if there is only one child.
+      if (node.children.length === 1)
+      {
+         const child = node.children[0];
+
+         // If the single child is a non-leaf node concatenate the path text and lift children.
+         if (child?.children?.length > 0)
+         {
+            node.text += '/' + child.text;
+            node.children = child.children;
+         }
+      }
+
+      return node;
+   }
 }
 
 /**

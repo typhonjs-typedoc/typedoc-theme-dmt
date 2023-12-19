@@ -19,7 +19,9 @@ export class NavigationIndex
       // No processing necessary so directly return the index.
       if (options.navModuleDepth === 0) { return index; }
 
-      return this.parseModuleTree(index, options);
+      const tree = this.#parseModuleTree(index, options);
+
+      return options.navModuleCompact ? ModuleTreeMap.compactSingularPaths(tree) : tree;
    }
 
    /**
@@ -29,7 +31,7 @@ export class NavigationIndex
     *
     * @returns {import('typedoc').NavigationElement[]} Processed navigation index.
     */
-   static parseModuleTree(index, options)
+   static #parseModuleTree(index, options)
    {
       const moduleTreeMap = new ModuleTreeMap(options.navModuleDepth);
 

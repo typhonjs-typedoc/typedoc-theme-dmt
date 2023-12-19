@@ -18,10 +18,11 @@ export class ThemeOptions
    /** @type {DMTOptions} */
    #options = {
       breadcrumb: true,
-      favicon: {},
+      favicon: void 0,
       linksIcon: [],
       linksService: [],
       moduleAsPackage: false,
+      navModuleCompact: false,
       navModuleDepth: Number.MAX_SAFE_INTEGER,
       navModuleIcon: false,
       search: true,
@@ -30,6 +31,8 @@ export class ThemeOptions
       searchQuick: false,
       searchQuickLimit: 10,
    };
+
+
 
    /**
     * @param {import('typedoc').Application} app -
@@ -78,6 +81,13 @@ export class ThemeOptions
       app.options.addDeclaration({
          name: 'dmtModuleAsPackage',
          help: `${ID} When true 'Module' in page titles is replaced with 'Package'.`,
+         type: ParameterType.Boolean,
+         defaultValue: false
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtNavModuleCompact',
+         help: `${ID} When true the navigation index compacts singular paths.`,
          type: ParameterType.Boolean,
          defaultValue: false
       });
@@ -177,6 +187,9 @@ export class ThemeOptions
    /** @returns {boolean} moduleAsPackage option */
    get moduleAsPackage() { return this.#options.moduleAsPackage; }
 
+   /** @returns {boolean} navModuleCompact option */
+   get navModuleCompact() { return this.#options.navModuleCompact; }
+
    /** @returns {number} navModuleDepth option */
    get navModuleDepth() { return this.#options.navModuleDepth; }
 
@@ -207,6 +220,7 @@ export class ThemeOptions
    {
       this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
       this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
+      this.#options.navModuleCompact = app.options.getValue('dmtNavModuleCompact');
       this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
       this.#options.navModuleIcon = app.options.getValue('dmtNavModuleIcon');
       this.#options.search = app.options.getValue('dmtSearch');
@@ -224,6 +238,14 @@ export class ThemeOptions
       {
          app.logger.warn(`${ThemeOptions.#ID
          } 'dmtNavModuleDepth' must be an integer greater than or equal to '0'; setting to default.`);
+
+         this.#options.navModuleDepth = Number.MAX_SAFE_INTEGER;
+      }
+
+      if (this.#options.navModuleCompact && this.#options.navModuleDepth !== Number.MAX_SAFE_INTEGER)
+      {
+         app.logger.warn(`${ThemeOptions.#ID
+         } 'dmtNavModuleCompact' is enabled; resetting 'dmtNavModuleDepth' to generate full tree.`);
 
          this.#options.navModuleDepth = Number.MAX_SAFE_INTEGER;
       }
@@ -399,6 +421,8 @@ const s_SERVICE_LINKS = new Map([
  * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
  *
  * @property {boolean} moduleAsPackage When true 'Module' in page titles is replaced with 'Package'.
+ *
+ * @property {boolean} navModuleCompact When true the navigation index compacts singular paths.
  *
  * @property {number} navModuleDepth The depth where the navigation index begins concatenating module paths.
  *
