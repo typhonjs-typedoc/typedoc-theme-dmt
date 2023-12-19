@@ -93,6 +93,9 @@ children folders underneath.
   // This is handy if you are documenting a "Package" whether Node / NPM or otherwise.
   "dmtModuleAsPackage": false,
 
+  // When true the navigation index generates a full tree compacting singular paths. 'dmtNavModuleDepth' is ignored.
+  "dmtNavModuleCompact": false,
+
   // The depth where the navigation index begins concatenating module paths. DMT by default reorganizes modules paths
   // into a complete tree structure. Setting this to `0` is the same as the default theme, but you have the option to
   // choose at what depth concatenation of paths begins.
