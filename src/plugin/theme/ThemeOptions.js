@@ -412,9 +412,11 @@ export class ThemeOptions
             continue;
          }
 
+         const entry = s_SERVICE_LINKS.get(key);
+
          this.#options.linksService.push({
-            asset: s_SERVICE_LINKS.get(key),
-            title: key,
+            asset: entry.asset,
+            title: entry.title,
             url: linksService[key]
          });
       }
@@ -424,16 +426,30 @@ export class ThemeOptions
 const s_ASSET_PATH = fileURLToPath(import.meta.url.replace(/dist\/index\.js$/, 'assets/'));
 
 /**
- * @type {Map<string, FileOrURL>}
+ * @type {Map<string, { asset: FileOrURL, title: string }>}
  */
 const s_SERVICE_LINKS = new Map([
-   ['BitBucket', { filepath: path.join(s_ASSET_PATH, 'icons/service/bitbucket.png'), filename: 'bitbucket.png' }],
-   ['Discord', { filepath: path.join(s_ASSET_PATH, 'icons/service/discord.png'), filename: 'discord.png' }],
-   ['GitHub', { filepath: path.join(s_ASSET_PATH, 'icons/service/github.png'), filename: 'github.png' }],
-   ['GitLab', { filepath: path.join(s_ASSET_PATH, 'icons/service/gitlab.png'), filename: 'gitlab.png' }],
-   ['NPM', { filepath: path.join(s_ASSET_PATH, 'icons/service/npm.png'), filename: 'npm.png' }],
+   ['BitBucket', {
+      asset: { filepath: path.join(s_ASSET_PATH, 'icons/service/bitbucket.png'), filename: 'bitbucket.png' },
+      title: 'BitBucket Repo'
+   }],
+   ['Discord', {
+      asset: { filepath: path.join(s_ASSET_PATH, 'icons/service/discord.png'), filename: 'discord.png' },
+      title: 'Discord Chat'
+   }],
+   ['GitHub', {
+      asset: { filepath: path.join(s_ASSET_PATH, 'icons/service/github.png'), filename: 'github.png' },
+      title: 'GitHub Repo'
+   }],
+   ['GitLab', {
+      asset: { filepath: path.join(s_ASSET_PATH, 'icons/service/gitlab.png'), filename: 'gitlab.png' },
+      title: 'GitLab Repo'
+   }],
+   ['NPM', {
+      asset: { filepath: path.join(s_ASSET_PATH, 'icons/service/npm.png'), filename: 'npm.png' },
+      title: 'NPM Package'
+   }],
 ]);
-
 
 /**
  * @typedef {object} DMTOptions
