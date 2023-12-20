@@ -76,10 +76,8 @@ export class PageRenderer
     * Modifications for every page.
     *
     * @param {import('cheerio').Cheerio}  $ -
-    *
-    * @param {PageEvent}   page -
     */
-   #augmentGlobal($, page)
+   #augmentGlobal($)
    {
       // On load set opacity to 0 on the body as there is a DOMContentLoaded handler in the `dmt-nav-web-component`
       // bundle that on first rAF makes the body visible. This allows the default theme `main.js` script to load before
@@ -87,13 +85,6 @@ export class PageRenderer
       $('body').prop('style', 'opacity: 0');
 
       const titleEl = $('.tsd-page-title h1');
-
-      // Potentially replace module page titles with `Package`.
-      if (this.#options.moduleAsPackage && page?.model?.kind === ReflectionKind.Module)
-      {
-         const titleText = titleEl.text();
-         if (typeof titleText === 'string') { titleEl.text(titleText.replace(/^Module (.*)/, 'Package $1')); }
-      }
 
       // Wrap the title header in a flex box to allow additional elements to be added right aligned.
       titleEl.wrap('<div class="dmt-title-header-flex"></div>');
@@ -153,8 +144,10 @@ export class PageRenderer
     * Modifications for every page based on DMT options.
     *
     * @param {import('cheerio').Cheerio}  $ -
+    *
+    * @param {PageEvent}   page -
     */
-   #augmentGlobalOptions($)
+   #augmentGlobalOptions($, page)
    {
       // Always remove the default theme top level default module / namespace from breadcrumb links.
       const breadCrumbListElements = $('.tsd-breadcrumb li');
@@ -171,6 +164,14 @@ export class PageRenderer
 
       // Remove all breadcrumb links.
       if (!this.#options.breadcrumb) { $('.tsd-breadcrumb').remove(); }
+
+      // Potentially replace module page titles with `Package`.
+      if (this.#options.moduleAsPackage && page?.model?.kind === ReflectionKind.Module)
+      {
+         const titleEl = $('.tsd-page-title h1');
+         const titleText = titleEl.text();
+         if (typeof titleText === 'string') { titleEl.text(titleText.replace(/^Module (.*)/, 'Package $1')); }
+      }
    }
 
    /**
@@ -192,10 +193,10 @@ export class PageRenderer
 
       // A few global modifications tweaks like the favicon and slight modifications to the layout to allow right
       // aligning of additional elements in flexbox layouts.
-      this.#augmentGlobal($, page);
+      this.#augmentGlobal($);
 
       // Further global modifications based on DMT options.
-      this.#augmentGlobalOptions($);
+      this.#augmentGlobalOptions($, page);
 
       page.contents = $.html();
    }

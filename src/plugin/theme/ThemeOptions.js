@@ -25,14 +25,13 @@ export class ThemeOptions
       navModuleCompact: false,
       navModuleDepth: Number.MAX_SAFE_INTEGER,
       navModuleIcon: false,
+      moduleNames: void 0,
       search: true,
       searchFullName: false,
       searchLimit: 10,
       searchQuick: false,
       searchQuickLimit: 10,
    };
-
-
 
    /**
     * @param {import('typedoc').Application} app -
@@ -104,6 +103,13 @@ export class ThemeOptions
          help: `${ID} When true SVG icons for all navigation module entries are displayed.`,
          type: ParameterType.Boolean,
          defaultValue: false
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtModuleNames',
+         help: `${ID} Module name substitution.`,
+         type: ParameterType.Object,
+         defaultValue: {}
       });
 
       app.options.addDeclaration({
@@ -196,6 +202,9 @@ export class ThemeOptions
    /** @returns {boolean} navModuleIcon option */
    get navModuleIcon() { return this.#options.navModuleIcon; }
 
+   /** @returns {Record<string, string>} moduleNames option */
+   get moduleNames() { return this.#options.moduleNames; }
+
    /** @returns {boolean} search option */
    get search() { return this.#options.search; }
 
@@ -220,6 +229,7 @@ export class ThemeOptions
    {
       this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
       this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
+      this.#options.moduleNames = app.options.getValue('dmtModuleNames');
       this.#options.navModuleCompact = app.options.getValue('dmtNavModuleCompact');
       this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
       this.#options.navModuleIcon = app.options.getValue('dmtNavModuleIcon');
@@ -233,6 +243,19 @@ export class ThemeOptions
 
       this.#options.favicon = ThemeOptions.#validateFileOrURL(app, app.options.getValue('dmtFavicon'), 'dmtFavicon');
 
+      // Validate `moduleNames` warning if values are not a string.
+      if (this.#options.moduleNames)
+      {
+         for (const key of Object.keys(this.#options.moduleNames))
+         {
+            if (typeof this.#options.moduleNames[key] !== 'string')
+            {
+               app.logger.warn(`${ThemeOptions.#ID} [dmtModuleNames]: Value for key '${key}' is not a string.`);
+               delete this.#options.moduleNames[key];
+            }
+         }
+      }
+
       // Verify `navModuleDepth`.
       if (!Number.isInteger(this.#options.navModuleDepth) || this.#options.navModuleDepth < 0)
       {
@@ -242,6 +265,7 @@ export class ThemeOptions
          this.#options.navModuleDepth = Number.MAX_SAFE_INTEGER;
       }
 
+      // Resolve conflicting navigation module options.
       if (this.#options.navModuleCompact && this.#options.navModuleDepth !== Number.MAX_SAFE_INTEGER)
       {
          app.logger.warn(`${ThemeOptions.#ID
@@ -414,6 +438,8 @@ const s_SERVICE_LINKS = new Map([
 /**
  * @typedef {object} DMTOptions
  *
+ * @property {boolean} breadcrumb When true the breadcrumb is enabled.
+ *
  * @property {FileOrURL | undefined} [favicon] Parsed data about any defined favicon.
  *
  * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
@@ -422,13 +448,13 @@ const s_SERVICE_LINKS = new Map([
  *
  * @property {boolean} moduleAsPackage When true 'Module' in page titles is replaced with 'Package'.
  *
+ * @property {Record<string, string>} moduleNames Module name substitution.
+ *
  * @property {boolean} navModuleCompact When true the navigation index compacts singular paths.
  *
  * @property {number} navModuleDepth The depth where the navigation index begins concatenating module paths.
  *
  * @property {boolean} navModuleIcon When true SVG icons for all navigation module entries are displayed.
- *
- * @property {boolean} breadcrumb When true the breadcrumb is enabled.
  *
  * @property {boolean} search When true the main search index is enabled.
  *

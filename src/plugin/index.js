@@ -3,6 +3,7 @@ import path                   from 'node:path';
 
 import {
    Converter,
+   ReflectionKind,
    RendererEvent }            from 'typedoc';
 
 import {
@@ -48,6 +49,16 @@ export function load(app)
          // Selectively load search index creation.
          if (app.options.getValue('dmtSearch')) { new SearchIndexPackr(app); }
          if (app.options.getValue('dmtSearchQuick')) { new SearchQuickIndexPackr(app); }
+
+         // Handle any module name substitution during project conversion.
+         app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>
+         {
+            if (reflection?.kind === ReflectionKind.Module && options.moduleNames &&
+             reflection.name in options.moduleNames)
+            {
+               reflection.name = options.moduleNames[reflection.name];
+            }
+         });
       }
    });
 
