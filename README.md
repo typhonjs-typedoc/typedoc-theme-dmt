@@ -89,6 +89,9 @@ children folders underneath.
     "NPM": "<URL>"
   },
 
+  // Provide an object to rename / substitute module reflection names. The [key] is the existing name and [value] is the new name.
+  "dmtModuleNames": {},
+
   // When true 'Module' in page titles and other areas of the documentation are replaced with 'Package'.
   // This is handy if you are documenting a "Package" whether Node / NPM or otherwise.
   "dmtModuleAsPackage": false,
