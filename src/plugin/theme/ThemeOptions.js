@@ -25,7 +25,7 @@ export class ThemeOptions
       navModuleCompact: false,
       navModuleDepth: Number.MAX_SAFE_INTEGER,
       navModuleIcon: false,
-      moduleNames: void 0,
+      moduleNames: {},
       search: true,
       searchFullName: false,
       searchLimit: 10,
