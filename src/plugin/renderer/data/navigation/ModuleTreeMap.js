@@ -184,10 +184,13 @@ export class ModuleTreeMap
       {
          const child = node.children[0];
 
-         // If the single child is a non-leaf node concatenate the path text and lift children.
+         // If the single child is a non-leaf node concatenate the path text and lift child node.
          if (child?.children?.length > 0)
          {
             node.text += '/' + child.text;
+            node.path = child.path;
+            node.kind = child.kind;
+            node.class = child.class;
             node.children = child.children;
          }
       }
