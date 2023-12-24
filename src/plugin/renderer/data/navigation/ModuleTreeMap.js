@@ -13,26 +13,62 @@ export class ModuleTreeMap
    #depthMax = Number.MAX_SAFE_INTEGER;
 
    /**
+    * @type {string}
+    */
+   #packageName;
+
+   /**
+    * @type {string[]}
+    */
+   #packageParts;
+
+   /**
     * @type {MapNode}
     */
    #root = new MapNode();
 
    /**
     * @param {number}   depthMax - Max depth before path concatenation.
+    *
+    * @param {string}   [packageName] Any associated package name.
     */
-   constructor(depthMax)
+   constructor(depthMax, packageName)
    {
       this.#depthMax = depthMax;
+      this.#packageName = packageName;
    }
 
    /**
     * Adds a NavigationElement to the tree recursively adding intermediary nodes by splitting on `/`.
     *
+    * If there is an associated `packageName` from the ProjectReflection then splitting will respect the package name
+    * which is useful for packages that are organization based `@org-name/package-name`.
+    *
     * @param {import('typedoc').NavigationElement} node - NavigationElement to add.
     */
    add(node)
    {
-      const pathSegments = node.text.split('/');
+      const path = node.text;
+      if (typeof path !== 'string') { return; }
+
+      let pathSegments;
+
+      // Add an extra trailing slash to `packageName` to detect continuation parsing.
+      const packageNameExtra = typeof this.#packageName === 'string' ? `${this.#packageName}/` : void 0;
+
+      if (path === this.#packageName)
+      {
+         pathSegments = [this.#packageName];
+      }
+      else if (packageNameExtra && path.startsWith(packageNameExtra))
+      {
+         pathSegments = [this.#packageName];
+         pathSegments.push(...path.substring(packageNameExtra.length).split('/'));
+      }
+      else
+      {
+         pathSegments = path.split('/');
+      }
 
       this.#addToMap(this.#root, pathSegments, node, 0);
    }

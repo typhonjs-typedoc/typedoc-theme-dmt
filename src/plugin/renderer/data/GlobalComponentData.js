@@ -44,13 +44,15 @@ export class GlobalComponentData
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
+      const defaultNavIndex = app.renderer.theme?.getNavigation?.(event.project) ?? [];
+
       const data = {
          hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
          moduleAsPackage: options.moduleAsPackage,
          navModuleIcon: options.navModuleIcon,
-         navigationIndex: NavigationIndex.transform(app.renderer.theme?.getNavigation?.(event.project) ?? [], options),
+         navigationIndex: NavigationIndex.transform(defaultNavIndex, options, event?.project?.packageName),
          navigationLinks: app.options.getValue('navigationLinks'),
          ReflectionKind: this.#getReflectionKind(),
          search: options.search,
