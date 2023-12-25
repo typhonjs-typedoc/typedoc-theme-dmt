@@ -175,6 +175,41 @@ export class PageRenderer
    }
 
    /**
+    * Modifications for module reflection. Wraps `.tsd-index-panel` in a details element with the local storage key:
+    * `tsd-accordion-module-index`.
+    *
+    * @param {import('cheerio').Cheerio}  $ -
+    */
+   #augmentModule($)
+   {
+      const indexPanelEl = $('.tsd-panel.tsd-index-panel');
+
+      if (indexPanelEl)
+      {
+         indexPanelEl.find('h3.tsd-index-heading.uppercase').first().remove();
+
+         const childrenEl = indexPanelEl.children();
+
+         const detailsEl = $(
+         `<details class="tsd-index-content tsd-index-accordion" open>
+            <summary class="tsd-accordion-summary tsd-index-summary" data-key="module-index">
+               <h3 class="tsd-index-heading uppercase">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg> Index
+               </h3>
+            </summary>
+            <div class="tsd-accordion-details">
+            </div>
+         </details>`);
+
+         detailsEl.find('.tsd-accordion-details').append(childrenEl.clone());
+
+         childrenEl.remove();
+
+         indexPanelEl.append(detailsEl);
+      }
+   }
+
+   /**
     * @param {PageEvent}   page -
     */
    #handlePageEnd(page)
@@ -197,6 +232,8 @@ export class PageRenderer
 
       // Further global modifications based on DMT options.
       this.#augmentGlobalOptions($, page);
+
+      if (page.model.kind === ReflectionKind.Module) { this.#augmentModule($, page); }
 
       page.contents = $.html();
    }
