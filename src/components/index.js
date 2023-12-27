@@ -57,6 +57,10 @@ const dmtSettings = new DMTSettings({
    props: { dmtComponentData }
 });
 
+// Remove all default children from navigation as it is being replaced by the Navigation Svelte component.
+const navEl = document.querySelector('nav.tsd-navigation');
+while (navEl.firstChild) { navEl.removeChild(navEl.firstChild); }
+
 const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
    props: { dmtComponentData }
@@ -103,7 +107,12 @@ keyCommands(dmtComponentData);
 // element allowing intuitive scrolling.
 scrollActivation();
 
-// Removes the `opacity: 0` inline style on `body` element after all scripts have loaded. This allows a smooth
-// transition for the `main.js` default template script to take effect before the page is initially visible. There is
-// minimal flicker.
-globalThis.requestAnimationFrame(() => document.querySelector('body').style = null);
+// Adds a new style rule to set `body` visibility to `visible` after all scripts have loaded. This allows a smoother
+// transition for the `main.js` default template script to take effect along with all Svelte components loaded before
+// the page is initially visible. There is minimal flicker.
+globalThis.requestAnimationFrame(() =>
+{
+   const style = document.createElement('style');
+   style.innerHTML = 'body { visibility: visible; }';
+   document.head.appendChild(style);
+});

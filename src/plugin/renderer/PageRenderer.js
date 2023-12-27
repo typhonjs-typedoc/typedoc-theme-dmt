@@ -67,6 +67,13 @@ export class PageRenderer
          headEl.append($(`<link rel="icon" href="${basePath}${this.#options.favicon.filename}" />`));
       }
 
+      // To reduce flicker from loading `main.js` and additional Svelte components make `body` start with no visibility.
+      headEl.prepend('<style>body { visibility: hidden; }</style>');
+
+      // For no Javascript loading reverse the above style on load. The main Svelte component bundle will reverse this
+      // style after all components have been loaded on a requestAnimationFrame callback.
+      headEl.append('<noscript><style>body { visibility: visible; }</style></noscript>');
+
       // Remove unused default theme assets --------------------------------------------------------------------------
 
       headEl.find('script[src$="assets/search.js"]').remove();
@@ -79,11 +86,6 @@ export class PageRenderer
     */
    #augmentGlobal($)
    {
-      // On load set opacity to 0 on the body as there is a DOMContentLoaded handler in the `dmt-nav-web-component`
-      // bundle that on first rAF makes the body visible. This allows the default theme `main.js` script to load before
-      // display along with the DMT web components providing a seamless load with no flicker.
-      $('body').prop('style', 'opacity: 0');
-
       const titleEl = $('.tsd-page-title h1');
 
       // Wrap the title header in a flex box to allow additional elements to be added right aligned.
@@ -179,8 +181,10 @@ export class PageRenderer
     * `tsd-accordion-module-index`.
     *
     * @param {import('cheerio').Cheerio}  $ -
+    *
+    * @param {PageEvent}   page -
     */
-   #augmentModule($)
+   #augmentModule($, page)
    {
       const indexPanelEl = $('.tsd-panel.tsd-index-panel');
 
@@ -218,10 +222,6 @@ export class PageRenderer
 
       // Remove the default theme navigation script.
       $('script[src*="/navigation.js"]').remove();
-
-      const siteMenu = $('div.site-menu');
-
-      siteMenu.empty().append($(`<nav class="tsd-navigation"></nav>`));
 
       // Append scripts to load web components.
       this.#addAssets($, page);
