@@ -22,10 +22,11 @@ export class ThemeOptions
       linksIcon: [],
       linksService: [],
       moduleAsPackage: false,
+      moduleNames: {},
+      moduleReadme: {},
       navModuleCompact: false,
       navModuleDepth: Number.MAX_SAFE_INTEGER,
       navModuleIcon: false,
-      moduleNames: {},
       search: true,
       searchFullName: false,
       searchLimit: 10,
@@ -85,6 +86,20 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
+         name: 'dmtModuleNames',
+         help: `${ID} Module name substitution.`,
+         type: ParameterType.Object,
+         defaultValue: {}
+      });
+
+      app.options.addDeclaration({
+         name: 'dmtModuleReadme',
+         help: `${ID} Module name to 'README.md' additional page data.`,
+         type: ParameterType.Object,
+         defaultValue: {}
+      });
+
+      app.options.addDeclaration({
          name: 'dmtNavModuleCompact',
          help: `${ID} When true the navigation index compacts singular paths.`,
          type: ParameterType.Boolean,
@@ -103,13 +118,6 @@ export class ThemeOptions
          help: `${ID} When true SVG icons for all navigation module entries are displayed.`,
          type: ParameterType.Boolean,
          defaultValue: false
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtModuleNames',
-         help: `${ID} Module name substitution.`,
-         type: ParameterType.Object,
-         defaultValue: {}
       });
 
       app.options.addDeclaration({
@@ -205,6 +213,9 @@ export class ThemeOptions
    /** @returns {Record<string, string>} moduleNames option */
    get moduleNames() { return this.#options.moduleNames; }
 
+   /** @returns {Record<string, string>} moduleNames option */
+   get moduleReadme() { return this.#options.moduleReadme; }
+
    /** @returns {boolean} search option */
    get search() { return this.#options.search; }
 
@@ -230,6 +241,7 @@ export class ThemeOptions
       this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
       this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
       this.#options.moduleNames = app.options.getValue('dmtModuleNames');
+      this.#options.moduleReadme = app.options.getValue('dmtModuleReadme');
       this.#options.navModuleCompact = app.options.getValue('dmtNavModuleCompact');
       this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
       this.#options.navModuleIcon = app.options.getValue('dmtNavModuleIcon');
@@ -252,6 +264,19 @@ export class ThemeOptions
             {
                app.logger.warn(`${ThemeOptions.#ID} [dmtModuleNames]: Value for key '${key}' is not a string.`);
                delete this.#options.moduleNames[key];
+            }
+         }
+      }
+
+      // Validate `moduleReadme` warning if values are not a string.
+      if (this.#options.moduleReadme)
+      {
+         for (const key of Object.keys(this.#options.moduleReadme))
+         {
+            if (!fs.existsSync(this.#options.moduleReadme[key]))
+            {
+               app.logger.warn(`${ThemeOptions.#ID} [dmtModuleReadme]: File path for key '${key}' does not exist.`);
+               delete this.#options.moduleReadme[key];
             }
          }
       }
@@ -465,6 +490,8 @@ const s_SERVICE_LINKS = new Map([
  * @property {boolean} moduleAsPackage When true 'Module' in page titles is replaced with 'Package'.
  *
  * @property {Record<string, string>} moduleNames Module name substitution.
+ *
+ * @property {Record<string, string>} moduleReadme Module name to README file path.
  *
  * @property {boolean} navModuleCompact When true the navigation index compacts singular paths.
  *
