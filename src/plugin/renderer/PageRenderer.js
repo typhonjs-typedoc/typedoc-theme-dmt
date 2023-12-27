@@ -188,6 +188,7 @@ export class PageRenderer
    {
       const indexPanelEl = $('.tsd-panel.tsd-index-panel');
 
+      // Enclose module index in a details / summary element.
       if (indexPanelEl)
       {
          indexPanelEl.find('h3.tsd-index-heading.uppercase').first().remove();
@@ -210,6 +211,26 @@ export class PageRenderer
          childrenEl.remove();
 
          indexPanelEl.append(detailsEl);
+      }
+
+      // Detect if there is any associated README file to render for the module page based on the name and lookup in
+      // `dmtModuleReadme`.
+      const moduleName = page.model?.name;
+
+      if (typeof this.#options.moduleReadme[moduleName] === 'string')
+      {
+         try
+         {
+            const md = fs.readFileSync(this.#options.moduleReadme[moduleName], 'utf-8');
+            const mdHTML = this.#app.renderer.theme.markedPlugin.parseMarkdown(md, page);
+
+            if (typeof mdHTML === 'string') { $('.col-content').append(mdHTML); }
+         }
+         catch (err)
+         {
+            this.#app.logger.warn(
+             `[typedoc-theme-default-modern] Could not render additional 'README.md' for: '${moduleName}'`)
+         }
       }
    }
 
