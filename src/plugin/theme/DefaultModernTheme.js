@@ -23,7 +23,8 @@ export class DefaultModernTheme extends DefaultTheme
       {
          this.#renderContext = new DefaultThemeRenderContext(this, pageEvent, this.application.options);
 
-         // Stop default theme navigation generation.
+         // Stop default theme navigation generation. Uncommenting the line below will remove the default navigation
+         // when Javascript is disabled.
          // this.#renderContext.navigation = () => {};
       }
       else
