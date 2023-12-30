@@ -89,7 +89,7 @@
       --tjs-folder-summary-width: 100%;
 
       --tjs-folder-contents-margin: var(--dmt-nav-folder-contents-margin, 0 0 0 7px);
-      --tjs-folder-contents-border-left: var(--dmt-nav-folder-contents-border-left, 2px solid rgba(0, 0, 0, 0.2));
+      --tjs-folder-contents-border-left: var(--dmt-nav-folder-contents-border-left, 2px solid var(--dmt-nav-folder-contents-border-color, rgba(0, 0, 0, 0.2)));
       --tjs-folder-contents-padding: var(--dmt-nav-folder-contents-padding, 0 0 0 9px);
 
       outline: transparent;
