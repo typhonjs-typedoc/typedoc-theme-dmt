@@ -1,5 +1,6 @@
 import fs                     from 'node:fs';
 import path                   from 'node:path';
+import { fileURLToPath }      from 'node:url';
 
 import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
 import { isObject }           from '#runtime/util/object';
@@ -8,7 +9,11 @@ import { ReflectionKind }     from 'typedoc';
 
 import { NavigationIndex }    from './navigation/NavigationIndex.js';
 
+import { copyDirectory }      from '#utils';
+
 /**
+ * Copies all DMT global resources to output directory and builds Svelte component data.
+ *
  * Exports all global component data to a MessagePack file to `/assets/dmt/componentData.js`.
  *
  * - navigationLinks
@@ -17,18 +22,21 @@ import { NavigationIndex }    from './navigation/NavigationIndex.js';
  *
  * The resulting MessagePack file is loaded by the Svelte component bundle.
  */
-export class GlobalComponentData
+export class GlobalResources
 {
    /**
+    * Builds component data and copies global DMT resources to output directory.
+    *
     * @param {import('typedoc').RenderEvent} event -
     *
     * @param {import('typedoc').Application} app -
     *
     * @param {ThemeOptions} options -
     */
-   static async build(event, app, options)
+   static build(event, app, options)
    {
-      return this.#buildComponentData(event, app, options);
+      this.#buildComponentData(event, app, options);
+      this.#copyResources(event, app, options);
    }
 
    /**
@@ -37,10 +45,8 @@ export class GlobalComponentData
     * @param {import('typedoc').Application} app -
     *
     * @param {ThemeOptions} options -
-    *
-    * @returns {Promise<void>}
     */
-   static async #buildComponentData(event, app, options)
+   static #buildComponentData(event, app, options)
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
@@ -66,6 +72,63 @@ export class GlobalComponentData
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),
        `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
+   }
+
+   /**
+    * Copies any resources to docs output assets directory. Also handles modifying `main.js` to remove
+    * `initNav` / `initSearch` functions.
+    *
+    * @param {RendererEvent} event -
+    *
+    * @param {import('typedoc').Application} app -
+    *
+    * @param {ThemeOptions} options -
+    */
+   static #copyResources(event, app, options)
+   {
+      const outAssets = path.join(event.outputDirectory, 'assets', 'dmt');
+      const localDir = path.dirname(fileURLToPath(import.meta.url));
+
+      if (options?.favicon?.filepath && options?.favicon?.filename)
+      {
+         app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmtFavicon' to output directory.`);
+
+         fs.copyFileSync(options.favicon.filepath, path.join(event.outputDirectory, options.favicon.filename));
+      }
+
+      app.logger.verbose(`[typedoc-theme-default-modern] Copying assets to output assets directory.`);
+      copyDirectory(path.join(localDir, 'assets'), outAssets);
+
+      // Update main.js default theme removing `initSearch` / `initNav` functions ------------------------------------
+
+      // TypeDoc 0.25.3+
+
+      // This can be a potentially fragile replacement. The regex below removes any functions / content between
+      // `Object.defineProperty()` and the closing of the IIFE `})();`. This works for mangled / minified code.
+
+      // See: https://github.com/TypeStrong/typedoc/blob/master/src/lib/output/themes/default/assets/bootstrap.ts#L25
+
+      const mainJSPath = path.join(event.outputDirectory, 'assets', 'main.js');
+      if (fs.existsSync(mainJSPath))
+      {
+         const mainData = fs.readFileSync(mainJSPath, 'utf-8');
+
+         const regex = /(Object\.defineProperty\(window,"app",\{.*?}\);)\s*.*?(?=}\)\(\);)/gm;
+
+         if (regex.test(mainData))
+         {
+            fs.writeFileSync(mainJSPath, mainData.replace(regex, '$1'), 'utf-8');
+         }
+         else
+         {
+            app.logger.error(
+             `[typedoc-theme-default-modern] Failed to remove default theme search initialization in 'main.js' asset.`);
+         }
+      }
+      else
+      {
+         app.logger.error(`[typedoc-theme-default-modern] Could not locate 'main.js' asset.`);
+      }
    }
 
    /**

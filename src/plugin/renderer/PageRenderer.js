@@ -1,15 +1,10 @@
-import fs                  from 'node:fs';
-import path                from 'node:path';
-import { fileURLToPath }   from 'node:url';
+import fs            from 'node:fs';
 
 import {
    PageEvent,
-   ReflectionKind,
-   RendererEvent }         from 'typedoc';
+   ReflectionKind }  from 'typedoc';
 
-import { load }            from 'cheerio';
-
-import { copyDirectory }   from '#utils';
+import { load }      from 'cheerio';
 
 export class PageRenderer
 {
@@ -30,8 +25,6 @@ export class PageRenderer
       this.#options = options;
 
       this.#app.renderer.on(PageEvent.END, this.#handlePageEnd, this);
-
-      this.#app.renderer.once(RendererEvent.END, this.#handleRendererEnd, this);
    }
 
    /**
@@ -257,58 +250,5 @@ export class PageRenderer
       if (page.model.kind === ReflectionKind.Module) { this.#augmentModule($, page); }
 
       page.contents = $.html();
-   }
-
-   /**
-    * Copy web components bundle to docs output assets directory.
-    *
-    * @param {RendererEvent} event -
-    */
-   #handleRendererEnd(event)
-   {
-      const outAssets = path.join(event.outputDirectory, 'assets', 'dmt');
-      const localDir = path.dirname(fileURLToPath(import.meta.url));
-
-      if (this.#options?.favicon?.filepath && this.#options?.favicon?.filename)
-      {
-         this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying 'dmtFavicon' to output directory.`);
-
-         fs.copyFileSync(this.#options.favicon.filepath, path.join(event.outputDirectory,
-          this.#options.favicon.filename));
-      }
-
-      this.#app.logger.verbose(`[typedoc-theme-default-modern] Copying assets to output assets directory.`);
-      copyDirectory(path.join(localDir, 'assets'), outAssets);
-
-      // Update main.js default theme removing `initSearch` / `initNav` functions ------------------------------------
-
-      // TypeDoc 0.25.3+
-
-      // This can be a potentially fragile replacement. The regex below removes any functions / content between
-      // `Object.defineProperty()` and the closing of the IIFE `})();`. This works for mangled / minified code.
-
-      // See: https://github.com/TypeStrong/typedoc/blob/master/src/lib/output/themes/default/assets/bootstrap.ts#L25
-
-      const mainJSPath = path.join(event.outputDirectory, 'assets', 'main.js');
-      if (fs.existsSync(mainJSPath))
-      {
-         const mainData = fs.readFileSync(mainJSPath, 'utf-8');
-
-         const regex = /(Object\.defineProperty\(window,"app",\{.*?}\);)\s*.*?(?=}\)\(\);)/gm;
-
-         if (regex.test(mainData))
-         {
-            fs.writeFileSync(mainJSPath, mainData.replace(regex, '$1'), 'utf-8');
-         }
-         else
-         {
-            this.#app.logger.error(
-             `[typedoc-theme-default-modern] Failed to remove default theme search initialization in 'main.js' asset.`);
-         }
-      }
-      else
-      {
-         this.#app.logger.error(`[typedoc-theme-default-modern] Could not locate 'main.js' asset.`);
-      }
    }
 }

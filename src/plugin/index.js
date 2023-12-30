@@ -7,7 +7,7 @@ import {
    RendererEvent }            from 'typedoc';
 
 import {
-   GlobalComponentData,
+   GlobalResources,
    PageRenderer,
    SearchIndexPackr,
    SearchQuickIndexPackr }    from './renderer/index.js';
@@ -37,11 +37,11 @@ export function load(app)
          app.renderer.removeComponent('navigation-tree');
 
          // Make the `dmt` sub-folder on `assets`.
-         app.renderer.on(RendererEvent.BEGIN, (event) => fs.mkdirSync(path.join(event.outputDirectory, 'assets',
+         app.renderer.once(RendererEvent.BEGIN, (event) => fs.mkdirSync(path.join(event.outputDirectory, 'assets',
           'dmt'), { recursive: true }));
 
          // At the end of rendering generate the compressed global component data.
-         app.renderer.postRenderAsyncJobs.push(async (event) => GlobalComponentData.build(event, app, options));
+         app.renderer.once(RendererEvent.END, (event) => GlobalResources.build(event, app, options));
 
          // Add DMT components.
          new PageRenderer(app, options);
