@@ -52,6 +52,8 @@ dmtComponentData.dmtLocalStorage = new TJSLocalStorage();
 
 // Mount Svelte components -------------------------------------------------------------------------------------------
 
+// Must initialize first so that `animate` local storage initially is configured from OS / browser
+// `prefersReducedMotion` state.
 const dmtSettings = new DMTSettings({
    target: document.querySelector('.tsd-navigation.settings .tsd-accordion-details'),
    props: { dmtComponentData }
