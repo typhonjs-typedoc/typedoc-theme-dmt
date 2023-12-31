@@ -184,6 +184,7 @@
       border-radius: 0.5em;
       box-sizing: border-box;
       color: var(--color-text);
+      font-size: 16px; /* For Safari / iOS to prevent zooming into input */
       outline: 2px solid transparent;
       right: 4px;
 
