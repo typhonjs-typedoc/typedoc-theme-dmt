@@ -9,7 +9,8 @@ import {
    IndexEvent,
    RendererEvent,
    DeclarationReflection,
-   ProjectReflection }     from 'typedoc';
+   ProjectReflection,
+   ReflectionKind }        from 'typedoc';
 
 /**
  * A plugin that exports an index of the project to a MessagePack file.
@@ -103,11 +104,22 @@ export class SearchIndexPackr
       {
          if (!reflection.url) { continue; }
 
-         const boost = reflection.relevanceBoost ?? 1;
-         if (boost <= 0) { continue; }
+         // Reject type literals as they are an intermediary AST node.
+         if (reflection.kind === ReflectionKind.TypeLiteral) { continue; }
 
          let parent = reflection.parent;
          if (parent instanceof ProjectReflection) { parent = void 0; }
+
+         // When the parent is a type literal determine if the further ancestor parent is a DeclarationReflection.
+         // If so then assign the ancestor parent as the parent otherwise reject this reflection.
+         if (parent && parent.kind === ReflectionKind.TypeLiteral)
+         {
+            if (parent?.parent instanceof DeclarationReflection) { parent = parent.parent; }
+            else { continue; }
+         }
+
+         const boost = reflection.relevanceBoost ?? 1;
+         if (boost <= 0) { continue; }
 
          /** @type {SearchDocument} */
          const row = {
