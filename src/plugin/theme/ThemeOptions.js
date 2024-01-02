@@ -165,18 +165,22 @@ export class ThemeOptions
    {
       const navigation = app.options.getValue('navigation');
 
-      const includeFolders = navigation.includeFolders ?? true;
-
-      // Always set default theme `includeFolders` to false so DMT controls the navigation index parsing.
-      navigation.includeFolders = false;
-
-      // Set DMT nav module depth to 0 to generate full paths if `includeFolders` is set to false.
-      if (!includeFolders && !app.options.isSet('dmtNavModuleDepth'))
+      // Must only adjust `includeFolders` if it exists `0.25.5+`.
+      if (typeof navigation?.includeFolders === 'boolean')
       {
-         app.options.setValue('dmtNavModuleDepth', 0);
-      }
+         const includeFolders = navigation.includeFolders ?? true;
 
-      app.options.setValue('navigation', navigation);
+         // Always set default theme `includeFolders` to false so DMT controls the navigation index parsing.
+         navigation.includeFolders = false;
+
+         // Set DMT nav module depth to 0 to generate full paths if `includeFolders` is set to false.
+         if (!includeFolders && !app.options.isSet('dmtNavModuleDepth'))
+         {
+            app.options.setValue('dmtNavModuleDepth', 0);
+         }
+
+         app.options.setValue('navigation', navigation);
+      }
    }
 
    /**
