@@ -157,6 +157,29 @@ export class ThemeOptions
    }
 
    /**
+    * Adjusts default and DMT options. The DMT handles navigation index parsing for folders.
+    *
+    * @param {import('typedoc').Application} app -
+    */
+   static adjustDefaultOptions(app)
+   {
+      const navigation = app.options.getValue('navigation');
+
+      const includeFolders = navigation.includeFolders ?? true;
+
+      // Always set default theme `includeFolders` to false so DMT controls the navigation index parsing.
+      navigation.includeFolders = false;
+
+      // Set DMT nav module depth to 0 to generate full paths if `includeFolders` is set to false.
+      if (!includeFolders && !app.options.isSet('dmtNavModuleDepth'))
+      {
+         app.options.setValue('dmtNavModuleDepth', 0);
+      }
+
+      app.options.setValue('navigation', navigation);
+   }
+
+   /**
     * Helper function to test if value is a URL.
     *
     * @param {string}   value - String to test.
@@ -183,7 +206,7 @@ export class ThemeOptions
     */
    constructor(app)
    {
-      this.#parseOptions(app);
+      this.#parseDMTOptions(app);
    }
 
    /** @returns {boolean} breadcrumb option */
@@ -236,7 +259,7 @@ export class ThemeOptions
     *
     * @param {import('typedoc').Application} app -
     */
-   #parseOptions(app)
+   #parseDMTOptions(app)
    {
       this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
       this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
