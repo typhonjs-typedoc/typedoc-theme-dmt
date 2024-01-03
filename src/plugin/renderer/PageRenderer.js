@@ -144,6 +144,8 @@ export class PageRenderer
     */
    #augmentGlobalOptions($, page)
    {
+      // Breadcrumb modifications ------------------------------------------------------------------------------------
+
       // Always remove the default theme top level default module / namespace from breadcrumb links.
       const breadCrumbListElements = $('.tsd-breadcrumb li');
       const breadcrumbArray = breadCrumbListElements.toArray();
@@ -160,7 +162,8 @@ export class PageRenderer
       // Remove all breadcrumb links.
       if (!this.#options.breadcrumb) { $('.tsd-breadcrumb').remove(); }
 
-      // Potentially replace module page titles with `Package`.
+      // Potentially replace module page titles with `Package`. ------------------------------------------------------
+
       if (this.#options.moduleAsPackage && page?.model?.kind === ReflectionKind.Module)
       {
          const titleEl = $('.tsd-page-title h1');
