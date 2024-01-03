@@ -24,8 +24,13 @@ export class DefaultModernTheme extends DefaultTheme
          this.#renderContext = new DefaultThemeRenderContext(this, pageEvent, this.application.options);
 
          // Stop default theme navigation generation. Uncommenting the line below will remove the default navigation
-         // when Javascript is disabled.
+         // when Javascript is disabled. Note: A corresponding adjustment needs to be made in `src/components/index.js`.
          // this.#renderContext.navigation = () => {};
+
+         // TODO: Determine if this will get fixed in TypeDoc before providing an option to disable it in the DMT.
+         // The new hierarchy page generation is buggy in TypeDoc `0.25.6+`. The DMT allows it to be turned off.
+         // const hierarchy = this.application.options.getValue('dmtHierarchy');
+         // if (!hierarchy) { this.#renderContext.hierarchyTemplate = () => {}; }
       }
       else
       {
