@@ -104,6 +104,7 @@ export class SearchIndexPackr
       {
          if (!reflection.url) { continue; }
 
+         // Filter out intermediary or anonymous reflections from search index ---------------------------------------
          // See: TypeDoc `lib/converter/types.ts`.
 
          // Ignore anonymous constructor functions.
@@ -122,6 +123,8 @@ export class SearchIndexPackr
             if (parent?.parent instanceof DeclarationReflection) { parent = parent.parent; }
             else { continue; }
          }
+
+         // ----------------------------------------------------------------------------------------------------------
 
          const boost = reflection.relevanceBoost ?? 1;
          if (boost <= 0) { continue; }
