@@ -104,7 +104,12 @@ export class SearchIndexPackr
       {
          if (!reflection.url) { continue; }
 
-         // Reject type literals as they are an intermediary AST node.
+         // See: TypeDoc `lib/converter/types.ts`.
+
+         // Ignore anonymous constructor functions.
+         if (reflection.kind === ReflectionKind.Constructor && reflection.name === '__type') { continue; }
+
+         // Ignore type literals as they are an intermediary AST node.
          if (reflection.kind === ReflectionKind.TypeLiteral) { continue; }
 
          let parent = reflection.parent;
