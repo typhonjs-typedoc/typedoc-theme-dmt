@@ -102,6 +102,8 @@
 <style>
    a:not(:first-child) {
       margin-left: 0.5rem;
+      width: fit-content;
+      white-space: nowrap;
    }
 
    button {
