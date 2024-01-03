@@ -112,7 +112,6 @@
       border-radius: 50%;
       cursor: pointer;
       line-height: 0;
-      padding: 0;
    }
 
    section {
