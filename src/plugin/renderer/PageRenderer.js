@@ -147,8 +147,8 @@ export class PageRenderer
       // Breadcrumb modifications ------------------------------------------------------------------------------------
 
       // Always remove the default theme top level default module / namespace from breadcrumb links.
-      const breadCrumbListElements = $('.tsd-breadcrumb li');
-      const breadcrumbArray = breadCrumbListElements.toArray();
+      const breadcrumbListElements = $('.tsd-breadcrumb li');
+      const breadcrumbArray = breadcrumbListElements.toArray();
       if (breadcrumbArray.length > 2)
       {
          $(breadcrumbArray[0]).remove();
@@ -156,11 +156,8 @@ export class PageRenderer
       else
       {
          // There is only one link level besides the module, so remove all links.
-         breadCrumbListElements.remove();
+         breadcrumbListElements.remove();
       }
-
-      // Remove all breadcrumb links.
-      if (!this.#options.breadcrumb) { $('.tsd-breadcrumb').remove(); }
 
       // Potentially replace module page titles with `Package`. ------------------------------------------------------
 

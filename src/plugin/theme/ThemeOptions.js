@@ -17,7 +17,6 @@ export class ThemeOptions
 
    /** @type {DMTOptions} */
    #options = {
-      breadcrumb: true,
       favicon: void 0,
       linksIcon: [],
       linksService: [],
@@ -42,13 +41,6 @@ export class ThemeOptions
    static addDeclarations(app)
    {
       const ID = '[typedoc-theme-default-modern]';
-
-      app.options.addDeclaration({
-         name: 'dmtBreadcrumb',
-         help: `${ID} When true the breadcrumb is enabled.`,
-         type: ParameterType.Boolean,
-         defaultValue: true
-      });
 
       app.options.addDeclaration({
          name: 'dmtFavicon',
@@ -244,9 +236,6 @@ export class ThemeOptions
       this.#parseDMTOptions(app);
    }
 
-   /** @returns {boolean} breadcrumb option */
-   get breadcrumb() { return this.#options.breadcrumb; }
-
    /** @returns {FileOrURL | undefined} favicon option */
    get favicon() { return this.#options.favicon; }
 
@@ -290,10 +279,6 @@ export class ThemeOptions
     */
    #parseDMTOptions(app)
    {
-      this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
-
-      // --
-
       this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
       this.#options.moduleNames = app.options.getValue('dmtModuleNames');
       this.#options.moduleReadme = app.options.getValue('dmtModuleReadme');
@@ -519,8 +504,6 @@ const s_SERVICE_LINKS = new Map([
 
 /**
  * @typedef {object} DMTOptions
- *
- * @property {boolean} breadcrumb When true the breadcrumb is enabled.
  *
  * @property {FileOrURL | undefined} [favicon] Parsed data about any defined favicon.
  *
