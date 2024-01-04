@@ -60,7 +60,7 @@ export class GlobalResources
          navModuleIcon: options.navigation.moduleIcon,
          navigationIndex: NavigationIndex.transform(defaultNavIndex, options, event?.project?.packageName),
          navigationLinks: app.options.getValue('navigationLinks'),
-         ReflectionKind: this.#getReflectionKind(),
+         ReflectionKind: this.#getReflectionKind(options),
          search: options.search,
          searchFullName: options.searchFullName,
          searchLimit: options.searchLimit,
@@ -135,17 +135,29 @@ export class GlobalResources
     * Build TypeDoc reflection kind object with just key / values that are a power of 2. This represents all the
     * SVG icon types defined.
     *
+    * @param {ThemeOptions} options -
+    *
     * @returns {{}}
     */
-   static #getReflectionKind()
+   static #getReflectionKind(options)
    {
+      // Reflection kinds that are of no interest are filtered out.
+      const ignoreSet = new Set(['Project', 'EnumMember', 'CallSignature', 'IndexSignature',
+       'ConstructorSignature', 'TypeLiteral', 'TypeParameter', 'GetSignature', 'SetSignature']);
+
+      // Exclude `Module` when icons are removed for modules.
+      if (!options.navigation.moduleIcon) { ignoreSet.add('Module'); }
+
       const result = {};
 
       function isPowerOfTwo(n) { return n > 0 && (n & (n - 1)) === 0; }
 
-      for (const [key, value] of Object.entries(ReflectionKind))
+      for (let [key, value] of Object.entries(ReflectionKind))
       {
-         if (isNaN(Number(key)) && isPowerOfTwo(value))
+         // If modules are packages then change the key name for `Module`.
+         if (options.moduleRemap.isPackage && key === 'Module') { key = 'Package'; }
+
+         if (isNaN(Number(key)) && isPowerOfTwo(value) && !ignoreSet.has(key))
          {
             result[key] = value;
             result[value] = key;

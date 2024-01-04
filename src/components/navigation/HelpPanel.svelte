@@ -22,13 +22,9 @@
 
    const reflectionData = [];
 
-   // Reflection kinds that are of no interest are filtered out.
-   const ignoreSet = new Set(['Project', 'Module', 'EnumMember', 'CallSignature', 'IndexSignature',
-    'ConstructorSignature', 'TypeLiteral', 'TypeParameter', 'GetSignature', 'SetSignature']);
-
    for (const [key, value] of Object.entries(ReflectionKind))
    {
-      if (typeof value === 'number' && !ignoreSet.has(key)) { reflectionData.push({ key, value }); }
+      if (typeof value === 'number') { reflectionData.push({ key, value }); }
    }
 
    reflectionData.sort((a, b) => a.key.localeCompare(b.key));
