@@ -18,11 +18,6 @@ export class ModuleTreeMap
    #packageName;
 
    /**
-    * @type {string[]}
-    */
-   #packageParts;
-
-   /**
     * @type {MapNode}
     */
    #root = new MapNode();

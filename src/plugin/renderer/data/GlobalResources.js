@@ -57,7 +57,7 @@ export class GlobalResources
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
          moduleAsPackage: options.moduleAsPackage,
-         navModuleIcon: options.navModuleIcon,
+         navModuleIcon: options.navigation.moduleIcon,
          navigationIndex: NavigationIndex.transform(defaultNavIndex, options, event?.project?.packageName),
          navigationLinks: app.options.getValue('navigationLinks'),
          ReflectionKind: this.#getReflectionKind(),

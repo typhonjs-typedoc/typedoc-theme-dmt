@@ -19,11 +19,11 @@ export class NavigationIndex
    static transform(index, options, packageName)
    {
       // No processing necessary so directly return the index.
-      if (options.navModuleDepth === 0) { return index; }
+      if (options.navigation.flat) { return index; }
 
       const tree = this.#parseModuleTree(index, options, packageName);
 
-      return options.navModuleCompact ? ModuleTreeMap.compactSingularPaths(tree) : tree;
+      return options.navigation.compact ? ModuleTreeMap.compactSingularPaths(tree) : tree;
    }
 
    /**
@@ -37,7 +37,7 @@ export class NavigationIndex
     */
    static #parseModuleTree(index, options, packageName)
    {
-      const moduleTreeMap = new ModuleTreeMap(options.navModuleDepth, packageName);
+      const moduleTreeMap = new ModuleTreeMap(Number.MAX_SAFE_INTEGER, packageName);
 
       let moduleGroup;
 

@@ -24,9 +24,11 @@ export class ThemeOptions
       moduleAsPackage: false,
       moduleNames: {},
       moduleReadme: {},
-      navModuleCompact: false,
-      navModuleDepth: Number.MAX_SAFE_INTEGER,
-      navModuleIcon: false,
+      navigation: {
+         compact: false,
+         flat: false,
+         moduleIcon: false
+      },
       search: true,
       searchFullName: false,
       searchLimit: 10,
@@ -79,6 +81,41 @@ export class ThemeOptions
       });
 
       app.options.addDeclaration({
+         name: 'dmtModuleRemap',
+         help: 'Alters aspects with how modules are represented.',
+         type: ParameterType.Mixed,
+         defaults: {
+            isPackage: false,
+            names: {},
+            readme: {}
+         },
+         validate(value)
+         {
+            const knownKeys = new Map([
+               ['isPackage', 'boolean'],
+               ['names', 'object'],
+               ['readme', 'object']
+            ]);
+
+            if (!value || typeof value !== 'object') { throw new Error(`'dmtModuleRemap' must be an object.`); }
+
+            for (const [key, val] of Object.entries(value))
+            {
+               if (!knownKeys.has(key))
+               {
+                  throw new Error(
+                   `'dmtModuleRemap' can only include the following keys: ${Array.from(knownKeys.keys()).join(', ')}`);
+               }
+
+               if (typeof val !== knownKeys.get(key))
+               {
+                  throw new Error(`'dmtModuleRemap.${key}' must be a '${knownKeys.get(key)}'.`);
+               }
+            }
+         }
+      });
+
+      app.options.addDeclaration({
          name: 'dmtModuleAsPackage',
          help: `${ID} When true 'Module' in page titles is replaced with 'Package'.`,
          type: ParameterType.Boolean,
@@ -99,25 +136,17 @@ export class ThemeOptions
          defaultValue: {}
       });
 
-      app.options.addDeclaration({
-         name: 'dmtNavModuleCompact',
-         help: `${ID} When true the navigation index compacts singular paths.`,
-         type: ParameterType.Boolean,
-         defaultValue: false
-      });
+      // -------------------------------------------------------------------------------------------------------------
 
       app.options.addDeclaration({
-         name: 'dmtNavModuleDepth',
-         help: `${ID} The depth where the navigation index begins concatenating module paths.`,
-         type: ParameterType.Number,
-         defaultValue: Number.MAX_SAFE_INTEGER
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtNavModuleIcon',
-         help: `${ID} When true SVG icons for all navigation module entries are displayed.`,
-         type: ParameterType.Boolean,
-         defaultValue: false
+         name: 'dmtNavigation',
+         help: 'Additional DMT navigation sidebar options.',
+         type: ParameterType.Flags,
+         defaults: {
+            compact: false,
+            flat: false,
+            moduleIcon: false
+         }
       });
 
       app.options.addDeclaration({
@@ -173,10 +202,12 @@ export class ThemeOptions
          // Always set default theme `includeFolders` to false so DMT controls the navigation index parsing.
          navigation.includeFolders = false;
 
-         // Set DMT nav module depth to 0 to generate full paths if `includeFolders` is set to false.
-         if (!includeFolders && !app.options.isSet('dmtNavModuleDepth'))
+         // Set DMT navigation to flat mode to generate full paths if `includeFolders` is set to false.
+         if (!includeFolders)
          {
-            app.options.setValue('dmtNavModuleDepth', 0);
+            const dmtNavigation = app.options.getValue('dmtNavigation');
+            dmtNavigation.flat = true;
+            app.options.setValue('dmtNavigation', dmtNavigation);
          }
 
          app.options.setValue('navigation', navigation);
@@ -228,14 +259,8 @@ export class ThemeOptions
    /** @returns {boolean} moduleAsPackage option */
    get moduleAsPackage() { return this.#options.moduleAsPackage; }
 
-   /** @returns {boolean} navModuleCompact option */
-   get navModuleCompact() { return this.#options.navModuleCompact; }
-
-   /** @returns {number} navModuleDepth option */
-   get navModuleDepth() { return this.#options.navModuleDepth; }
-
-   /** @returns {boolean} navModuleIcon option */
-   get navModuleIcon() { return this.#options.navModuleIcon; }
+   /** @returns {DMTNavigation} navigation option */
+   get navigation() { return this.#options.navigation; }
 
    /** @returns {Record<string, string>} moduleNames option */
    get moduleNames() { return this.#options.moduleNames; }
@@ -266,12 +291,16 @@ export class ThemeOptions
    #parseDMTOptions(app)
    {
       this.#options.breadcrumb = app.options.getValue('dmtBreadcrumb');
+
+      // --
+
       this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
       this.#options.moduleNames = app.options.getValue('dmtModuleNames');
       this.#options.moduleReadme = app.options.getValue('dmtModuleReadme');
-      this.#options.navModuleCompact = app.options.getValue('dmtNavModuleCompact');
-      this.#options.navModuleDepth = app.options.getValue('dmtNavModuleDepth');
-      this.#options.navModuleIcon = app.options.getValue('dmtNavModuleIcon');
+
+      // --
+
+      this.#options.navigation = Object.assign(this.#options.navigation, app.options.getValue('dmtNavigation'));
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchFullName = app.options.getValue('dmtSearchFullName');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
@@ -308,23 +337,8 @@ export class ThemeOptions
          }
       }
 
-      // Verify `navModuleDepth`.
-      if (!Number.isInteger(this.#options.navModuleDepth) || this.#options.navModuleDepth < 0)
-      {
-         app.logger.warn(`${ThemeOptions.#ID
-         } 'dmtNavModuleDepth' must be an integer greater than or equal to '0'; setting to default.`);
-
-         this.#options.navModuleDepth = Number.MAX_SAFE_INTEGER;
-      }
-
-      // Resolve conflicting navigation module options.
-      if (this.#options.navModuleCompact && this.#options.navModuleDepth !== Number.MAX_SAFE_INTEGER)
-      {
-         app.logger.warn(`${ThemeOptions.#ID
-         } 'dmtNavModuleCompact' is enabled; resetting 'dmtNavModuleDepth' to generate full tree.`);
-
-         this.#options.navModuleDepth = Number.MAX_SAFE_INTEGER;
-      }
+      // Navigation adjustments for `compact` / `flat`; can turn off compaction if `flat` is true.
+      if (this.#options.navigation.flat) { this.#options.navigation.compact = false; }
 
       const linksIcon = app.options.getValue('dmtLinksIcon');
       this.#validateLinksIcon(linksIcon, app);
@@ -520,11 +534,7 @@ const s_SERVICE_LINKS = new Map([
  *
  * @property {Record<string, string>} moduleReadme Module name to README file path.
  *
- * @property {boolean} navModuleCompact When true the navigation index compacts singular paths.
- *
- * @property {number} navModuleDepth The depth where the navigation index begins concatenating module paths.
- *
- * @property {boolean} navModuleIcon When true SVG icons for all navigation module entries are displayed.
+ * @property {DMTNavigation} navigation - Navigation options.
  *
  * @property {boolean} search When true the main search index is enabled.
  *

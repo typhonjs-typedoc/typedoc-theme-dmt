@@ -147,6 +147,26 @@ export type DMTIconLink = {
    url: string;
 }
 
+/**
+ * Defines navigation options.
+ */
+export type DMTNavigation = {
+   /**
+    * Compact intermediary folders that have no children.
+    */
+   compact: boolean;
+
+   /**
+    * Flatten all modules.
+    */
+   flat: boolean;
+
+   /**
+    * Show module icons.
+    */
+   moduleIcon: boolean;
+}
+
 export type FileOrURL = {
    /**
     * Fully resolved file path.
