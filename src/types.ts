@@ -64,7 +64,7 @@ export type DMTComponentData = {
    /**
     * When true 'Module' in page titles is replaced with 'Package'.
     */
-   moduleAsPackage: boolean;
+   moduleIsPackage: boolean;
 
    /**
     * Default navigation links

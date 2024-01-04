@@ -5,7 +5,7 @@
 
    export let hasModulesIndex = false;
 
-   export let moduleAsPackage = false;
+   export let moduleIsPackage = false;
 
    /** @type {import('svelte/store').Writable<number>} */
    export let storeTopLevelNodes = void 0;
@@ -18,7 +18,7 @@
 
    const animateTransition = $storeSettingAnimate ? slideFade : () => void 0;
 
-   const moduleIndexLabel = moduleAsPackage ? 'package' : 'module';
+   const moduleIndexLabel = moduleIsPackage ? 'package' : 'module';
 
    const reflectionData = [];
 

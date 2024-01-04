@@ -15,13 +15,13 @@
    const {
       hasModulesIndex,
       navigationData,
-      moduleAsPackage } = dmtComponentData;
+      moduleIsPackage } = dmtComponentData;
 
    const {
       storeHelpPanelOpen,
       storeTopLevelNodes } = navigationData;
 
-   const moduleIndexLabel = moduleAsPackage ? 'Package Index' : 'Module Index';
+   const moduleIndexLabel = moduleIsPackage ? 'Package Index' : 'Module Index';
 
    $: helpTitle = $storeHelpPanelOpen ? 'Close Help' : 'Open Help';
 
@@ -95,7 +95,7 @@
    {/if}
 
    {#if $storeHelpPanelOpen}
-      <HelpPanel {hasModulesIndex} {moduleAsPackage} {storeTopLevelNodes} />
+      <HelpPanel {hasModulesIndex} {moduleIsPackage} {storeTopLevelNodes} />
    {/if}
 </section>
 
