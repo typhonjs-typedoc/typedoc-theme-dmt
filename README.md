@@ -64,9 +64,6 @@ children folders underneath.
 
   // The following options are specific to the Default Modern Theme. Default options are listed unless otherwise specified.
 
-  // When false the entire breadcrumb is removed.
-  "dmtBreadcrumb": true,
-
   // Set a local file path or URL to set as the favicon.
   "dmtFavicon": "./assets/favicon.ico",
 
@@ -89,35 +86,23 @@ children folders underneath.
     "NPM": "<URL>"
   },
 
-  // Provide an object to rename / substitute module reflection names. The [key] is the existing name and [value] is the new name.
-  "dmtModuleNames": {},
+  // Additional navigation sidebar options.
+  "dmtNavigation": {
+    "compact": false,   // When true compacts all intermediary folders with no children.
+    "flat": false,      // When true flattens all module / package paths.
+    "moduleIcon": false // When true renders module icon.
+  },
 
-  // When true 'Module' in page titles and other areas of the documentation are replaced with 'Package'.
-  // This is handy if you are documenting a "Package" whether Node / NPM or otherwise.
-  "dmtModuleAsPackage": false,
-
-  // When true the navigation index generates a full tree compacting singular paths. 'dmtNavModuleDepth' is ignored.
-  "dmtNavModuleCompact": false,
-
-  // The depth where the navigation index begins concatenating module paths. DMT by default reorganizes modules paths
-  // into a complete tree structure. Setting this to `0` is the same as the default theme, but you have the option to
-  // choose at what depth concatenation of paths begins.
-  "dmtNavModuleDepth": "<NUMBER NO QUOTES>",
-
-  // With building a complete navigation tree showing the "Namespace" SVG icon for a module isn't as productive. By
-  // default, no icons are shown for modules. Set to true if you want the icons shown.
-  "dmtNavModuleIcon": false,
-
-  // When true the main search index is enabled. You may opt to turn off the main search index and not display the
+  // May be `false` to disable main search functionality. Otherwise, provide an object
   // search icon in the top link bar is removed.
-  "dmtSearch": true,
+  "dmtSearch": {
+    // When true the main search index stores parent reflection full names. This is set to false by default because when
+    // using modules the full module path is shown in search results for all symbols.
+    "fullName": false,
 
-  // When true the main search index stores parent reflection full names. This is set to false by default because when
-  // using modules the full module path is shown in search results for all symbols.
-  "dmtSearchFullName": false,
-
-  // A positive integer greater than 0 providing a limit on main search query results.
-  "dmtSearchLimit": 10
+    // A positive integer greater than 0 providing a limit on main search query results.
+    "limit": 10
+  }
 }
 ```
 
