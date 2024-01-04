@@ -148,6 +148,26 @@ export type DMTIconLink = {
 }
 
 /**
+ * Defines module reflection remapping options.
+ */
+export type DMTModuleRemap = {
+   /**
+    * When true 'Module' in page titles is replaced with 'Package'.
+    */
+   isPackage: boolean;
+
+   /**
+    * Module reflection name substitution.
+    */
+   names: Record<string, string>;
+
+   /**
+    * Module name to `README.md` file path.
+    */
+   readme: Record<string, string>;
+}
+
+/**
  * Defines navigation options.
  */
 export type DMTNavigation = {

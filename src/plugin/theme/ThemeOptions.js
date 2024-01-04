@@ -20,9 +20,11 @@ export class ThemeOptions
       favicon: void 0,
       linksIcon: [],
       linksService: [],
-      moduleAsPackage: false,
-      moduleNames: {},
-      moduleReadme: {},
+      moduleRemap: {
+        isPackage: false,
+        names: {},
+        readme: {}
+      },
       navigation: {
          compact: false,
          flat: false,
@@ -106,29 +108,6 @@ export class ThemeOptions
             }
          }
       });
-
-      app.options.addDeclaration({
-         name: 'dmtModuleAsPackage',
-         help: `${ID} When true 'Module' in page titles is replaced with 'Package'.`,
-         type: ParameterType.Boolean,
-         defaultValue: false
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtModuleNames',
-         help: `${ID} Module name substitution.`,
-         type: ParameterType.Object,
-         defaultValue: {}
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtModuleReadme',
-         help: `${ID} Module name to 'README.md' additional page data.`,
-         type: ParameterType.Object,
-         defaultValue: {}
-      });
-
-      // -------------------------------------------------------------------------------------------------------------
 
       app.options.addDeclaration({
          name: 'dmtNavigation',
@@ -245,17 +224,11 @@ export class ThemeOptions
    /** @returns {DMTIconLink[]} linksService option */
    get linksService() { return this.#options.linksService; }
 
-   /** @returns {boolean} moduleAsPackage option */
-   get moduleAsPackage() { return this.#options.moduleAsPackage; }
+   /** @returns {DMTModuleRemap} moduleRemap option */
+   get moduleRemap() { return this.#options.moduleRemap; }
 
    /** @returns {DMTNavigation} navigation option */
    get navigation() { return this.#options.navigation; }
-
-   /** @returns {Record<string, string>} moduleNames option */
-   get moduleNames() { return this.#options.moduleNames; }
-
-   /** @returns {Record<string, string>} moduleNames option */
-   get moduleReadme() { return this.#options.moduleReadme; }
 
    /** @returns {boolean} search option */
    get search() { return this.#options.search; }
@@ -279,12 +252,7 @@ export class ThemeOptions
     */
    #parseDMTOptions(app)
    {
-      this.#options.moduleAsPackage = app.options.getValue('dmtModuleAsPackage');
-      this.#options.moduleNames = app.options.getValue('dmtModuleNames');
-      this.#options.moduleReadme = app.options.getValue('dmtModuleReadme');
-
-      // --
-
+      this.#options.moduleRemap = Object.assign(this.#options.moduleRemap, app.options.getValue('dmtModuleRemap'));
       this.#options.navigation = Object.assign(this.#options.navigation, app.options.getValue('dmtNavigation'));
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchFullName = app.options.getValue('dmtSearchFullName');
@@ -296,28 +264,28 @@ export class ThemeOptions
 
       this.#options.favicon = ThemeOptions.#validateFileOrURL(app, app.options.getValue('dmtFavicon'), 'dmtFavicon');
 
-      // Validate `moduleNames` warning if values are not a string.
-      if (this.#options.moduleNames)
+      // Validate remapped module `names` warning if values are not a string.
+      if (this.#options.moduleRemap.names)
       {
-         for (const key of Object.keys(this.#options.moduleNames))
+         for (const key of Object.keys(this.#options.moduleRemap.names))
          {
-            if (typeof this.#options.moduleNames[key] !== 'string')
+            if (typeof this.#options.moduleRemap.names[key] !== 'string')
             {
                app.logger.warn(`${ThemeOptions.#ID} [dmtModuleNames]: Value for key '${key}' is not a string.`);
-               delete this.#options.moduleNames[key];
+               delete this.#options.moduleRemap.names[key];
             }
          }
       }
 
-      // Validate `moduleReadme` warning if values are not a string.
-      if (this.#options.moduleReadme)
+      // Validate remapped module `readme` file paths warning if paths do not exist.
+      if (this.#options.moduleRemap.readme)
       {
-         for (const key of Object.keys(this.#options.moduleReadme))
+         for (const key of Object.keys(this.#options.moduleRemap.readme))
          {
-            if (!fs.existsSync(this.#options.moduleReadme[key]))
+            if (!fs.existsSync(this.#options.moduleRemap.readme[key]))
             {
                app.logger.warn(`${ThemeOptions.#ID} [dmtModuleReadme]: File path for key '${key}' does not exist.`);
-               delete this.#options.moduleReadme[key];
+               delete this.#options.moduleRemap.readme[key];
             }
          }
       }
@@ -511,11 +479,7 @@ const s_SERVICE_LINKS = new Map([
  *
  * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
  *
- * @property {boolean} moduleAsPackage When true 'Module' in page titles is replaced with 'Package'.
- *
- * @property {Record<string, string>} moduleNames Module name substitution.
- *
- * @property {Record<string, string>} moduleReadme Module name to README file path.
+ * @property {DMTModuleRemap} moduleRemap - Module remap options.
  *
  * @property {DMTNavigation} navigation - Navigation options.
  *

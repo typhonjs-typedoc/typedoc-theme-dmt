@@ -161,7 +161,7 @@ export class PageRenderer
 
       // Potentially replace module page titles with `Package`. ------------------------------------------------------
 
-      if (this.#options.moduleAsPackage && page?.model?.kind === ReflectionKind.Module)
+      if (this.#options.moduleRemap.isPackage && page?.model?.kind === ReflectionKind.Module)
       {
          const titleEl = $('.tsd-page-title h1');
          const titleText = titleEl.text();
@@ -210,11 +210,11 @@ export class PageRenderer
       // `dmtModuleReadme`.
       const moduleName = page.model?.name;
 
-      if (typeof this.#options.moduleReadme[moduleName] === 'string')
+      if (typeof this.#options.moduleRemap.readme[moduleName] === 'string')
       {
          try
          {
-            const md = fs.readFileSync(this.#options.moduleReadme[moduleName], 'utf-8');
+            const md = fs.readFileSync(this.#options.moduleRemap.readme[moduleName], 'utf-8');
             const mdHTML = this.#app.renderer.theme.markedPlugin.parseMarkdown(md, page);
 
             if (typeof mdHTML === 'string') { $('.col-content').append(mdHTML); }

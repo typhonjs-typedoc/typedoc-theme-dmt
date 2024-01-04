@@ -51,8 +51,8 @@ export class NavigationIndex
          {
             moduleGroup = node;
 
-            // Potentially change text to `Packages` given `moduleAsPackage` option.
-            if (options.moduleAsPackage) { moduleGroup.text = 'Packages'; }
+            // Potentially change text to `Packages` given `isPackage` option.
+            if (options.moduleRemap.isPackage) { moduleGroup.text = 'Packages'; }
 
             break;
          }

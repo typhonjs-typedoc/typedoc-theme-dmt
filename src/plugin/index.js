@@ -59,9 +59,9 @@ export function load(app)
             // Handle any module name substitution during project conversion.
             app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>
             {
-               if (reflection?.kind === ReflectionKind.Module && reflection.name in options.moduleNames)
+               if (reflection?.kind === ReflectionKind.Module && reflection.name in options.moduleRemap.names)
                {
-                  reflection.name = options.moduleNames[reflection.name];
+                  reflection.name = options.moduleRemap.names[reflection.name];
                }
             });
          });

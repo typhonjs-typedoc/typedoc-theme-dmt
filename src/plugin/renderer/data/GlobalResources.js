@@ -56,7 +56,7 @@ export class GlobalResources
          hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
-         moduleAsPackage: options.moduleAsPackage,
+         moduleAsPackage: options.moduleRemap.isPackage,
          navModuleIcon: options.navigation.moduleIcon,
          navigationIndex: NavigationIndex.transform(defaultNavIndex, options, event?.project?.packageName),
          navigationLinks: app.options.getValue('navigationLinks'),
