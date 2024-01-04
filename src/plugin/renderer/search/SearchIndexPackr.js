@@ -30,15 +30,17 @@ export class SearchIndexPackr
 
    /**
     * @param {import('typedoc').Application} app -
+    *
+    * @param {ThemeOptions} options -
     */
-   constructor(app)
+   constructor(app, options)
    {
       this.#app = app;
 
       this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this);
 
       this.#searchInComments = this.#app.options.getValue('searchInComments');
-      this.#searchFullName = this.#app.options.getValue('dmtSearchFullName');
+      this.#searchFullName = options.search.fullName;
    }
 
    /**

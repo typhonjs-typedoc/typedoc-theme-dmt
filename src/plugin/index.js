@@ -53,7 +53,7 @@ export function load(app)
             new PageRenderer(app, options);
 
             // Selectively load search index creation.
-            if (options.search) { new SearchIndexPackr(app); }
+            if (options.search) { new SearchIndexPackr(app, options); }
 
             // TODO: Finish implementing `searchQuick` functionality.
             // if (options.searchQuick) { new SearchQuickIndexPackr(app); }

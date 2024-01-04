@@ -30,9 +30,10 @@ export class ThemeOptions
          flat: false,
          moduleIcon: false
       },
-      search: true,
-      searchFullName: false,
-      searchLimit: 10
+      search: {
+         fullName: false,
+         limit: 10
+      }
    };
 
    /**
@@ -76,7 +77,7 @@ export class ThemeOptions
          name: 'dmtModuleRemap',
          help: 'Alters aspects with how modules are represented.',
          type: ParameterType.Mixed,
-         defaults: {
+         defaultValue: {
             isPackage: false,
             names: {},
             readme: {}
@@ -120,23 +121,44 @@ export class ThemeOptions
 
       app.options.addDeclaration({
          name: 'dmtSearch',
-         help: `${ID} When true the main search index is enabled.`,
-         type: ParameterType.Boolean,
-         defaultValue: true
-      });
+         help: 'Set to false to disable main search index or provide an object with `fullName` / `limit`.',
+         type: ParameterType.Mixed,
+         defaultValue: {
+            fullName: false,
+            limit: 10
+         },
+         validate(value)
+         {
+            // Early out if `boolean`.
+            if (typeof value === 'boolean') { return; }
 
-      app.options.addDeclaration({
-         name: 'dmtSearchFullName',
-         help: `${ID} When true the main search index stores parent reflection full names.`,
-         type: ParameterType.Boolean,
-         defaultValue: false
-      });
+            const knownKeys = new Map([
+               ['fullName', 'boolean'],
+               ['limit', 'number']
+            ]);
 
-      app.options.addDeclaration({
-         name: 'dmtSearchLimit',
-         help: `${ID} A positive integer greater than 0 providing a limit on main search query results.`,
-         type: ParameterType.Number,
-         defaultValue: 10
+            if (!value || typeof value !== 'object') { throw new Error(`'dmtSearch' must be a boolean or object.`); }
+
+            for (const [key, val] of Object.entries(value))
+            {
+               if (!knownKeys.has(key))
+               {
+                  throw new Error(
+                   `'dmtSearch' can only include the following keys: ${Array.from(knownKeys.keys()).join(', ')}`);
+               }
+
+               if (typeof val !== knownKeys.get(key))
+               {
+                  throw new Error(`'dmtSearch.${key}' must be a '${knownKeys.get(key)}'.`);
+               }
+
+               if (key === 'limit' && (!Number.isInteger(val) || val < 1))
+               {
+                  throw new Error(
+                   `'dmtSearch.limit' must be a positive integer greater than '0'.`)
+               }
+            }
+         }
       });
    }
 
@@ -214,14 +236,8 @@ export class ThemeOptions
    /** @returns {DMTNavigation} navigation option */
    get navigation() { return this.#options.navigation; }
 
-   /** @returns {boolean} search option */
+   /** @returns {DMTSearch} search option */
    get search() { return this.#options.search; }
-
-   /** @returns {boolean} searchFullName option */
-   get searchFullName() { return this.#options.searchFullName; }
-
-   /** @returns {number} search limit option */
-   get searchLimit() { return this.#options.searchLimit; }
 
    /**
     * Parses DMT options.
@@ -232,9 +248,12 @@ export class ThemeOptions
    {
       this.#options.moduleRemap = Object.assign(this.#options.moduleRemap, app.options.getValue('dmtModuleRemap'));
       this.#options.navigation = Object.assign(this.#options.navigation, app.options.getValue('dmtNavigation'));
-      this.#options.search = app.options.getValue('dmtSearch');
-      this.#options.searchFullName = app.options.getValue('dmtSearchFullName');
-      this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
+
+      const dmtSearch = app.options.getValue('dmtSearch');
+
+      // When `true` use default values already set.
+      this.#options.search = typeof dmtSearch === 'boolean' && dmtSearch ? this.#options.search :
+       Object.assign(this.#options.search, dmtSearch);
 
       // Validate options --------------------------------------------------------------------------------------------
 
@@ -275,15 +294,6 @@ export class ThemeOptions
       /** @type {Record<string, string>} */
       const linksService = app.options.getValue('dmtLinksService');
       this.#validateLinksService(linksService, app);
-
-      // Verify search limits.
-      if (!Number.isInteger(this.#options.searchLimit) || this.#options.searchLimit < 1)
-      {
-         app.logger.warn(`${ThemeOptions.#ID
-          } 'dmtSearchLimit' must be a positive integer greater than '0'; setting to default of '10'`);
-
-         this.#options.searchLimit = 10;
-      }
    }
 
    /**
@@ -451,9 +461,5 @@ const s_SERVICE_LINKS = new Map([
  *
  * @property {DMTNavigation} navigation - Navigation options.
  *
- * @property {boolean} search When true the main search index is enabled.
- *
- * @property {boolean} searchFullName When true the main search index stores parent reflection full names.
- *
- * @property {number} searchLimit A positive integer greater than 0 providing a limit on main search query results.
+ * @property {DMTSearch} search Search options.
  */

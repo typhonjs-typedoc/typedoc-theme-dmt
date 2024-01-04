@@ -89,22 +89,12 @@ export type DMTComponentData = {
    /**
     * The `dmtSearch` option; when true the main search index is active.
     */
-   search: boolean;
+   search: DMTSearch;
 
    /**
     * TypeDoc ReflectionKind
     */
    ReflectionKind: Record<string, string|number>;
-
-   /**
-    * When true the main search index stores parent reflection full names.
-    */
-   searchFullName: boolean;
-
-   /**
-    * The `dmtSearchLimit` option; The max number of documents returned in the main search query processing.
-    */
-   searchLimit: number;
 
    /**
     * Default sidebar links.
@@ -176,6 +166,21 @@ export type DMTNavigation = {
     */
    moduleIcon: boolean;
 }
+
+/**
+ * Defines the DMT search options; may be a boolean or object. When `false` search is disabled.
+ */
+export type DMTSearch = false | {
+   /**
+    * Include full parent names.
+    */
+   fullName: boolean;
+
+   /**
+    * Limit on search results to return.
+    */
+   limit: number;
+};
 
 export type FileOrURL = {
    /**

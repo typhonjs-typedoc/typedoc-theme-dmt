@@ -62,8 +62,6 @@ export class GlobalResources
          navigationLinks: app.options.getValue('navigationLinks'),
          ReflectionKind: this.#getReflectionKind(options),
          search: options.search,
-         searchFullName: options.searchFullName,
-         searchLimit: options.searchLimit,
          sidebarLinks: app.options.getValue('sidebarLinks'),
          storagePrepend: `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
       }
