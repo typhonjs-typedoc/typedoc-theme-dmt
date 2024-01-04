@@ -21,9 +21,9 @@ export class ThemeOptions
       linksIcon: [],
       linksService: [],
       moduleRemap: {
-        isPackage: false,
-        names: {},
-        readme: {}
+         isPackage: false,
+         names: {},
+         readme: {}
       },
       navigation: {
          compact: false,
@@ -32,9 +32,7 @@ export class ThemeOptions
       },
       search: true,
       searchFullName: false,
-      searchLimit: 10,
-      searchQuick: false,
-      searchQuickLimit: 10,
+      searchLimit: 10
    };
 
    /**
@@ -140,20 +138,6 @@ export class ThemeOptions
          type: ParameterType.Number,
          defaultValue: 10
       });
-
-      app.options.addDeclaration({
-         name: 'dmtSearchQuick',
-         help: `${ID} When true the quick search index is enabled.`,
-         type: ParameterType.Boolean,
-         defaultValue: false
-      });
-
-      app.options.addDeclaration({
-         name: 'dmtSearchQuickLimit',
-         help: `${ID} A positive integer greater than 0 providing a limit on quick search query results.`,
-         type: ParameterType.Number,
-         defaultValue: 10
-      });
    }
 
    /**
@@ -239,12 +223,6 @@ export class ThemeOptions
    /** @returns {number} search limit option */
    get searchLimit() { return this.#options.searchLimit; }
 
-   /** @returns {boolean} searchQuick option */
-   get searchQuick() { return this.#options.searchQuick; }
-
-   /** @returns {number} search quick limit option */
-   get searchQuickLimit() { return this.#options.searchQuickLimit; }
-
    /**
     * Parses DMT options.
     *
@@ -257,8 +235,6 @@ export class ThemeOptions
       this.#options.search = app.options.getValue('dmtSearch');
       this.#options.searchFullName = app.options.getValue('dmtSearchFullName');
       this.#options.searchLimit = app.options.getValue('dmtSearchLimit');
-      this.#options.searchQuick = app.options.getValue('dmtSearchQuick');
-      this.#options.searchQuickLimit = app.options.getValue('dmtSearchQuickLimit');
 
       // Validate options --------------------------------------------------------------------------------------------
 
@@ -307,14 +283,6 @@ export class ThemeOptions
           } 'dmtSearchLimit' must be a positive integer greater than '0'; setting to default of '10'`);
 
          this.#options.searchLimit = 10;
-      }
-
-      if (!Number.isInteger(this.#options.searchQuickLimit) || this.#options.searchQuickLimit < 1)
-      {
-         app.logger.warn(`${ThemeOptions.#ID
-          } 'dmtSearchQuickLimit' must be a positive integer greater than '0'; setting to default of '10'`);
-
-         this.#options.searchQuickLimit = 10;
       }
    }
 
@@ -488,9 +456,4 @@ const s_SERVICE_LINKS = new Map([
  * @property {boolean} searchFullName When true the main search index stores parent reflection full names.
  *
  * @property {number} searchLimit A positive integer greater than 0 providing a limit on main search query results.
- *
- * @property {boolean} searchQuick When true the quick search index is enabled.
- *
- * @property {number} searchQuickLimit A positive integer greater than 0 providing a limit on quick search query
- *           results.
  */

@@ -64,8 +64,6 @@ export class GlobalResources
          search: options.search,
          searchFullName: options.searchFullName,
          searchLimit: options.searchLimit,
-         searchQuick: options.searchQuick,
-         searchQuickLimit: options.searchQuickLimit,
          sidebarLinks: app.options.getValue('sidebarLinks'),
          storagePrepend: `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
       }

@@ -90,7 +90,7 @@ if (dmtComponentData.search)
    });
 }
 
-// TODO: Work in progress
+// TODO: Work in progress - Finish `searchQuick` functionality.
 // // Only load quick search index if enabled.
 // if (dmtComponentData.searchQuick)
 // {

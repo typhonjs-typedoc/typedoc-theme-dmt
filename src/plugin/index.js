@@ -53,8 +53,10 @@ export function load(app)
             new PageRenderer(app, options);
 
             // Selectively load search index creation.
-            if (app.options.getValue('dmtSearch')) { new SearchIndexPackr(app); }
-            if (app.options.getValue('dmtSearchQuick')) { new SearchQuickIndexPackr(app); }
+            if (options.search) { new SearchIndexPackr(app); }
+
+            // TODO: Finish implementing `searchQuick` functionality.
+            // if (options.searchQuick) { new SearchQuickIndexPackr(app); }
 
             // Handle any module name substitution during project conversion.
             app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>

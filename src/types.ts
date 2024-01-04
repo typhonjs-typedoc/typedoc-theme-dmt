@@ -107,16 +107,6 @@ export type DMTComponentData = {
    searchLimit: number;
 
    /**
-    * The `dmtSearchQuick` option; when true the quick search index is active.
-    */
-   searchQuick: boolean;
-
-   /**
-    * The `dmtSearchQuickLimit` option; The max number of documents returned in the main search query processing.
-    */
-   searchQuickLimit: number;
-
-   /**
     * Default sidebar links.
     */
    sidebarLinks?: Record<string, string>;
