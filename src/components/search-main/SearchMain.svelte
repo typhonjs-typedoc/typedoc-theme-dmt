@@ -14,6 +14,7 @@
    const storeVisible = writable(false);
 
    setContext('#basePath', dmtComponentData.basePath)
+   setContext('#iconsPrepend', dmtComponentData.iconsPrepend);
    setContext('#navModuleIcon', dmtComponentData.navModuleIcon)
    setContext('#searchFullName', dmtComponentData.search.fullName)
    setContext('#searchLimit', dmtComponentData.search?.limit ?? 10)

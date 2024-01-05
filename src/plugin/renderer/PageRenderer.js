@@ -1,8 +1,11 @@
 import fs            from 'node:fs';
+import path          from 'node:path';
 
 import {
+   JSX,
    PageEvent,
-   ReflectionKind }  from 'typedoc';
+   ReflectionKind,
+   RendererEvent }   from 'typedoc';
 
 import { load }      from 'cheerio';
 
@@ -11,8 +14,27 @@ export class PageRenderer
    /** @type {import('typedoc').Application} */
    #app;
 
+   /**
+    * Stores whether caching icons externally has been attempted; caching only occurs on first page render.
+    *
+    * @type {boolean}
+    */
+   #iconsCachedAttempted = false;
+
+   /**
+    * Stores whether icons are cached externally.
+    *
+    * @type {boolean}
+    */
+   #iconsCached = false;
+
    /** @type {ThemeOptions} */
    #options;
+
+   /**
+    * Stores the output directory from `RendererEvent.BEGIN`; used in caching icons externally.
+    */
+   #outputDirectory;
 
    /**
     * @param {import('typedoc').Application} app -
@@ -24,7 +46,17 @@ export class PageRenderer
       this.#app = app;
       this.#options = options;
 
+      this.#app.renderer.once(RendererEvent.BEGIN, (event) => this.#outputDirectory = event.outputDirectory);
+
       this.#app.renderer.on(PageEvent.END, this.#handlePageEnd, this);
+   }
+
+   /**
+    * @returns {boolean} Whether SVG icons are cached externally.
+    */
+   get iconsCached()
+   {
+      return this.#iconsCached;
    }
 
    /**
@@ -180,6 +212,25 @@ export class PageRenderer
          const isModule = liEl.find('svg.tsd-kind-icon use[href="#icon-2"]');
          if (!isModule.length) { liEl.remove(); }
       });
+
+      // Icon caching ------------------------------------------------------------------------------------------------
+
+      if (this.#iconsCached)
+      {
+         // Remove the inline icon SVG.
+         $('body > svg').first().remove();
+
+         const depth = (page.url.match(/\//g) ?? []).length;
+         const basePath = '../'.repeat(depth);
+
+         // Prepend the external `icons.svg` path to all `svg use` instances.
+         $('svg use').each(function()
+         {
+            const useEl = $(this);
+            const currentHref = useEl.attr('href');
+            useEl.attr('href', `${basePath}assets/icons.svg${currentHref}`);
+         })
+      }
    }
 
    /**
@@ -245,6 +296,13 @@ export class PageRenderer
     */
    #handlePageEnd(page)
    {
+      // Cache SVG icons externally
+      if (!this.#iconsCachedAttempted)
+      {
+         this.#iconsCached = this.#cacheIconsExternal();
+         this.#iconsCachedAttempted = true;
+      }
+
       const $ = load(page.contents);
 
       // Remove the default theme navigation script.
@@ -263,5 +321,30 @@ export class PageRenderer
       if (page.model.kind === ReflectionKind.Module) { this.#augmentModule($, page); }
 
       page.contents = $.html();
+   }
+
+   /**
+    * @returns {boolean} Whether icons were cached externally.
+    */
+   #cacheIconsExternal()
+   {
+      const iconsJSX = this.#app.renderer.theme.renderContext.iconsCache();
+
+      try
+      {
+         // Must add XML Namespace so `icons.svg` is interpreted correctly.
+         if (typeof iconsJSX.props === 'object') { iconsJSX.props.xmlns = 'http://www.w3.org/2000/svg'; }
+
+         fs.writeFileSync(path.join(this.#outputDirectory, 'assets', 'icons.svg'), JSX.renderElement(iconsJSX),
+          'utf-8');
+
+         return true;
+      }
+      catch (err)
+      {
+         this.#app.logger.warn(`[typedoc-theme-default-modern] External caching of SVG icons failed.`)
+      }
+
+      return false;
    }
 }

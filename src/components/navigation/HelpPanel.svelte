@@ -10,6 +10,9 @@
    /** @type {import('svelte/store').Writable<number>} */
    export let storeTopLevelNodes = void 0;
 
+   /** @type {string} */
+   const iconsPrepend =  getContext('#iconsPrepend');
+
    /** @type {object} */
    const ReflectionKind = getContext('#ReflectionKind');
 
@@ -35,7 +38,7 @@
    <section class=reflection-kinds>
       {#each reflectionData as entry (entry.value)}
          <span>
-            <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${entry.value}`}></use></svg>
+            <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`${iconsPrepend}#icon-${entry.value}`}></use></svg>
             {entry.key}
          </span>
       {/each}

@@ -9,6 +9,9 @@
    /** @type {HTMLUListElement} */
    export let resultsEl = void 0;
 
+   /** @type {string} */
+   const iconsPrepend =  getContext('#iconsPrepend');
+
    /** @type {import('svelte/store').Writable<number>} */
    const storeCurrentId = getContext('#storeCurrentId');
 
@@ -36,7 +39,7 @@
        on:click={() => onClick(result.href)}
        role=menuitem>
       {#if result.kind}
-         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${result.kind}`}></use></svg>
+         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`${iconsPrepend}#icon-${result.kind}`}></use></svg>
       {/if}
       <span class=parent>{@html result.name}</span>
    </li>

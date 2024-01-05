@@ -45,6 +45,8 @@ dmtComponentData.initialPathURL = globalThis.location.href.replace(dmtComponentD
 const depth = (dmtComponentData.initialPathURL.match(/\//) ?? []).length;
 dmtComponentData.basePath = '../'.repeat(depth);
 
+dmtComponentData.iconsPrepend = dmtComponentData.iconsCached ? `${dmtComponentData.basePath}assets/icons.svg` : '';
+
 // Create navigation data / state.
 dmtComponentData.navigationData = new NavigationData(dmtComponentData);
 

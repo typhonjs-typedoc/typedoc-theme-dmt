@@ -43,14 +43,15 @@ export function load(app)
              'dmt'), { recursive: true }));
 
             // At the end of rendering generate the compressed global component data.
-            app.renderer.once(RendererEvent.END, (event) => GlobalResources.build(event, app, options));
+            app.renderer.once(RendererEvent.END, (event) =>
+             GlobalResources.build(event, app, options, pageRenderer.iconsCached));
 
             // Remove unused default theme components.
             app.renderer.removeComponent('javascript-index');
             app.renderer.removeComponent('navigation-tree');
 
             // Add DMT components.
-            new PageRenderer(app, options);
+            const pageRenderer = new PageRenderer(app, options);
 
             // Selectively load search index creation.
             if (options.search) { new SearchIndexPackr(app, options); }

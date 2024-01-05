@@ -32,10 +32,12 @@ export class GlobalResources
     * @param {import('typedoc').Application} app -
     *
     * @param {ThemeOptions} options -
+    *
+    * @param {boolean} iconsCached - Whether SVG icons have been cached externally.
     */
-   static build(event, app, options)
+   static build(event, app, options, iconsCached = false)
    {
-      this.#buildComponentData(event, app, options);
+      this.#buildComponentData(event, app, options, iconsCached);
       this.#copyResources(event, app, options);
    }
 
@@ -45,8 +47,10 @@ export class GlobalResources
     * @param {import('typedoc').Application} app -
     *
     * @param {ThemeOptions} options -
+    *
+    * @param {boolean} iconsCached - Whether SVG icons have been cached externally.
     */
-   static #buildComponentData(event, app, options)
+   static #buildComponentData(event, app, options, iconsCached)
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
@@ -54,6 +58,7 @@ export class GlobalResources
 
       const data = {
          hasModulesIndex: event?.project?.url === 'modules.html',
+         iconsCached,
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
          moduleIsPackage: options.moduleRemap.isPackage,
