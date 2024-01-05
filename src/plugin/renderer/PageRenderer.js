@@ -167,6 +167,19 @@ export class PageRenderer
          const titleText = titleEl.text();
          if (typeof titleText === 'string') { titleEl.text(titleText.replace(/^Module (.*)/, 'Package $1')); }
       }
+
+      // Remove default theme navigation index content that isn't a module reflection. -------------------------------
+
+      // This is what is displayed when Javascript is disabled. Presently the default theme will render the first
+      // 20 reflections regardless of type. This can lead to bloat for large documentation efforts. Only displaying
+      // module reflections allows more precise navigation when Javascript is disabled.
+
+      $('nav.tsd-navigation #tsd-nav-container li').each(function()
+      {
+         const liEl = $(this);
+         const isModule = liEl.find('svg.tsd-kind-icon use[href="#icon-2"]');
+         if (!isModule.length) { liEl.remove(); }
+      });
    }
 
    /**
