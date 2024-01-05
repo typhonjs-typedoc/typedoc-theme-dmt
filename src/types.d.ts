@@ -152,19 +152,15 @@ export type DMTModuleRemap = {
  */
 export type DMTNavigation = {
    /**
-    * Compact intermediary folders that have no children.
-    */
-   compact: boolean;
-
-   /**
-    * Flatten all modules.
-    */
-   flat: boolean;
-
-   /**
     * Show module icons.
     */
    moduleIcon: boolean;
+
+   /**
+    * The navigation style. The default is 'full' for full tree, 'compact' is for the full tree with intermediary
+    * folders w/ no children compacted, 'flat' is for no module folders.
+    */
+   style: 'compact' | 'flat' | 'full';
 }
 
 /**

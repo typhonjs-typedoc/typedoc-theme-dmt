@@ -26,9 +26,9 @@ export class ThemeOptions
          readme: {}
       },
       navigation: {
-         compact: false,
-         flat: false,
-         moduleIcon: false
+         moduleIcon: false,
+         removeDefault: false,
+         style: 'full'
       },
       search: {
          fullName: false,
@@ -111,11 +111,40 @@ export class ThemeOptions
       app.options.addDeclaration({
          name: 'dmtNavigation',
          help: 'Additional DMT navigation sidebar options.',
-         type: ParameterType.Flags,
-         defaults: {
-            compact: false,
-            flat: false,
-            moduleIcon: false
+         type: ParameterType.Mixed,
+         defaultValue: {
+            moduleIcon: false,
+            style: 'full'
+         },
+         validate(value)
+         {
+            if (!value || typeof value !== 'object') { throw new Error(`'dmtNavigation' must be an object.`); }
+
+            const knownKeys = new Map([
+               ['moduleIcon', 'boolean'],
+               ['style', 'string']
+            ]);
+
+            const knownStyle = new Set(['compact', 'flat', 'full']);
+
+            for (const [key, val] of Object.entries(value))
+            {
+               if (!knownKeys.has(key))
+               {
+                  throw new Error(
+                   `'dmtNavigation' can only include the following keys: ${Array.from(knownKeys.keys()).join(', ')}`);
+               }
+
+               if (typeof val !== knownKeys.get(key))
+               {
+                  throw new Error(`'dmtNavigation.${key}' must be a '${knownKeys.get(key)}'.`);
+               }
+
+               if (key === 'style' && !knownStyle.has(val))
+               {
+                  throw new Error(`'dmtNavigation.style' must be: 'compact', 'flat', or 'full'.`);
+               }
+            }
          }
       });
 
@@ -155,7 +184,7 @@ export class ThemeOptions
                if (key === 'limit' && (!Number.isInteger(val) || val < 1))
                {
                   throw new Error(
-                   `'dmtSearch.limit' must be a positive integer greater than '0'.`)
+                   `'dmtSearch.limit' must be a positive integer greater than '0'.`);
                }
             }
          }
@@ -249,6 +278,8 @@ export class ThemeOptions
       this.#options.moduleRemap = Object.assign(this.#options.moduleRemap, app.options.getValue('dmtModuleRemap'));
       this.#options.navigation = Object.assign(this.#options.navigation, app.options.getValue('dmtNavigation'));
 
+console.log(`!! DMT - #parseDMTOptions - this.#options.navigation: `, this.#options.navigation);
+
       const dmtSearch = app.options.getValue('dmtSearch');
 
       // When `true` use default values already set.
@@ -284,9 +315,6 @@ export class ThemeOptions
             }
          }
       }
-
-      // Navigation adjustments for `compact` / `flat`; can turn off compaction if `flat` is true.
-      if (this.#options.navigation.flat) { this.#options.navigation.compact = false; }
 
       const linksIcon = app.options.getValue('dmtLinksIcon');
       this.#validateLinksIcon(linksIcon, app);

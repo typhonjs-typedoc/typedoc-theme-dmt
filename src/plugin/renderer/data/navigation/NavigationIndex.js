@@ -19,11 +19,11 @@ export class NavigationIndex
    static transform(index, options, packageName)
    {
       // No processing necessary so directly return the index.
-      if (options.navigation.flat) { return index; }
+      if (options.navigation.style === 'flat') { return index; }
 
       const tree = this.#parseModuleTree(index, options, packageName);
 
-      return options.navigation.compact ? ModuleTreeMap.compactSingularPaths(tree) : tree;
+      return options.navigation.style === 'compact' ? ModuleTreeMap.compactSingularPaths(tree) : tree;
    }
 
    /**
