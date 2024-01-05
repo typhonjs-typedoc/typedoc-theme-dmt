@@ -27,7 +27,6 @@ export class ThemeOptions
       },
       navigation: {
          moduleIcon: false,
-         removeDefault: false,
          style: 'full'
       },
       search: {
@@ -277,8 +276,6 @@ export class ThemeOptions
    {
       this.#options.moduleRemap = Object.assign(this.#options.moduleRemap, app.options.getValue('dmtModuleRemap'));
       this.#options.navigation = Object.assign(this.#options.navigation, app.options.getValue('dmtNavigation'));
-
-console.log(`!! DMT - #parseDMTOptions - this.#options.navigation: `, this.#options.navigation);
 
       const dmtSearch = app.options.getValue('dmtSearch');
 
