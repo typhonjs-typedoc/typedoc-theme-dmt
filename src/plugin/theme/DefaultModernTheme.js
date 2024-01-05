@@ -21,7 +21,7 @@ export class DefaultModernTheme extends DefaultTheme
    }
 
    /**
-    * @param {import('typedoc').PageEvent<import('typedoc').Reflection>}   pageEvent -
+    * @param {import('typedoc').PageEvent<Reflection>}   pageEvent -
     *
     * @returns {DefaultThemeRenderContext} Cached render context.
     * @override
