@@ -59,13 +59,16 @@ export function load(app)
             // if (options.searchQuick) { new SearchQuickIndexPackr(app); }
 
             // Handle any module name substitution during project conversion.
-            app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>
+            if (Object.keys(options.moduleRemap.names).length)
             {
-               if (reflection?.kind === ReflectionKind.Module && reflection.name in options.moduleRemap.names)
+               app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>
                {
-                  reflection.name = options.moduleRemap.names[reflection.name];
-               }
-            });
+                  if (reflection?.kind === ReflectionKind.Module && reflection.name in options.moduleRemap.names)
+                  {
+                     reflection.name = options.moduleRemap.names[reflection.name];
+                  }
+               });
+            }
          });
       }
    });
