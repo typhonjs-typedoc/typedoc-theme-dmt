@@ -23,14 +23,20 @@ enhanced usability, features, and polish. A large benefit to this approach is th
 }
 ```
 
-## Features
+## Features:
 
 The Default Modern Theme (DMT) achieves enhanced usability through replacing several components of the default theme
 with Svelte powered implementations. This includes the navigation index and search capabilities. Other changes from
 the default theme include enhanced styles and usage of modern CSS features like `container queries` to provide
 better font size changes for different screen orientations.
 
-## Key Commands / Accessibility.
+## Optimization:
+
+The default theme of TypeDoc `0.25.x` includes the entire set of SVG icons adding ~15KB to the file size of every single
+page. This adds up for large documentation generation efforts. The DMT externally caches a single copy of the SVG icons
+reducing total disk space by ~25-30% saving storage space and network bandwidth.
+
+## Accessibility:
 
 The DMT styles enhance accessibility making keyboard navigation clear and concise.
 
@@ -88,9 +94,10 @@ children folders underneath.
 
   // Additional navigation sidebar options.
   "dmtNavigation": {
-    "compact": false,   // When true compacts all intermediary folders with no children.
-    "flat": false,      // When true flattens all module / package paths.
-    "moduleIcon": false // When true renders module icon.
+    "moduleIcon": false,  // When true renders module icon.
+    "style": 'full'       // A full tree is rendered by default. Other options include 'compact' and 'flat'. The first
+                          // renders a full tree, but compacts all intermediary folders with no children and the latter
+                          // flattens all module / package paths.
   },
 
   // May be `false` to disable main search functionality. Otherwise, provide an object
