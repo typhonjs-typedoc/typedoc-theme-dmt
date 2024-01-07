@@ -102,6 +102,6 @@
 
    /* This allows the bottom most element in the nav bar to be visible above browser URL hint. */
    .dmt-navigation-content > :global(:last-child) {
-      padding-bottom: 1rem;
+      margin-bottom: 1rem;
    }
 </style>
