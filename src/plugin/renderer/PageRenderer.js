@@ -311,14 +311,14 @@ export class PageRenderer
       // Append scripts to load web components.
       this.#addAssets($, page);
 
+      if (page.model.kind === ReflectionKind.Module) { this.#augmentModule($, page); }
+
       // A few global modifications tweaks like the favicon and slight modifications to the layout to allow right
       // aligning of additional elements in flexbox layouts.
       this.#augmentGlobal($);
 
       // Further global modifications based on DMT options.
       this.#augmentGlobalOptions($, page);
-
-      if (page.model.kind === ReflectionKind.Module) { this.#augmentModule($, page); }
 
       page.contents = $.html();
    }
