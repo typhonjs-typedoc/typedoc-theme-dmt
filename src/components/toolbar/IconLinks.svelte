@@ -27,6 +27,7 @@
       display: flex;
       align-items: center;
       flex-shrink: 0;
+      margin: 4px;
    }
 
    a:focus-visible img {
@@ -47,7 +48,7 @@
       flex-wrap: nowrap;
 
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.35rem;
       margin-left: auto;
       margin-right: 0.5rem;
       min-width: 0;
