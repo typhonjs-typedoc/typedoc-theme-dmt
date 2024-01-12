@@ -245,8 +245,8 @@ export class PageRenderer
    {
       const indexPanelEl = $('.tsd-panel.tsd-index-panel');
 
-      // Enclose module index in a details / summary element.
-      if (indexPanelEl)
+      // Enclose module index in a details / summary element if the first child is not already a details element.
+      if (indexPanelEl && indexPanelEl?.children()?.first()?.get(0)?.tagName !== 'details')
       {
          indexPanelEl.find('h3.tsd-index-heading.uppercase').first().remove();
 
