@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@typhonjs-typedoc/typedoc-theme-dmt.svg?label=npm)](https://www.npmjs.com/package/@typhonjs-typedoc/typedoc-theme-dmt)
 [![Code Style](https://img.shields.io/badge/code%20style-allman-yellowgreen.svg?style=flat)](https://en.wikipedia.org/wiki/Indent_style#Allman_style)
 [![License](https://img.shields.io/badge/license-MPLv2-yellowgreen.svg?style=flat)](https://github.com/typhonjs-typedoc/typedoc-theme-dmt/blob/main/LICENSE)
-[![Discord](https://img.shields.io/discord/737953117999726592?label=TyphonJS%20Discord)](https://discord.gg/mnbgN8f)
+[![Discord](https://img.shields.io/discord/737953117999726592?label=TyphonJS%20Discord)](https://typhonjs.io/discord/)
 [![Twitch](https://img.shields.io/twitch/status/typhonrt?style=social)](https://www.twitch.tv/typhonrt)
 
 Provides a customizable UX augmentation to the default TypeDoc theme bringing final mile fit and finish. The approach
@@ -114,7 +114,12 @@ children folders underneath.
 ```
 
 ## Synergy:
-The DMT is used to generate complete API docs for the built-in Typescript library declarations.
+- A zero configuration CLI that uses the DMT to automatically generate API documentation from well configured
+`package.json` based projects is available via [@typhonjs-typedoc/typedoc-pkg](https://www.npmjs.com/package/@typhonjs-typedoc/typedoc-pkg).
+This CLI incorporates `ts-lib-docs` mentioned next and makes it easy to generate end-to-end documentation.
+
+
+- The DMT is used to generate complete API docs for the built-in Typescript library declarations.
 [@typhonjs-typedoc/ts-lib-docs](https://www.npmjs.com/package/@typhonjs-typedoc/ts-lib-docs) provides several data
 sources including a TypeDoc plugin that associates all symbols from the built-in TS lib declarations allowing complete
 end-to-end API docs for your project and the modern web.
