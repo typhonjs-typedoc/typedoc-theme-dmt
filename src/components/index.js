@@ -61,9 +61,16 @@ const dmtSettings = new DMTSettings({
    props: { dmtComponentData }
 });
 
+// Remove the static sidebar links as DMT navigation includes the links.
+const staticSidebarEl = document.querySelector('nav#tsd-sidebar-links');
+if (staticSidebarEl) { staticSidebarEl.remove(); }
+
 // Remove all default children from navigation as it is being replaced by the Navigation Svelte component.
 const navEl = document.querySelector('nav.tsd-navigation');
-while (navEl.firstChild) { navEl.removeChild(navEl.firstChild); }
+if (navEl && navEl.firstChild)
+{
+   while (navEl.firstChild) { navEl.removeChild(navEl.firstChild); }
+}
 
 const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
