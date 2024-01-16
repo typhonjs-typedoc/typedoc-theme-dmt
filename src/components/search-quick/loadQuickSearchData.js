@@ -1,4 +1,5 @@
-import { TrieSearch }   from '#runtime/data/struct/search/trie';
+import { TrieSearch }      from '#runtime/data/struct/search/trie';
+import { TrieSearchQuery } from '#runtime/data/struct/search/trie/query';
 
 /**
  * Loads quick search index.
@@ -39,6 +40,13 @@ export async function loadQuickSearchData()
 
    // TODO: Remove - initial testing ---------------------------------------------------------------------------------
 
+   // const trieQuery = new TrieSearchQuery(globalThis.dmtSearchQuickNav)
+   //
+   // trieQuery.subscribe((da) =>
+   // {
+   //    console.log([...da.data]);
+   // });
+   //
    // let searchString = '';
    //
    // globalThis.document.addEventListener('keyup', (event) =>
@@ -48,7 +56,7 @@ export async function loadQuickSearchData()
    //    if ((/^[A-Za-z0-9.]$/i).test(key))
    //    {
    //       searchString += key;
-   //       console.log(globalThis.dmtSearchQuickNav.search(searchString));
+   //       trieQuery.query.set(searchString);
    //    }
    //    else if (event.key === 'Backspace')
    //    {
@@ -57,14 +65,13 @@ export async function loadQuickSearchData()
    //          searchString = searchString.substring(0, searchString.length - 1);
    //       }
    //
-   //       if (searchString.length)
-   //       {
-   //          console.log(globalThis.dmtSearchQuickNav.search(searchString));
-   //       }
+   //       trieQuery.query.set(searchString);
    //    }
    //    else if (event.key === 'Escape')
    //    {
    //       searchString = '';
+   //
+   //       trieQuery.query.set(searchString);
    //    }
    // });
 
