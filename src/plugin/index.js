@@ -64,6 +64,20 @@ export function load(app)
             {
                app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>
                {
+                  // Remove `@implements` comment block tags from classes; for ESM.
+                  if (reflection?.kind === ReflectionKind.Class)
+                  {
+                     if (Array.isArray(reflection?.comment?.blockTags))
+                     {
+                        const blockTags = reflection.comment.blockTags;
+                        for (let cntr = blockTags.length; --cntr >= 0;)
+                        {
+                           if (blockTags[cntr]?.tag === '@implements') { blockTags.splice(cntr, 1); }
+                        }
+                     }
+                  }
+
+                  // Remap module to package names.
                   if (reflection?.kind === ReflectionKind.Module && reflection.name in options.moduleRemap.names)
                   {
                      reflection.name = options.moduleRemap.names[reflection.name];
