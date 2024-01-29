@@ -399,6 +399,9 @@ a {
 
   // Various internal parameter lists ----------------------
   ul.tsd-parameters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     background: var(--dmt-container-background);
     border: var(--dmt-container-border);
     border-radius: var(--dmt-container-border-radius);
