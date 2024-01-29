@@ -140,6 +140,15 @@ export class PageRenderer
       // Remove old anchor.
       tsdTitleEl.remove();
 
+      // Add `.no-children` class to `.tsd-parameters` that have no children. ----------------------------------------
+      // This is to allow removing styles from empty lists.
+
+      $('.tsd-parameters').each(function()
+      {
+         const parameterListEl = $(this);
+         if (parameterListEl.children().length === 0) { parameterListEl.addClass('no-children'); }
+      });
+
       // Move generator element to column content --------------------------------------------------------------------
 
       const generatorEl = $('.tsd-generator');

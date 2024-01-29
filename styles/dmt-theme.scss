@@ -419,6 +419,16 @@ a {
     }
   }
 
+  // Remove styling from empty parameter lists that are marked with `.no-children` from PageRenderer.
+  ul.tsd-parameters.no-children {
+    background: unset;
+    border: unset;
+    border-radius: unset;
+    box-shadow: unset;
+    margin: 0;
+    padding: 0;
+  }
+
   // Breadcrumb --------------------------------------------
 
   // Remove trailing `/`
