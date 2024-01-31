@@ -18,6 +18,15 @@ import {
    ThemeOptions }             from './theme/index.js';
 
 /**
+ * Remove the following tags parsed from class declarations that are not supported by TypeDoc:
+ * - `@componentDocumentation` is a specific tag similar to `@packageDescription` for Svelte components.
+ * - `@implements` for ES Module JSDoc.
+ *
+ * @type {Set<string>}
+ */
+const jsdocClassTagsRemove = new Set(['@componentDocumentation', '@implements']);
+
+/**
  * Provides a theme plugin for Typedoc augmenting the main default theme providing a modern UX look & feel.
  *
  * @param {import('typedoc').Application} app - Typedoc Application
@@ -59,24 +68,27 @@ export function load(app)
             // TODO: Finish implementing `searchQuick` functionality.
             // if (options.searchQuick) { new SearchQuickIndexPackr(app); }
 
+            // Remove unused JSDoc comment block tags from classes; for ESM.
+            app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>
+            {
+               if (reflection?.kind === ReflectionKind.Class)
+               {
+                  if (Array.isArray(reflection?.comment?.blockTags))
+                  {
+                     const blockTags = reflection.comment.blockTags;
+                     for (let cntr = blockTags.length; --cntr >= 0;)
+                     {
+                        if (jsdocClassTagsRemove.has(blockTags[cntr]?.tag)) { blockTags.splice(cntr, 1); }
+                     }
+                  }
+               }
+            });
+
             // Handle any module name substitution during project conversion.
             if (Object.keys(options.moduleRemap.names).length)
             {
                app.converter.on(Converter.EVENT_RESOLVE, (context, reflection) =>
                {
-                  // Remove `@implements` comment block tags from classes; for ESM.
-                  if (reflection?.kind === ReflectionKind.Class)
-                  {
-                     if (Array.isArray(reflection?.comment?.blockTags))
-                     {
-                        const blockTags = reflection.comment.blockTags;
-                        for (let cntr = blockTags.length; --cntr >= 0;)
-                        {
-                           if (blockTags[cntr]?.tag === '@implements') { blockTags.splice(cntr, 1); }
-                        }
-                     }
-                  }
-
                   // Remap module to package names.
                   if (reflection?.kind === ReflectionKind.Module && reflection.name in options.moduleRemap.names)
                   {
