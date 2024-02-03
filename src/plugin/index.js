@@ -19,12 +19,11 @@ import {
 
 /**
  * Remove the following tags parsed from class declarations that are not supported by TypeDoc:
- * - `@componentDocumentation` is a specific tag similar to `@packageDescription` for Svelte components.
  * - `@implements` for ES Module JSDoc.
  *
  * @type {Set<string>}
  */
-const jsdocClassTagsRemove = new Set(['@componentDocumentation', '@implements']);
+const jsdocClassTagsRemove = new Set(['@implements']);
 
 /**
  * Provides a theme plugin for Typedoc augmenting the main default theme providing a modern UX look & feel.
