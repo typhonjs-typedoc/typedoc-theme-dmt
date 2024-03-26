@@ -37,7 +37,6 @@ export function load(app)
    {
       if ('default-modern' === app.options.getValue('theme'))
       {
-console.log(`!!! LOCAL DMT`)
          // Adjust default theme options. Must do so here at bootstrap end before options are locked.
          ThemeOptions.adjustDefaultOptions(app);
 
