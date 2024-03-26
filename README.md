@@ -18,7 +18,7 @@ enhanced usability, features, and polish. A large benefit to this approach is th
 {
    "devDependencies": {
       "@typhonjs-typedoc/typedoc-theme-dmt": "^0.2.0-next.1",
-      "typedoc": "^0.25.0"
+      "typedoc": "^0.25.10"
    }
 }
 ```
@@ -32,9 +32,12 @@ better font size changes for different screen orientations.
 
 ## Optimization:
 
-The default theme of TypeDoc `0.25.x` includes the entire set of SVG icons adding ~15KB to the file size of every single
-page. This adds up for large documentation generation efforts. The DMT externally caches a single copy of the SVG icons
-reducing total disk space by ~25-30% saving storage space and network bandwidth.
+At this point the DMT and the core default theme is trading features as features originally in the DMT make way to
+the core default theme of Typedoc. The primary goal of the DMT is to make the actual majority developer experience the
+best for those viewing documentation on a desktop computer w/ a good internet connection. This is opposed to the core
+default theme that tries to make a compromise between the worst / 99th percentile user say on a "2G" connection better
+at the expense of the actual bulk of users using Typedoc. There are various tweaks in the DMT over the core default
+theme to make the mainline use case better.
 
 ## Accessibility:
 
