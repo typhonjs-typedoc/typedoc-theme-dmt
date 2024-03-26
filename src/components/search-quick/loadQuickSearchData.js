@@ -1,5 +1,5 @@
 import { TrieSearch }      from '#runtime/data/struct/search/trie';
-import { TrieSearchQuery } from '#runtime/data/struct/search/trie/query';
+// import { TrieSearchQuery } from '#runtime/data/struct/search/trie/query';
 
 /**
  * Loads quick search index.

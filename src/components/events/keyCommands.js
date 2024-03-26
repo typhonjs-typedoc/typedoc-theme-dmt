@@ -28,6 +28,7 @@ export function keyCommands(dmtComponentData)
       switch (event.code)
       {
          case 'KeyC':
+         {
             const mainContentEl = document.querySelector('.col-content');
             if (mainContentEl)
             {
@@ -36,6 +37,7 @@ export function keyCommands(dmtComponentData)
             }
             event.preventDefault();
             break;
+         }
 
          case 'KeyE':
             navigationData.setStoresAllOpen(!get(navigationData.storeSessionAllOpen));
@@ -43,7 +45,7 @@ export function keyCommands(dmtComponentData)
             break;
 
          case 'KeyH':
-            navigationData.storeHelpPanelOpen.set(!get(navigationData.storeHelpPanelOpen))
+            navigationData.storeHelpPanelOpen.set(!get(navigationData.storeHelpPanelOpen));
             event.preventDefault();
             break;
 
@@ -64,7 +66,7 @@ export function keyCommands(dmtComponentData)
          {
             // Ensure current path is open and focus current path navigation entry.
             const currentPathURL = navigationData.currentPathURL;
-            navigationData.state.ensureCurrentPath(navigationData.currentPathURL)
+            navigationData.state.ensureCurrentPath(navigationData.currentPathURL);
 
             // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
             nextAnimationFrame().then(() => document.querySelector('nav.tsd-navigation')?.querySelector(

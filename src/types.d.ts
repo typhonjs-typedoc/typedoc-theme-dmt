@@ -47,16 +47,6 @@ export type DMTComponentData = {
    hasModulesIndex: boolean;
 
    /**
-    * Whether SVG icons have been cached externally.
-    */
-   iconsCached: boolean;
-
-   /**
-    * The icons prepend path generated on component loading.
-    */
-   iconsPrepend: string;
-
-   /**
     * Initial path URL for current page.
     */
    initialPathURL: string;

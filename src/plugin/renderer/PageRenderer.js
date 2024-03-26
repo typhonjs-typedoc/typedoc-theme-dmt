@@ -1,40 +1,18 @@
 import fs            from 'node:fs';
-import path          from 'node:path';
-
-import {
-   JSX,
-   PageEvent,
-   ReflectionKind,
-   RendererEvent }   from 'typedoc';
 
 import { load }      from 'cheerio';
+
+import {
+   PageEvent,
+   ReflectionKind }  from 'typedoc';
 
 export class PageRenderer
 {
    /** @type {import('typedoc').Application} */
    #app;
 
-   /**
-    * Stores whether caching icons externally has been attempted; caching only occurs on first page render.
-    *
-    * @type {boolean}
-    */
-   #iconsCachedAttempted = false;
-
-   /**
-    * Stores whether icons are cached externally.
-    *
-    * @type {boolean}
-    */
-   #iconsCached = false;
-
    /** @type {ThemeOptions} */
    #options;
-
-   /**
-    * Stores the output directory from `RendererEvent.BEGIN`; used in caching icons externally.
-    */
-   #outputDirectory;
 
    /**
     * @param {import('typedoc').Application} app -
@@ -46,17 +24,7 @@ export class PageRenderer
       this.#app = app;
       this.#options = options;
 
-      this.#app.renderer.once(RendererEvent.BEGIN, (event) => this.#outputDirectory = event.outputDirectory);
-
       this.#app.renderer.on(PageEvent.END, this.#handlePageEnd, this);
-   }
-
-   /**
-    * @returns {boolean} Whether SVG icons are cached externally.
-    */
-   get iconsCached()
-   {
-      return this.#iconsCached;
    }
 
    /**
@@ -111,9 +79,21 @@ export class PageRenderer
     */
    #augmentGlobal($)
    {
+      // Replace inline script content removing unnecessary style `display` gating for page display. -----------------
+
+      const inlineScript = $('body script:first-child');
+      const scriptContent = inlineScript?.text();
+
+      if (scriptContent?.includes('document.documentElement.dataset.theme'))
+      {
+         // Replace the script content
+         inlineScript.text('document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";');
+      }
+
+      // Wrap the title header in a flex box to allow additional elements to be added right aligned. -----------------
+
       const titleEl = $('.tsd-page-title h1');
 
-      // Wrap the title header in a flex box to allow additional elements to be added right aligned.
       titleEl.wrap('<div class="dmt-title-header-flex"></div>');
 
       // Replace default main search with DMT main search ------------------------------------------------------------
@@ -221,25 +201,6 @@ export class PageRenderer
          const isModule = liEl.find('svg.tsd-kind-icon use[href="#icon-2"]');
          if (!isModule.length) { liEl.remove(); }
       });
-
-      // Icon caching ------------------------------------------------------------------------------------------------
-
-      if (this.#iconsCached)
-      {
-         // Remove the inline icon SVG.
-         $('body > svg').first().remove();
-
-         const depth = (page.url.match(/\//g) ?? []).length;
-         const basePath = '../'.repeat(depth);
-
-         // Prepend the external `icons.svg` path to all `svg use` instances.
-         $('svg use').each(function()
-         {
-            const useEl = $(this);
-            const currentHref = useEl.attr('href');
-            useEl.attr('href', `${basePath}assets/icons.svg${currentHref}`);
-         })
-      }
    }
 
    /**
@@ -295,7 +256,7 @@ export class PageRenderer
          catch (err)
          {
             this.#app.logger.warn(
-             `[typedoc-theme-default-modern] Could not render additional 'README.md' for: '${moduleName}'`)
+             `[typedoc-theme-default-modern] Could not render additional 'README.md' for: '${moduleName}'`);
          }
       }
    }
@@ -305,13 +266,6 @@ export class PageRenderer
     */
    #handlePageEnd(page)
    {
-      // Cache SVG icons externally
-      if (!this.#iconsCachedAttempted)
-      {
-         this.#iconsCached = this.#cacheIconsExternal();
-         this.#iconsCachedAttempted = true;
-      }
-
       const $ = load(page.contents);
 
       // Remove the default theme navigation script.
@@ -330,30 +284,5 @@ export class PageRenderer
       this.#augmentGlobalOptions($, page);
 
       page.contents = $.html();
-   }
-
-   /**
-    * @returns {boolean} Whether icons were cached externally.
-    */
-   #cacheIconsExternal()
-   {
-      const iconsJSX = this.#app.renderer.theme.renderContext.iconsCache();
-
-      try
-      {
-         // Must add XML Namespace so `icons.svg` is interpreted correctly.
-         if (typeof iconsJSX.props === 'object') { iconsJSX.props.xmlns = 'http://www.w3.org/2000/svg'; }
-
-         fs.writeFileSync(path.join(this.#outputDirectory, 'assets', 'icons.svg'), JSX.renderElement(iconsJSX),
-          'utf-8');
-
-         return true;
-      }
-      catch (err)
-      {
-         this.#app.logger.warn(`[typedoc-theme-default-modern] External caching of SVG icons failed.`)
-      }
-
-      return false;
    }
 }

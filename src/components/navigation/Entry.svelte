@@ -20,9 +20,6 @@
     */
    export let storageKey = null;
 
-   /** @type {string} */
-   const iconsPrepend = getContext('#iconsPrepend');
-
    const { basePath, storeCurrentPathURL } = /** @type {NavigationData} */ getContext('#navigationData');
 
    const icon = !removeIcon && entry.kind ? entry.kind : void 0;
@@ -49,7 +46,7 @@
       class:indent-no-icon={indentIcon === 'indent-no-icon'}
       data-storage-key={storageKey}>
       {#if icon}
-         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`${iconsPrepend}#icon-${icon}`}></use></svg>
+         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${icon}`}></use></svg>
       {/if}
       <span>{entry.text}</span>
    </a>

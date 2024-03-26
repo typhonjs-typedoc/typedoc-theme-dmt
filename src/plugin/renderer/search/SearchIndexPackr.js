@@ -67,10 +67,9 @@ export class SearchIndexPackr
       if (indexEvent.isDefaultPrevented) { return; }
 
       // Custom trimmer function that allows leading `#` and `@`.
-      const customTrimmer = function (token) {
-         return token.update(function (s) {
-            return s.replace(/^[^\w#@]+/, '').replace(/[^\w#@]+$/, '');
-         });
+      const customTrimmer = function(token)
+      {
+         return token.update((s) => s.replace(/^[^\w#@]+/, '').replace(/[^\w#@]+$/, ''));
       };
 
       // Register the custom trimmer in lunr pipeline.

@@ -208,7 +208,7 @@ export class ModuleTreeMap
       if (!node || !node.children || node.children.length === 0 || node?.kind !== void 0) { return node; }
 
       // Recursively process all children first.
-      node.children = node.children.map(child => this.#compactSingularPaths(child));
+      node.children = node.children.map((child) => this.#compactSingularPaths(child));
 
       // Potentially compact current node if there is only one child.
       if (node.children.length === 1)
@@ -218,7 +218,7 @@ export class ModuleTreeMap
          // If the single child is a non-leaf node concatenate the path text and lift child node.
          if (child?.children?.length > 0)
          {
-            node.text += '/' + child.text;
+            node.text += `/${child.text}`;
             node.path = child.path;
             node.kind = child.kind;
             node.class = child.class;

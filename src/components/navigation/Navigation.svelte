@@ -15,12 +15,11 @@
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
 
-   const { iconsPrepend, navigationData, navModuleIcon } = dmtComponentData;
+   const { navigationData, navModuleIcon } = dmtComponentData;
 
    const detailsAnimation = new DetailsAnimation();
    const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate);
 
-   setContext('#iconsPrepend', iconsPrepend);
    setContext('#navModuleIcon', navModuleIcon);
    setContext('#navigationData', navigationData);
    setContext('#storeSettingAnimate', storeSettingsAnimate);

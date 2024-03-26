@@ -32,12 +32,10 @@ export class GlobalResources
     * @param {import('typedoc').Application} app -
     *
     * @param {ThemeOptions} options -
-    *
-    * @param {boolean} iconsCached - Whether SVG icons have been cached externally.
     */
-   static build(event, app, options, iconsCached = false)
+   static build(event, app, options)
    {
-      this.#buildComponentData(event, app, options, iconsCached);
+      this.#buildComponentData(event, app, options);
       this.#copyResources(event, app, options);
    }
 
@@ -47,10 +45,8 @@ export class GlobalResources
     * @param {import('typedoc').Application} app -
     *
     * @param {ThemeOptions} options -
-    *
-    * @param {boolean} iconsCached - Whether SVG icons have been cached externally.
     */
-   static #buildComponentData(event, app, options, iconsCached)
+   static #buildComponentData(event, app, options)
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
@@ -58,7 +54,6 @@ export class GlobalResources
 
       const data = {
          hasModulesIndex: event?.project?.url === 'modules.html',
-         iconsCached,
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
          moduleIsPackage: options.moduleRemap.isPackage,
@@ -69,7 +64,7 @@ export class GlobalResources
          search: options.search,
          sidebarLinks: app.options.getValue('sidebarLinks'),
          storagePrepend: `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
-      }
+      };
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),
        `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
@@ -138,7 +133,7 @@ export class GlobalResources
     *
     * @param {ThemeOptions} options -
     *
-    * @returns {{}}
+    * @returns {{}} Reflection kinds for help display.
     */
    static #getReflectionKind(options)
    {
@@ -151,9 +146,9 @@ export class GlobalResources
 
       const result = {};
 
-      function isPowerOfTwo(n) { return n > 0 && (n & (n - 1)) === 0; }
+      const isPowerOfTwo = (n) => n > 0 && (n & (n - 1)) === 0;
 
-      for (let [key, value] of Object.entries(ReflectionKind))
+      for (let [key, value] of Object.entries(ReflectionKind)) // eslint-disable-line prefer-const
       {
          // If modules are packages then change the key name for `Module`.
          if (options.moduleRemap.isPackage && key === 'Module') { key = 'Package'; }
@@ -173,7 +168,7 @@ export class GlobalResources
     *
     * @param {ThemeOptions} options -
     *
-    * @returns {DMTIconLink[]}
+    * @returns {DMTIconLink[]} List of DMTIconLinks.
     */
    static #processLinksIcon(event, options)
    {
@@ -182,7 +177,7 @@ export class GlobalResources
 
       if (!links.length) { return result; }
 
-      const outputDir = path.join(event.outputDirectory, 'assets', 'dmt', 'icons', 'external')
+      const outputDir = path.join(event.outputDirectory, 'assets', 'dmt', 'icons', 'external');
       fs.mkdirSync(outputDir, { recursive: true });
 
       for (const entry of links)
@@ -217,7 +212,7 @@ export class GlobalResources
     *
     * @param {ThemeOptions} options -
     *
-    * @returns {DMTIconLink[]}
+    * @returns {DMTIconLink[]} List of service DMTIconLinks.
     */
    static #processLinksService(event, options)
    {
@@ -226,7 +221,7 @@ export class GlobalResources
 
       if (!links.length) { return result; }
 
-      const outputDir = path.join(event.outputDirectory, 'assets', 'dmt', 'icons', 'service')
+      const outputDir = path.join(event.outputDirectory, 'assets', 'dmt', 'icons', 'service');
       fs.mkdirSync(outputDir, { recursive: true });
 
       for (const entry of links)

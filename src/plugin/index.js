@@ -1,21 +1,20 @@
-import fs                     from 'node:fs';
-import path                   from 'node:path';
+import fs                  from 'node:fs';
+import path                from 'node:path';
 
 import {
    Application,
    Converter,
    ReflectionKind,
-   RendererEvent }            from 'typedoc';
+   RendererEvent }         from 'typedoc';
 
 import {
    GlobalResources,
    PageRenderer,
-   SearchIndexPackr,
-   SearchQuickIndexPackr }    from './renderer/index.js';
+   SearchIndexPackr }      from './renderer/index.js';
 
 import {
    DefaultModernTheme,
-   ThemeOptions }             from './theme/index.js';
+   ThemeOptions }          from './theme/index.js';
 
 /**
  * Remove the following tags parsed from class declarations that are not supported by TypeDoc:
@@ -38,6 +37,7 @@ export function load(app)
    {
       if ('default-modern' === app.options.getValue('theme'))
       {
+console.log(`!!! LOCAL DMT`)
          // Adjust default theme options. Must do so here at bootstrap end before options are locked.
          ThemeOptions.adjustDefaultOptions(app);
 
@@ -51,15 +51,14 @@ export function load(app)
              'dmt'), { recursive: true }));
 
             // At the end of rendering generate the compressed global component data.
-            app.renderer.once(RendererEvent.END, (event) =>
-             GlobalResources.build(event, app, options, pageRenderer.iconsCached));
+            app.renderer.once(RendererEvent.END, (event) => GlobalResources.build(event, app, options));
 
             // Remove unused default theme components.
             app.renderer.removeComponent('javascript-index');
             app.renderer.removeComponent('navigation-tree');
 
             // Add DMT components.
-            const pageRenderer = new PageRenderer(app, options);
+            new PageRenderer(app, options);
 
             // Selectively load search index creation.
             if (options.search) { new SearchIndexPackr(app, options); }

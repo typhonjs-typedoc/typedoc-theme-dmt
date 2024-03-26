@@ -23,7 +23,7 @@ export function scrollActivation()
    const navContainerEl = globalThis.document.querySelector('div.dmt-navigation-content');
 
    // Direct focus target / will be null when not on page.
-   const onThisPageInnerEl = globalThis.document.querySelector('details.tsd-page-navigation .tsd-accordion-details');1
+   const onThisPageInnerEl = globalThis.document.querySelector('details.tsd-page-navigation .tsd-accordion-details');
 
    // Ambient focus target for colContentEl.
    const mainContainerEl = globalThis.document.querySelector('div.container.container-main');

@@ -43,7 +43,7 @@ export class NavigationState
       const operation = (entry) =>
       {
          if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true); }
-      }
+      };
 
       const result = this.#searchTree(pathURL, operation);
 
@@ -65,7 +65,7 @@ export class NavigationState
       const operation = (entry) =>
       {
          if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, state); }
-      }
+      };
 
       this.#walkTreeFrom(operation, fromEntry);
    }
@@ -143,8 +143,8 @@ export class NavigationState
       // Sets entry session storage to true / opened for all entry tree nodes from the path URL given.
       const operation = (entry) =>
       {
-         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true) }
-      }
+         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true); }
+      };
 
       return this.#searchTree(pathURL, operation);
    }
@@ -170,7 +170,7 @@ export class NavigationState
          // Pre-create the session storage stores as TJSSvgFolder doesn't render hidden child content. This allows
          // the `NavigationBar` component access to all stores immediately.
          dmtSessionStorage.getStore(entry.storageKey, false);
-      }
+      };
 
       this.#walkTree(operation);
 
@@ -211,7 +211,7 @@ export class NavigationState
     *
     * @param {string}   hashFragment - Target hash fragment.
     */
-   #scrollContentToHash(hashFragment)
+   #scrollContentToHash(hashFragment) // eslint-disable-line no-unused-vars
    {
       // if (typeof hashFragment !== 'string') { return; }
       //
