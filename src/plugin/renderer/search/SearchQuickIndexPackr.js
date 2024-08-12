@@ -24,7 +24,7 @@ export class SearchQuickIndexPackr
    {
       this.#app = app;
 
-      this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this);
+      this.#app.renderer.on(RendererEvent.BEGIN, this.#onRendererBegin.bind(this), -100);
    }
 
    /**
@@ -34,8 +34,6 @@ export class SearchQuickIndexPackr
     */
    #onRendererBegin(event)
    {
-      if (event.isDefaultPrevented) { return; }
-
       const urlMappings = this.#app.renderer.theme.getUrls(event.project);
 
       /**

@@ -33,7 +33,7 @@ export function load(app)
 {
    ThemeOptions.addDeclarations(app);
 
-   app.once(Application.EVENT_BOOTSTRAP_END, () =>
+   app.on(Application.EVENT_BOOTSTRAP_END, () =>
    {
       if ('default-modern' === app.options.getValue('theme'))
       {
@@ -41,20 +41,23 @@ export function load(app)
          ThemeOptions.adjustDefaultOptions(app);
 
          // Initialize the PageRenderer in the Converter event begin to parse options before conversion.
-         app.converter.once(Converter.EVENT_BEGIN, () =>
+         app.converter.on(Converter.EVENT_BEGIN, () =>
          {
             const options = new ThemeOptions(app);
 
             // Make the `dmt` sub-folder on `assets`.
-            app.renderer.once(RendererEvent.BEGIN, (event) => fs.mkdirSync(path.join(event.outputDirectory, 'assets',
+            app.renderer.on(RendererEvent.BEGIN, (event) => fs.mkdirSync(path.join(event.outputDirectory, 'assets',
              'dmt'), { recursive: true }));
 
             // At the end of rendering generate the compressed global component data.
-            app.renderer.once(RendererEvent.END, (event) => GlobalResources.build(event, app, options));
+            app.renderer.on(RendererEvent.END, (event) => GlobalResources.build(event, app, options), -100);
 
+            // TODO: TYPEDOC 0.26 CHANGES / REMOVE - `removeComponent` no longer available.
+            // ------------------------------------------
             // Remove unused default theme components.
-            app.renderer.removeComponent('javascript-index');
-            app.renderer.removeComponent('navigation-tree');
+            // app.renderer.removeComponent('javascript-index');
+            // app.renderer.removeComponent('navigation-tree');
+            // ------------------------------------------
 
             // Add DMT components.
             new PageRenderer(app, options);

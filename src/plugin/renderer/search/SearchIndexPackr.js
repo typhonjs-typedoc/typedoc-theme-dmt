@@ -9,6 +9,7 @@ import {
    IndexEvent,
    RendererEvent,
    DeclarationReflection,
+   DocumentReflection,
    ProjectReflection,
    ReflectionKind }        from 'typedoc';
 
@@ -37,7 +38,7 @@ export class SearchIndexPackr
    {
       this.#app = app;
 
-      this.#app.renderer.once(RendererEvent.BEGIN, this.#onRendererBegin, this);
+      this.#app.renderer.on(RendererEvent.BEGIN, this.#onRendererBegin.bind(this), -100);
 
       this.#searchInComments = this.#app.options.getValue('searchInComments');
       this.#searchFullName = options.search.fullName;
@@ -50,21 +51,18 @@ export class SearchIndexPackr
     */
    #onRendererBegin(event)
    {
-      if (event.isDefaultPrevented) { return; }
-
       /** @type {SearchDocument[]} */
       const rows = [];
 
-      /** @type {DeclarationReflection[]} */
+      /** @type {(DeclarationReflection | DocumentReflection)[]} */
       const initialSearchResults = Object.values(event.project.reflections).filter((refl) =>
       {
-         return refl instanceof DeclarationReflection && refl.url && refl.name && !refl.flags.isExternal;
+         return (refl instanceof DeclarationReflection || refl instanceof DocumentReflection) && refl.url &&
+          refl.name && !refl.flags.isExternal;
       });
 
-      const indexEvent = new IndexEvent(IndexEvent.PREPARE_INDEX, initialSearchResults);
-      this.#app.renderer.trigger(indexEvent);
-
-      if (indexEvent.isDefaultPrevented) { return; }
+      const indexEvent = new IndexEvent(initialSearchResults);
+      this.#app.renderer.trigger(IndexEvent.PREPARE_INDEX, indexEvent);
 
       // Custom trimmer function that allows leading `#` and `@`.
       const customTrimmer = function(token)

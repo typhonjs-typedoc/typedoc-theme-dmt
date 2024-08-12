@@ -24,7 +24,7 @@ export class PageRenderer
       this.#app = app;
       this.#options = options;
 
-      this.#app.renderer.on(PageEvent.END, this.#handlePageEnd, this);
+      this.#app.renderer.on(PageEvent.END, this.#handlePageEnd.bind(this));
    }
 
    /**
