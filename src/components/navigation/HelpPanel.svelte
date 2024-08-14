@@ -8,10 +8,9 @@
    export let moduleIsPackage = false;
 
    /** @type {import('svelte/store').Writable<number>} */
-   export let storeTopLevelNodes = void 0;
+   export let storeTopLevelNodeCount = void 0;
 
-   /** @type {object} */
-   const ReflectionKind = getContext('#ReflectionKind');
+   const { ReflectionKind } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
    /** @type {import('svelte/store').Writable<boolean>} */
    const storeSettingAnimate = getContext('#storeSettingAnimate');
@@ -43,14 +42,14 @@
 
    <span class=title>Keyboard Shortcuts:</span>
    <span><i class=key>Alt + C</i>Focus main content</span>
-   {#if $storeTopLevelNodes > 0}<span><i class=key>Alt + E</i>(Nav) open / close all</span>{/if}
+   {#if $storeTopLevelNodeCount > 0}<span><i class=key>Alt + E</i>(Nav) open / close all</span>{/if}
    <span><i class=key>Alt + H</i>Open / close help</span>
    <span><i class=key>Alt + I</i>Go to home / index page</span>
    <span><i class=key>Alt + N</i>(Nav) focus selected</span>
    {#if hasModulesIndex}<span><i class=key>Alt + M</i>Go to {moduleIndexLabel} page</span>{/if}
    <span><i class=key>Alt + O</i>Focus "On This Page"</span>
    <span><i class=key>Alt + S</i>Activate search</span>
-   {#if $storeTopLevelNodes > 0}<span><i class=key>Alt</i>Press when opening / closing folders to open / close all child folders.</span>{/if}
+   {#if $storeTopLevelNodeCount > 0}<span><i class=key>Alt</i>Press when opening / closing folders to open / close all child folders.</span>{/if}
 </div>
 
 <style>

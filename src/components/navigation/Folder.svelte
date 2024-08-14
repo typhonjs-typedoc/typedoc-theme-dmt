@@ -16,14 +16,14 @@
 
    export let parentIcon = false;
 
-   const { dmtSessionStorage, state } = /** @type {NavigationData} */ getContext('#navigationData');
+   const { navModuleIcon } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   const navModuleIcon = getContext('#navModuleIcon');
+   const treeState = /** @type {TreeState} */ getContext('#treeState');
    const storeSettingAnimate = getContext('#storeSettingAnimate');
 
    const storageKey = entry.storageKey;
 
-   const store = storageKey ? dmtSessionStorage.getStore(storageKey, false) : void 0;
+   const store = storageKey ? treeState.sessionStorage.getStore(storageKey, false) : void 0;
 
    const removeIcon = !navModuleIcon && (entry.kind === void 0 || entry.kind === 2);
 
@@ -48,7 +48,7 @@
     */
    function onClose(data)
    {
-      if (data?.event?.altKey) { state.setChildFolderState(entry, false); }
+      if (data?.event?.altKey) { treeState.setChildFolderState(entry, false); }
    }
 
    /**
@@ -58,7 +58,7 @@
     */
    function onOpen(data)
    {
-      if (data?.event?.altKey) { state.setChildFolderState(entry, true); }
+      if (data?.event?.altKey) { treeState.setChildFolderState(entry, true); }
    }
 </script>
 

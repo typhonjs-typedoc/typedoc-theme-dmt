@@ -4,7 +4,7 @@ import {
 
 import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
-import { NavigationState }    from './NavigationState.js';
+import { TreeState }    from './TreeState.js';
 
 /**
  * @implements {import('./types').INavigationData}
@@ -40,13 +40,6 @@ export class NavigationData
    storeCurrentPathURL;
 
    /**
-    * The navigation session storage store manager.
-    *
-    * @type {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
-    */
-   dmtSessionStorage;
-
-   /**
     * The navigation index.
     *
     * @type {import('./types').DMTNavigationElement[]}
@@ -60,24 +53,12 @@ export class NavigationData
     */
    initialPathURL;
 
-   /**
-    * Navigation state control.
-    *
-    * @type {import('./NavigationState').NavigationState}
-    */
    state;
 
    /**
     * @type {string}
     */
    storagePrepend;
-
-   /**
-    * Whether the help panel is open / closed.
-    *
-    * @type {import('svelte/store').Writable<boolean>}
-    */
-   storeHelpPanelOpen = writable(false);
 
    /**
     * A derived store with the open / close state of all session stores.
@@ -87,11 +68,18 @@ export class NavigationData
    storeSessionAllOpen;
 
    /**
-    * Indicates the count of top level nodes if there are entries with children / tree nodes present.
+    * Markdown document tree state control.
     *
-    * @type {import('svelte/store').Writable<number>}
+    * @type {import('./TreeState.js').TreeState}
     */
-   storeTopLevelNodes = writable(0);
+   treeStateMarkdown;
+
+   /**
+    * Source tree state control.
+    *
+    * @type {import('./TreeState.js').TreeState}
+    */
+   treeStateSource;
 
    /**
     * @param {DMTComponentData}  dmtComponentData - Global component data.
@@ -101,17 +89,17 @@ export class NavigationData
       this.basePath = dmtComponentData.basePath;
       this.baseURL = dmtComponentData.baseURL;
       this.initialPathURL = dmtComponentData.initialPathURL;
-      this.index = dmtComponentData.navigationIndex;
+      this.navigationIndex = dmtComponentData.navigationIndex;
+      this.markdownIndex = dmtComponentData.markdownIndex;
 
       // Retrieve the storage prepend string from global DMT options or use a default key.
       this.storagePrepend = dmtComponentData.storagePrepend ?? 'docs-unnamed';
 
-      this.dmtSessionStorage = new TJSSessionStorage();
-
       this.currentPathURL = this.initialPathURL;
       this.storeCurrentPathURL = writable(this.initialPathURL);
 
-      this.state = new NavigationState(this);
+      this.treeStateMarkdown = new TreeState(this, this.markdownIndex);
+      this.treeStateSource = new TreeState(this, this.navigationIndex);
 
       this.#createDerivedStores();
    }
@@ -123,7 +111,7 @@ export class NavigationData
    {
       // Create a derived store from all session storage stores; on any update reduce all values and set state
       // to whether all folders are opened or not.
-      this.storeSessionAllOpen = derived([...this.dmtSessionStorage.stores()],
+      this.storeSessionAllOpen = derived([...this.treeStateSource.sessionStorage.stores()],
        (stores, set) => set(!!stores.reduce((previous, current) => previous & current, true)));
    }
 
@@ -134,7 +122,7 @@ export class NavigationData
     */
    setStoresAllOpen(state)
    {
-      for (const store of this.dmtSessionStorage.stores()) { store.set(state); }
+      for (const store of this.treeStateSource.sessionStorage.stores()) { store.set(state); }
    }
 
    /**

@@ -1,29 +1,75 @@
+import { writable }           from 'svelte/store';
+
+import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
+
 /**
  * Provides the ability to walk the navigation index and manage state for initial opened state for entries and ensuring
  * opened state when URL hash changes occur.
  */
-export class NavigationState
+export class TreeState
 {
+   /** @type {import('typedoc').NavigationElement[]} */
+   #elementIndex;
+
    /** @type {import('./NavigationData').NavigationData} */
    #navData;
 
    #onHashchangeBound;
 
    /**
-    * @param {import('./NavigationData').NavigationData} navData - Navigation data.
+    * The navigation session storage store manager.
+    *
+    * @type {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
     */
-   constructor(navData)
+   #sessionStorage;
+
+   /**
+    * Indicates the count of top level nodes if there are entries with children / tree nodes present.
+    *
+    * @type {Writable<number>}
+    */
+   #storeTopLevelNodeCount = writable(0);
+
+   /**
+    * @param {import('./NavigationData').NavigationData} navData - Navigation data instance.
+    *
+    * @param {import('typedoc').NavigationElement[]} elementIndex - Navigation element data.
+    */
+   constructor(navData, elementIndex)
    {
       this.#navData = navData;
+      this.#elementIndex = elementIndex;
+
+      this.#sessionStorage = new TJSSessionStorage();
       this.#onHashchangeBound = this.#onHashchange.bind(this);
 
       this.#setInitialState();
    }
 
    /**
+    * @returns {import('typedoc').NavigationElement[]}
+    */
+   get elementIndex() { return this.#elementIndex }
+
+   /**
+    * @returns {boolean} If there is navigation element data available.
+    */
+   get hasData() { return this.#elementIndex?.length > 0 }
+
+   /**
     * @returns {Function} Window hashchange listener.
     */
    get onHashchange() { return this.#onHashchangeBound; }
+
+   /**
+    * @returns {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
+    */
+   get sessionStorage() { return this.#sessionStorage; }
+
+   /**
+    * @returns {Writable<number>}
+    */
+   get storeTopLevelNodeCount() { return this.#storeTopLevelNodeCount; }
 
    /**
     * Finds the child nodes that match the given path URL by a depth first search and recursively finds any associated
@@ -42,7 +88,7 @@ export class NavigationState
       // Sets `opened` for all entry tree nodes from the path URL given.
       const operation = (entry) =>
       {
-         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true); }
+         if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, true); }
       };
 
       const result = this.#searchTree(pathURL, operation);
@@ -64,7 +110,7 @@ export class NavigationState
    {
       const operation = (entry) =>
       {
-         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, state); }
+         if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, state); }
       };
 
       this.#walkTreeFrom(operation, fromEntry);
@@ -143,7 +189,7 @@ export class NavigationState
       // Sets entry session storage to true / opened for all entry tree nodes from the path URL given.
       const operation = (entry) =>
       {
-         if (entry.storageKey) { this.#navData.dmtSessionStorage.setItem(entry.storageKey, true); }
+         if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, true); }
       };
 
       return this.#searchTree(pathURL, operation);
@@ -154,7 +200,6 @@ export class NavigationState
     */
    #initializeTree()
    {
-      const dmtSessionStorage = this.#navData.dmtSessionStorage;
       const storagePrepend = this.#navData.storagePrepend;
 
       let topLevelNodes = 0;
@@ -169,12 +214,12 @@ export class NavigationState
 
          // Pre-create the session storage stores as TJSSvgFolder doesn't render hidden child content. This allows
          // the `NavigationBar` component access to all stores immediately.
-         dmtSessionStorage.getStore(entry.storageKey, false);
+         this.#sessionStorage.getStore(entry.storageKey, false);
       };
 
       this.#walkTree(operation);
 
-      this.#navData.storeTopLevelNodes.set(topLevelNodes);
+      this.#storeTopLevelNodeCount.set(topLevelNodes);
    }
 
    /**
@@ -277,10 +322,10 @@ export class NavigationState
     */
    #searchTree(pathURL, operation)
    {
-      if (!this.#navData.index?.length) { return false; }
+      if (!this.#elementIndex?.length) { return false; }
 
       // Scan all top level entries first.
-      for (const entry of this.#navData.index)
+      for (const entry of this.#elementIndex)
       {
          if (Array.isArray(entry.children)) { continue; }
 
@@ -289,7 +334,7 @@ export class NavigationState
       }
 
       // Depth first search for path setting a new variable `opened` for all leaves up to path entry.
-      for (const entry of this.#navData.index)
+      for (const entry of this.#elementIndex)
       {
          if (!Array.isArray(entry.children)) { continue; }
 
@@ -365,7 +410,7 @@ export class NavigationState
    #walkTree(operation)
    {
       // Depth first search for path setting a new variable `opened` for all leaves up to path entry.
-      for (const entry of this.#navData.index)
+      for (const entry of this.#elementIndex)
       {
          if (!Array.isArray(entry.children)) { continue; }
 

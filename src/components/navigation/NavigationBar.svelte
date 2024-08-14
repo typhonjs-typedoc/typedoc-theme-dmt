@@ -1,16 +1,9 @@
 <script>
-   import { setContext }      from 'svelte';
-   import { get }             from 'svelte/store';
+   import { getContext }   from 'svelte';
 
-   import HelpPanel           from './HelpPanel.svelte';
+   import HelpPanel        from './HelpPanel.svelte';
 
-   import { localConstants }  from "#constants";
-
-   /** @type {DMTComponentData} */
-   export let dmtComponentData = void 0;
-
-   setContext('#ReflectionKind', dmtComponentData.ReflectionKind);
-   setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
+   const dmtComponentData = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
    const {
       hasModulesIndex,
@@ -18,16 +11,24 @@
       moduleIsPackage } = dmtComponentData;
 
    const {
-      storeHelpPanelOpen,
-      storeTopLevelNodes } = navigationData;
+      treeStateSource } = navigationData;
+
+   const storeTopLevelNodeCount = treeStateSource.storeTopLevelNodeCount;
 
    const moduleIndexLabel = moduleIsPackage ? 'Package Index' : 'Module Index';
 
-   $: helpTitle = $storeHelpPanelOpen ? 'Close Help' : 'Open Help';
+   /**
+    * Whether the help panel is open / closed.
+    *
+    * @type {boolean}
+    */
+   let helpPanelOpen = false;
+
+   $: helpTitle = helpPanelOpen ? 'Close Help' : 'Open Help';
 
    function onClickHelp()
    {
-      $storeHelpPanelOpen = !get(storeHelpPanelOpen);
+      helpPanelOpen = !helpPanelOpen;
    }
 
    /**
@@ -46,7 +47,7 @@
 </script>
 
 <section>
-   {#if $storeTopLevelNodes > 0}
+   {#if $storeTopLevelNodeCount > 0}
       <svg style="display: none;">
          <symbol id=dmt-double-icon-arrow viewBox="0 0 1024 1024">
             <path d="M517.408 993.568l-0.448 0.256c-18.592-0.032-37.152-7.168-51.328-21.344L51.392 558.24c-27.904-27.904-28.32-74.624 0.224-103.2 28.768-28.768 74.784-28.672 103.2-0.224l362.272 362.272L879.36 454.816c27.904-27.904 74.624-28.32 103.2 0.224 28.768 28.768 28.672 74.784 0.224 103.2l-414.24 414.24c-13.92 13.92-32.512 20.992-51.2 21.056z m0-397.408l-0.448 0.256c-18.592-0.032-37.152-7.168-51.328-21.344l-414.24-414.24c-27.904-27.904-28.32-74.624 0.224-103.2 28.768-28.768 74.784-28.672 103.2-0.224L517.088 419.68 879.36 57.408c27.904-27.904 74.624-28.32 103.2 0.224 28.768 28.768 28.672 74.784 0.224 103.2l-414.24 414.24c-13.92 13.92-32.512 20.992-51.2 21.056z" />
@@ -94,8 +95,8 @@
       </a>
    {/if}
 
-   {#if $storeHelpPanelOpen}
-      <HelpPanel {hasModulesIndex} {moduleIsPackage} {storeTopLevelNodes} />
+   {#if helpPanelOpen}
+      <HelpPanel {hasModulesIndex} {moduleIsPackage} {storeTopLevelNodeCount} />
    {/if}
 </section>
 

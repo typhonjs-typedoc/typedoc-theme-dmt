@@ -20,7 +20,9 @@
     */
    export let storageKey = null;
 
-   const { basePath, storeCurrentPathURL } = /** @type {NavigationData} */ getContext('#navigationData');
+   const dmtComponentData = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+
+   const { basePath, storeCurrentPathURL } = dmtComponentData.navigationData;
 
    const icon = !removeIcon && entry.kind ? entry.kind : void 0;
 
@@ -60,6 +62,10 @@
 <style>
    a {
       width: fit-content;
+   }
+
+   a, span {
+      margin-right: 0.25rem;
    }
 
    svg, span {
