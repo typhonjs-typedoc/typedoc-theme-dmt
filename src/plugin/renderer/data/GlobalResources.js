@@ -52,13 +52,17 @@ export class GlobalResources
 
       const defaultNavIndex = app.renderer.theme?.getNavigation?.(event.project) ?? [];
 
+      const { navigationIndex, markdownIndex } = NavigationIndex.transform(defaultNavIndex, options,
+       event?.project?.packageName);
+
       const data = {
          hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
+         markdownIndex,
          moduleIsPackage: options.moduleRemap.isPackage,
          navModuleIcon: options.navigation.moduleIcon,
-         navigationIndex: NavigationIndex.transform(defaultNavIndex, options, event?.project?.packageName),
+         navigationIndex,
          navigationLinks: app.options.getValue('navigationLinks'),
          ReflectionKind: this.#getReflectionKind(options),
          search: options.search,
