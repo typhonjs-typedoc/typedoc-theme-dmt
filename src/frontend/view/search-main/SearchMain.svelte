@@ -1,14 +1,14 @@
 <script>
-   import { setContext }      from 'svelte';
-   import { writable }        from 'svelte/store';
+   import {
+      getContext,
+      setContext }      from 'svelte';
+   import { writable }  from 'svelte/store';
 
-   import SearchButton        from './SearchButton.svelte';
-   import SearchField         from './SearchField.svelte';
-
-   import { localConstants }  from '#constants';
+   import SearchButton  from './SearchButton.svelte';
+   import SearchField   from './SearchField.svelte';
 
    /** @type {DMTComponentData} */
-   export let dmtComponentData = void 0;
+   const dmtComponentData = getContext('#dmtComponentData');
 
    /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = writable(false);
@@ -18,7 +18,6 @@
    setContext('#searchFullName', dmtComponentData.search.fullName)
    setContext('#searchLimit', dmtComponentData.search?.limit ?? 10)
    setContext('#storeVisible', storeVisible)
-   setContext('#storeSettingAnimate', dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
 
    /**
     * Open search when <Alt-s> is pressed.

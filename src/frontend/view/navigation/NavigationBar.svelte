@@ -6,9 +6,11 @@
    /** @type {DMTComponentData} */
    const dmtComponentData = getContext('#dmtComponentData');
 
+   /** @type {NavigationData} */
+   const navigationData = getContext('#dmtNavigationData');
+
    const {
       hasModulesIndex,
-      navigationData,
       moduleIsPackage } = dmtComponentData;
 
    const storeTopLevelNodeCount = navigationData.treeState.source.storeTopLevelNodeCount;

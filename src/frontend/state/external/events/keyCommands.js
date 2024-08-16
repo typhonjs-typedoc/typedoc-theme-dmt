@@ -10,12 +10,10 @@ import { A11yHelper }         from '#runtime/util/browser';
  * - <Alt-N>: Scroll to current page in navigation panel and focus it.
  * - <Alt-O>: If available, focus first anchor in `On This Page` container.
  *
- * @param {DMTComponentData} dmtComponentData - NavigationData instance.
+ * @param {NavigationData} navigationData - NavigationData instance.
  */
-export function keyCommands(dmtComponentData)
+export function keyCommands(navigationData)
 {
-   const { hasModulesIndex, navigationData } = dmtComponentData;
-
    // Direct focus target.
    globalThis.document.addEventListener('keydown', (event) =>
    {
@@ -53,7 +51,7 @@ export function keyCommands(dmtComponentData)
             break;
 
          case 'KeyM':
-            if (hasModulesIndex)
+            if (navigationData.hasModulesIndex)
             {
                window.location.href = `${navigationData.baseURL}modules.html`;
             }

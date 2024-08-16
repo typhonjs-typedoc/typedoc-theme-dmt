@@ -33,8 +33,8 @@ export class TreeStateControl
       // Retrieve the storage prepend string from global DMT options or use a default key.
       const storagePrepend = dmtComponentData.storagePrepend ?? 'docs-unnamed';
 
-      this.#treeMarkdown = new TreeState(navData, dmtComponentData.markdownIndex, `${storagePrepend}-markdown`);
-      this.#treeSource = new TreeState(navData, dmtComponentData.navigationIndex, `${storagePrepend}-source`);
+      this.#treeMarkdown = new TreeState(navData, dmtComponentData.markdownIndex ?? [], `${storagePrepend}-markdown`);
+      this.#treeSource = new TreeState(navData, dmtComponentData.navigationIndex ?? [], `${storagePrepend}-source`);
    }
 
    /**

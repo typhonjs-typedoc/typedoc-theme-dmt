@@ -1,6 +1,8 @@
 <script>
+   import { getContext }   from 'svelte';
+
    /** @type {DMTComponentData} */
-   export let dmtComponentData = void 0;
+   const dmtComponentData = getContext('#dmtComponentData');
 
    const { dmtURL } = dmtComponentData;
 

@@ -6,12 +6,11 @@ import {
    keyCommands,
    scrollActivation }            from './state/external/events';
 
-import { NavigationData }        from './state/navigation/NavigationData.js';
-
 import {
    loadMainSearchData,
    // loadQuickSearchData, // TODO: Implement SearchQuick
-   DMTLocalStorage }       from '#state/frontend';
+   DMTLocalStorage,
+   NavigationData }              from '#state/frontend';
 
 import {
    DMTSettings,
@@ -19,6 +18,8 @@ import {
    SearchMain,
    // SearchQuick,
    Toolbar }                     from './view';
+
+import { localConstants }        from "#constants";
 
 // Loads compressed global component data.
 import './dmt-component-data.js';
@@ -42,18 +43,23 @@ dmtComponentData.initialPathURL = globalThis.location.href.replace(dmtComponentD
 const depth = (dmtComponentData.initialPathURL.match(/\//) ?? []).length;
 dmtComponentData.basePath = '../'.repeat(depth);
 
-// Create navigation data / state.
-dmtComponentData.navigationData = new NavigationData(dmtComponentData);
-
-dmtComponentData.dmtLocalStorage = new DMTLocalStorage();
+const dmtLocalStorage = new DMTLocalStorage();
+const navigationData = new NavigationData(dmtComponentData);
 
 // Mount Svelte components -------------------------------------------------------------------------------------------
+
+// Provides the main context for all Svelte components.
+const componentContext = new Map();
+componentContext.set('#dmtComponentData', dmtComponentData);
+componentContext.set('#dmtLocalStorage', dmtLocalStorage);
+componentContext.set('#dmtNavigationData', navigationData);
+componentContext.set('#dmtStoreSettingAnimate', dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
 
 // Must initialize first so that `animate` local storage initially is configured from OS / browser
 // `prefersReducedMotion` state.
 const dmtSettings = new DMTSettings({
    target: document.querySelector('.tsd-navigation.settings .tsd-accordion-details'),
-   props: { dmtComponentData }
+   context: componentContext
 });
 
 // Remove the static sidebar links as DMT navigation includes the links.
@@ -69,12 +75,12 @@ if (navEl && navEl.firstChild)
 
 const navigation = new Navigation({
    target: document.querySelector('nav.tsd-navigation'),
-   props: { dmtComponentData }
+   context: componentContext
 });
 
 const toolbar = new Toolbar({
    target: document.querySelector('#dmt-toolbar'),
-   props: { dmtComponentData }
+   context: componentContext
 });
 
 // Stores references to DMT Svelte components.
@@ -90,7 +96,7 @@ if (dmtComponentData.search)
    loadMainSearchData();
    globalThis.dmtComponents.searchMain = new SearchMain({
       target: document.querySelector('#dmt-search-main'),
-      props: { dmtComponentData }
+      context: componentContext
    });
 }
 
@@ -107,7 +113,7 @@ if (dmtComponentData.search)
 // -------------------------------------------------------------------------------------------------------------------
 
 // Provides global keyboard commands.
-keyCommands(dmtComponentData);
+keyCommands(navigationData);
 
 // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
 // element allowing intuitive scrolling.

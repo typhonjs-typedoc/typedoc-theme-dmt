@@ -13,7 +13,7 @@
    const storeCurrentId = getContext('#storeCurrentId');
 
    /** @type {import('svelte/store').Writable<boolean>} */
-   const storeSettingAnimate = getContext('#storeSettingAnimate');
+   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
 
    /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = getContext('#storeVisible');

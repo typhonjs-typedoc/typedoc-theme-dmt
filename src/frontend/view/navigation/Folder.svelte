@@ -18,8 +18,11 @@
 
    const { navModuleIcon } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   const treeState = /** @type {TreeState} */ getContext('#treeState');
-   const storeSettingAnimate = getContext('#storeSettingAnimate');
+   /** @type {TreeState} */
+   const treeState = getContext('#treeState');
+
+   /** @type {import('svelte/store').Writable<boolean>} */
+   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
 
    const storageKey = entry.storageKey;
 

@@ -18,8 +18,6 @@ import type {
    NavigationElement,
    ReflectionKind }                    from 'typedoc';
 
-import type { INavigationData }        from '#types/frontend';
-
 export type DMTComponentData = {
    /**
     * Relative path to the documentation root from current page.
@@ -30,11 +28,6 @@ export type DMTComponentData = {
     * Full base URL to documentation root.
     */
    baseURL: string;
-
-   /**
-    * Local storage store manager.
-    */
-   dmtLocalStorage: TJSLocalStorage;
 
    /**
     * Full URL to assets/dmt.
@@ -75,11 +68,6 @@ export type DMTComponentData = {
     * Default navigation links
     */
    navigationLinks?: Record<string, string>;
-
-   /**
-    * NavigationData instance.
-    */
-   navigationData: INavigationData;
 
    /**
     * Default navigation index.

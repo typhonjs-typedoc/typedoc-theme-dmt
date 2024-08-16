@@ -5,7 +5,7 @@ import {
 import { TreeStateControl }   from './TreeStateControl.js';
 
 /**
- * @implements {import('#types/frontend').INavigationData}
+ * Provides state and control for all navigation components.
  */
 export class NavigationData
 {
@@ -29,6 +29,20 @@ export class NavigationData
     * @type {string}
     */
    #currentPathURL;
+
+   /**
+    * Indicates that a root `modules.html` is generated.
+    *
+    * @type {boolean}
+    */
+   #hasModulesIndex;
+
+   /**
+    * When true SVG icons for all navigation module entries are displayed.
+    *
+    * @type {boolean}
+    */
+   #navModuleIcon;
 
    /**
     * The current tree state entry path URL store.
@@ -70,7 +84,9 @@ export class NavigationData
    {
       this.#basePath = dmtComponentData.basePath;
       this.#baseURL = dmtComponentData.baseURL;
+      this.#hasModulesIndex = dmtComponentData.hasModulesIndex;
       this.#initialPathURL = dmtComponentData.initialPathURL;
+      this.#navModuleIcon = dmtComponentData.navModuleIcon;
 
       this.#currentPathURL = this.#initialPathURL;
 
@@ -107,11 +123,27 @@ export class NavigationData
    }
 
    /**
+    * @returns {boolean} Indicates that a root `modules.html` is generated.
+    */
+   get hasModulesIndex()
+   {
+      return this.#hasModulesIndex;
+   }
+
+   /**
     * @returns {string} The initial path URL.
     */
    get initialPathURL()
    {
       return this.#initialPathURL;
+   }
+
+   /**
+    * @returns {boolean} When true SVG icons for all navigation module entries are displayed.
+    */
+   get navModuleIcon()
+   {
+      return this.#navModuleIcon;
    }
 
    /**

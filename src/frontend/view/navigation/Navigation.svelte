@@ -1,22 +1,12 @@
 <script>
-   import { setContext }         from 'svelte';
+   import { getContext }   from 'svelte';
 
-   import NavigationBar          from './NavigationBar.svelte';
-   import SidebarLinks           from './SidebarLinks.svelte';
-   import NavigationTree         from './NavigationTree.svelte';
-
-   import { localConstants }     from '#constants';
-
-   /** @type {DMTComponentData} */
-   export let dmtComponentData = void 0;
+   import NavigationBar    from './NavigationBar.svelte';
+   import SidebarLinks     from './SidebarLinks.svelte';
+   import NavigationTree   from './NavigationTree.svelte';
 
    /** @type {NavigationData} */
-   const { navigationData } = dmtComponentData;
-
-   const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate);
-
-   setContext('#dmtComponentData', dmtComponentData);
-   setContext('#storeSettingAnimate', storeSettingsAnimate);
+   const navigationData = getContext('#dmtNavigationData');
 </script>
 
 <svelte:options accessors={true}/>

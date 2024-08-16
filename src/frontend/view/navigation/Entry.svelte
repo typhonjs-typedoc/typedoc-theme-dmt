@@ -20,9 +20,7 @@
     */
    export let storageKey = null;
 
-   const dmtComponentData = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
-
-   const { basePath, storeCurrentPathURL } = dmtComponentData.navigationData;
+   const { basePath, storeCurrentPathURL } = /** @type {NavigationData} */ getContext('#dmtNavigationData');
 
    const icon = !removeIcon && entry.kind ? entry.kind : void 0;
 

@@ -13,7 +13,7 @@
    const { ReflectionKind } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
    /** @type {import('svelte/store').Writable<boolean>} */
-   const storeSettingAnimate = getContext('#storeSettingAnimate');
+   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
 
    const animateTransition = $storeSettingAnimate ? slideFade : () => void 0;
 

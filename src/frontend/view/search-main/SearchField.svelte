@@ -37,7 +37,7 @@
    const storeVisible = getContext('#storeVisible');
 
    /** @type {import('svelte/store').Writable<boolean>} */
-   const storeSettingAnimate = getContext('#storeSettingAnimate');
+   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
 
    /**
     * Stores the input query string from the main search input element.

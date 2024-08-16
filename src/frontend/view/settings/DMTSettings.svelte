@@ -1,15 +1,10 @@
 <script>
-   import { A11yHelper }      from '#runtime/util/browser';
+   import { getContext }      from 'svelte';
 
    import LabeledCheckbox     from './LabeledCheckbox.svelte';
 
-   import { localConstants }  from '#constants';
-
-   /** @type {DMTComponentData} */
-   export let dmtComponentData = void 0;
-
-   const storeAnimate = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate,
-    !A11yHelper.prefersReducedMotion);
+   /** @type {import('svelte/store').Writable<boolean>} */
+   const storeAnimate = getContext('#dmtStoreSettingAnimate');
 </script>
 
 <section>
