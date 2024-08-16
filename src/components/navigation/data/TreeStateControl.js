@@ -19,7 +19,7 @@ export class TreeStateControl
     *
     * @type {TreeState}
     */
-   #treeSource
+   #treeSource;
 
    /**
     * @param {NavigationData} navData - NavigationData instance.
@@ -38,7 +38,7 @@ export class TreeStateControl
    }
 
    /**
-    * @returns {TreeState}
+    * @returns {TreeState} The Markdown document tree state.
     */
    get markdown()
    {
@@ -46,7 +46,7 @@ export class TreeStateControl
    }
 
    /**
-    * @returns {TreeState}
+    * @returns {TreeState} The source code tree state.
     */
    get source()
    {
@@ -58,7 +58,7 @@ export class TreeStateControl
     *
     * @param {object} [options] - Options.
     *
-    * @param {boolean}  [focus=false] - Attempt to manually focus the current path entry.
+    * @param {boolean}  [options.focus=false] - Attempt to manually focus the current path entry.
     */
    ensureCurrentPath({ focus = false } = {})
    {

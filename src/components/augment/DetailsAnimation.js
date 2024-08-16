@@ -9,16 +9,24 @@ export class DetailsAnimation
 {
    #actionUpdateFn = [];
 
-   constructor()
+   /**
+    * @param {import('svelte/store').Writable<boolean>}  storeSettingsAnimate - Animation setting store.
+    */
+   constructor(storeSettingsAnimate)
    {
-      const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
-       'details.tsd-index-accordion');
-
-      // Add the toggleDetails actions to all default theme detail elements storing the update action.
-      for (const detailEl of detailElList)
+      globalThis.requestAnimationFrame(() =>
       {
-         this.#actionUpdateFn.push(toggleDetails(detailEl, { store: writable(detailEl.open) }).update);
-      }
+         const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
+          'details.tsd-accordion');
+
+         // Add the toggleDetails actions to all default theme detail elements storing the update action.
+         for (const detailEl of detailElList)
+         {
+            this.#actionUpdateFn.push(toggleDetails(detailEl, { store: writable(detailEl.open) }).update);
+         }
+
+         storeSettingsAnimate.subscribe((enabled) => this.#setEnabled(enabled));
+      });
    }
 
    /**
@@ -26,10 +34,10 @@ export class DetailsAnimation
     *
     * @param {boolean}  animate - Current animation state.
     */
-   setEnabled(animate)
+   #setEnabled(animate)
    {
       const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
-       'details.tsd-index-accordion');
+       'details.tsd-accordion');
 
       for (const detailEl of detailElList)
       {

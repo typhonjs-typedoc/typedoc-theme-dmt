@@ -123,7 +123,7 @@ export class NavigationData
    }
 
    /**
-    * @returns {Writable<boolean>}
+    * @returns {Writable<boolean>} The navigation bar help panel opened state store.
     */
    get storeHelpPanelOpen()
    {

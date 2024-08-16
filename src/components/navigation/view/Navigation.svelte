@@ -5,8 +5,6 @@
    import SidebarLinks           from './SidebarLinks.svelte';
    import NavigationTree         from './NavigationTree.svelte';
 
-   import { DetailsAnimation }   from './DetailsAnimation.js';
-
    import { localConstants }     from '#constants';
 
    /** @type {DMTComponentData} */
@@ -15,19 +13,10 @@
    /** @type {NavigationData} */
    const { navigationData } = dmtComponentData;
 
-   const { storeCurrentPathURL } = dmtComponentData.navigationData;
-
-   // TODO: REMOVE
-   $: console.log(`!!! DMT - Navigation.svelte - storeCurrentPathURL: `, $storeCurrentPathURL)
-
-   const detailsAnimation = new DetailsAnimation();
    const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate);
 
    setContext('#dmtComponentData', dmtComponentData);
    setContext('#storeSettingAnimate', storeSettingsAnimate);
-
-   // Handle setting animation state for default theme detail elements.
-   $: detailsAnimation.setEnabled($storeSettingsAnimate);
 </script>
 
 <svelte:options accessors={true}/>

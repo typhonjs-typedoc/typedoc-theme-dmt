@@ -2,13 +2,11 @@ import {
    inflateAndUnpack,
    inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
 
-import { TJSLocalStorage }       from '#runtime/svelte/store/web-storage';
-
 import {
    keyCommands,
    scrollActivation }            from './events';
 
-import Navigation                from './navigation/Navigation.svelte';
+import Navigation                from './navigation/view/Navigation.svelte';
 import { NavigationData }        from './navigation/data/NavigationData.js';
 
 import DMTSettings               from './settings/DMTSettings.svelte';
@@ -18,6 +16,8 @@ import Toolbar                   from './toolbar/Toolbar.svelte';
 import SearchMain                from './search-main/SearchMain.svelte';
 
 import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
+
+import { DMTLocalStorage }       from './settings/DMTLocalStorage.js';
 
 // TODO: Implement SearchQuick
 // import SearchQuick               from './search-quick/SearchQuick.svelte';
@@ -48,7 +48,7 @@ dmtComponentData.basePath = '../'.repeat(depth);
 // Create navigation data / state.
 dmtComponentData.navigationData = new NavigationData(dmtComponentData);
 
-dmtComponentData.dmtLocalStorage = new TJSLocalStorage();
+dmtComponentData.dmtLocalStorage = new DMTLocalStorage();
 
 // Mount Svelte components -------------------------------------------------------------------------------------------
 

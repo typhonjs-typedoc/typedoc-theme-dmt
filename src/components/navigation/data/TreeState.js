@@ -1,7 +1,7 @@
 import {
    derived,
    get,
-   writable}                  from 'svelte/store';
+   writable }                 from 'svelte/store';
 
 import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
@@ -68,24 +68,24 @@ export class TreeState
    }
 
    /**
-    * @returns {import('typedoc').NavigationElement[]}
+    * @returns {import('../types').DMTNavigationElement[]} The tree element index.
     */
-   get elementIndex() { return this.#elementIndex }
+   get elementIndex() { return this.#elementIndex; }
 
    /**
     * @returns {boolean} If there is navigation element data available.
     */
-   get hasData() { return this.#elementIndex?.length > 0 }
+   get hasData() { return this.#elementIndex?.length > 0; }
 
    /**
-    * @returns {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
+    * @returns {import('#runtime/svelte/store/web-storage').TJSSessionStorage} The tree folder open / close session
+    * storage instance.
     */
    get sessionStorage() { return this.#sessionStorage; }
 
    /**
-    * A derived store with the open / close state of all session stores.
-    *
-    * @returns {import('svelte/store').Readable<boolean>}
+    * @returns {import('svelte/store').Readable<boolean>} A derived store with the open / close state of all session
+    * stores.
     */
    get storeFoldersAllOpen()
    {
@@ -93,7 +93,8 @@ export class TreeState
    }
 
    /**
-    * @returns {Writable<number>}
+    * @returns {Writable<number>} Indicates the count of top level nodes if there are entries with children / tree
+    * nodes present.
     */
    get storeTopLevelNodeCount() { return this.#storeTopLevelNodeCount; }
 
@@ -195,13 +196,9 @@ export class TreeState
          const fullURLNoHash = globalThis.location.href.split('#')[0];
          const anchorURLNoHash = this.href.split('#')[0];
 
-         console.log(`!!! DMT - TreeState.js - hashAnchorClick - 0 - fullURLNoHash: `, fullURLNoHash)
-         console.log(`!!! DMT - TreeState.js - hashAnchorClick - 1 - anchorURLNoHash: `, anchorURLNoHash)
-
          // If the main URLs or hash differ then set the window location. The `onHashchange` function will trigger.
          if (fullURLNoHash !== anchorURLNoHash || globalThis.location.hash !== this.hash)
          {
-            console.log(`!!! DMT - TreeState.js - hashAnchorClick - A`)
             globalThis.location.href = this.href;
             return;
          }
@@ -211,12 +208,8 @@ export class TreeState
 
          const pathURL = this.href.replace(baseURL, '');
 
-         console.log(`!!! DMT - TreeState.js - hashAnchorClick - 2 - pathURL: `, pathURL)
-
          if (!navigationState.ensureCurrentPath(pathURL) && pathURL.includes('#'))
          {
-            console.log(`!!! DMT - TreeState.js - hashAnchorClick - B1`)
-
             // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
             // without the hash fragment.
             const match = pathURL.split('#');
@@ -224,8 +217,6 @@ export class TreeState
             // No hash URL
             if (match[0])
             {
-               console.log(`!!! DMT - TreeState.js - hashAnchorClick - B2 - match[0]: `, match[0])
-
                navigationState.ensureCurrentPath(match[0]);
             }
 
@@ -292,10 +283,8 @@ export class TreeState
     *
     * @param {HashChangeEvent}   event - A HashChange event.
     */
-   async #onHashchange(event)
+   #onHashchange(event)
    {
-      console.log(`!!! TreeState - global listener - #onHashchange`)
-
       const newPathURL = event.newURL.replace(this.#navData.baseURL, '');
 
       // Ensure any tree nodes are open for `newURLPath`.
