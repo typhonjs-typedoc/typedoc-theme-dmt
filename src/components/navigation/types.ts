@@ -19,65 +19,39 @@ export type DMTNavigationElement = NavigationElement & {
 
 export interface INavigationData {
    /**
-    * The relative path prepend for all entry path links.
-    *
-    * @type {string}
+    * @returns {string} The relative path prepend for all entry path links.
     */
-   basePath: string;
+   get basePath(): string;
 
    /**
-    * The documentation base URL.
-    *
-    * @type {string}
+    * @returns {string} The documentation base URL.
     */
-   baseURL: string;
+   get baseURL(): string;
 
    /**
-    * The current entry path URL.
-    *
-    * @type {string}
+    * @returns {string} The current tree state entry path URL.
     */
-   currentPathURL: string;
+   get currentPathURL(): string;
 
    /**
-    * The current path URL store.
-    *
-    * @type {import('svelte/store').Writable<string>}
+    * @returns {string} The initial path URL.
     */
-   storeCurrentPathURL: Writable<string>;
+   get initialPathURL(): string;
 
    /**
-    * The initial path URL.
-    *
-    * @type {string}
+    * @returns {import('svelte/store').Readable<string>} The current tree state entry path URL store.
     */
-   initialPathURL: string;
+   get storeCurrentPathURL(): Readable<string>;
 
    /**
-    * Markdown tree state control.
-    *
-    * @type {import('./data/TreeStateControl').TreeStateControl}
+    * @returns {Writable<boolean>}
     */
-   treeState: import('./data/TreeStateControl.js').TreeStateControl;
+   get storeHelpPanelOpen(): Writable<boolean>;
 
    /**
-    * A derived store with the open / close state of all session stores.
-    *
-    * @type {import('svelte/store').Readable<boolean>}
+    * @returns The tree state control.
     */
-   storeSessionAllOpen: Readable<boolean>;
-
-   /**
-    * Creates derived stores after the navigation tree / index state has been initialized.
-    */
-   createDerivedStores(): void;
-
-   /**
-    * Closes or opens all navigation folders / session store state.
-    *
-    * @param {boolean}  state - New open / close state.
-    */
-   setStoresAllOpen(state: boolean): void;
+   get treeState(): import('./data/TreeStateControl.js').TreeStateControl;
 
    /**
     * Sets the current path URL local data and store.
@@ -85,4 +59,9 @@ export interface INavigationData {
     * @param {string}   pathURL - New current path URL.
     */
    setCurrentPathURL(pathURL: string): void;
+
+   /**
+    * Swaps the help panel open state.
+    */
+   swapHelpPanelOpen(): void;
 }

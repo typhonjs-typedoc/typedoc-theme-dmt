@@ -17,6 +17,7 @@
 
    const { storeCurrentPathURL } = dmtComponentData.navigationData;
 
+   // TODO: REMOVE
    $: console.log(`!!! DMT - Navigation.svelte - storeCurrentPathURL: `, $storeCurrentPathURL)
 
    const detailsAnimation = new DetailsAnimation();

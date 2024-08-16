@@ -3,7 +3,8 @@
 
    import HelpPanel        from './HelpPanel.svelte';
 
-   const dmtComponentData = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+   /** @type {DMTComponentData} */
+   const dmtComponentData = getContext('#dmtComponentData');
 
    const {
       hasModulesIndex,
@@ -12,21 +13,11 @@
 
    const storeTopLevelNodeCount = navigationData.treeState.source.storeTopLevelNodeCount;
 
+   const storeHelpPanelOpen = navigationData.storeHelpPanelOpen;
+
    const moduleIndexLabel = moduleIsPackage ? 'Package Index' : 'Module Index';
 
-   /**
-    * Whether the help panel is open / closed.
-    *
-    * @type {boolean}
-    */
-   let helpPanelOpen = false;
-
-   $: helpTitle = helpPanelOpen ? 'Close Help' : 'Open Help';
-
-   function onClickHelp()
-   {
-      helpPanelOpen = !helpPanelOpen;
-   }
+   $: helpTitle = $storeHelpPanelOpen ? 'Close Help' : 'Open Help';
 
    /**
     * Stops repeat on "Enter" key.
@@ -51,7 +42,7 @@
          </symbol>
       </svg>
 
-      <button on:click={() => navigationData.setStoresAllOpen(true)}
+      <button on:click={() => navigationData.treeState.source.setFoldersAllOpen(true)}
               on:keydown={onKeydownRepeat}
               on:pointerdown|stopPropagation
               title={'Open All'}>
@@ -60,7 +51,7 @@
          </svg>
       </button>
 
-      <button on:click={() => navigationData.setStoresAllOpen(false)}
+      <button on:click={() => navigationData.treeState.source.setFoldersAllOpen(false)}
               on:keydown={onKeydownRepeat}
               on:pointerdown|stopPropagation
               title={'Close All'}>
@@ -70,7 +61,7 @@
       </button>
    {/if}
 
-   <button on:click={onClickHelp}
+   <button on:click={() => navigationData.swapHelpPanelOpen()}
            on:keydown={onKeydownRepeat}
            title={helpTitle}>
       <svg viewBox="0 0 973.1 973.1">
@@ -92,7 +83,7 @@
       </a>
    {/if}
 
-   {#if helpPanelOpen}
+   {#if $storeHelpPanelOpen}
       <HelpPanel {hasModulesIndex} {moduleIsPackage} {storeTopLevelNodeCount} />
    {/if}
 </section>

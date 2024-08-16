@@ -1,4 +1,7 @@
-import { writable }           from 'svelte/store';
+import {
+   derived,
+   get,
+   writable}                  from 'svelte/store';
 
 import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
@@ -22,6 +25,20 @@ export class TreeState
    #sessionStorage;
 
    /**
+    * The prepend string for session storage keys.
+    *
+    * @type {string}
+    */
+   #storagePrepend;
+
+   /**
+    * A derived store with the open / close state of all session stores.
+    *
+    * @type {import('svelte/store').Readable<boolean>}
+    */
+   #storeFoldersAllOpen;
+
+   /**
     * Indicates the count of top level nodes if there are entries with children / tree nodes present.
     *
     * @type {Writable<number>}
@@ -32,15 +49,20 @@ export class TreeState
     * @param {import('./NavigationData.js').NavigationData} navData - Navigation data instance.
     *
     * @param {import('typedoc').NavigationElement[]} elementIndex - Navigation element data.
+    *
+    * @param {string} storagePrepend - The session storage key prepend.
     */
-   constructor(navData, elementIndex)
+   constructor(navData, elementIndex, storagePrepend)
    {
       this.#navData = navData;
       this.#elementIndex = elementIndex;
+      this.#storagePrepend = storagePrepend;
 
       this.#sessionStorage = new TJSSessionStorage();
 
       this.#setInitialState();
+
+      this.#createDerivedStores();
 
       globalThis.addEventListener('hashchange', this.#onHashchange.bind(this));
    }
@@ -59,6 +81,16 @@ export class TreeState
     * @returns {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
     */
    get sessionStorage() { return this.#sessionStorage; }
+
+   /**
+    * A derived store with the open / close state of all session stores.
+    *
+    * @returns {import('svelte/store').Readable<boolean>}
+    */
+   get storeFoldersAllOpen()
+   {
+      return this.#storeFoldersAllOpen;
+   }
 
    /**
     * @returns {Writable<number>}
@@ -110,8 +142,36 @@ export class TreeState
       this.#walkTreeFrom(operation, fromEntry);
    }
 
+   /**
+    * Closes or opens all tree folders / session store state.
+    *
+    * @param {boolean}  state - New open / close state.
+    */
+   setFoldersAllOpen(state)
+   {
+      for (const store of this.sessionStorage.stores()) { store.set(state); }
+   }
+
+   /**
+    * Swaps the current open / close state for all folders / session store state.
+    */
+   swapFoldersAllOpen()
+   {
+      this.setFoldersAllOpen(!get(this.storeFoldersAllOpen));
+   }
 
    // Internal implementation ----------------------------------------------------------------------------------------
+
+   /**
+    * Creates derived stores after the navigation tree / index state has been initialized.
+    */
+   #createDerivedStores()
+   {
+      // Create a derived store from all session storage stores; on any update reduce all values and set state
+      // to whether all folders are opened or not.
+      this.#storeFoldersAllOpen = derived([...this.sessionStorage.stores()],
+       (stores, set) => set(!!stores.reduce((previous, current) => previous & current, true)));
+   }
 
    /**
     * Create custom click handlers for all main content anchors that have a hash fragment. `hashAnchorClick` will
@@ -207,8 +267,6 @@ export class TreeState
     */
    #initializeTree()
    {
-      const storagePrepend = this.#navData.storagePrepend;
-
       let topLevelNodes = 0;
 
       const operation = (entry, parentEntry) =>
@@ -217,10 +275,9 @@ export class TreeState
 
          // Set storage key to DMTNavigationEntry.
          const parentPath = parentEntry ? parentEntry.path ?? parentEntry.text : '';
-         entry.storageKey = `${storagePrepend}-nav-${entry.path ?? `${parentPath}-${entry.text}`}`;
+         entry.storageKey = `${this.#storagePrepend}-${entry.path ?? `${parentPath}-${entry.text}`}`;
 
-         // Pre-create the session storage stores as TJSSvgFolder doesn't render hidden child content. This allows
-         // the `NavigationBar` component access to all stores immediately.
+         // Pre-create the session storage stores.
          this.#sessionStorage.getStore(entry.storageKey, false);
       };
 

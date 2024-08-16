@@ -1,5 +1,5 @@
 import {
-   derived,
+   get,
    writable }                 from 'svelte/store';
 
 import { TreeStateControl }   from './TreeStateControl.js';
@@ -14,14 +14,14 @@ export class NavigationData
     *
     * @type {string}
     */
-   basePath;
+   #basePath;
 
    /**
     * The documentation base URL.
     *
     * @type {string}
     */
-   baseURL;
+   #baseURL;
 
    /**
     * The current tree state entry path URL.
@@ -43,25 +43,18 @@ export class NavigationData
    #storeCurrentPathURLUpdate;
 
    /**
+    * The navigation bar help panel opened state.
+    *
+    * @type {Writable<boolean>}
+    */
+   #storeHelpPanelOpen = writable(false);
+
+   /**
     * The initial path URL.
     *
     * @type {string}
     */
-   initialPathURL;
-
-   state;
-
-   /**
-    * @type {string}
-    */
-   storagePrepend;
-
-   /**
-    * A derived store with the open / close state of all session stores.
-    *
-    * @type {import('svelte/store').Readable<boolean>}
-    */
-   storeSessionAllOpen;
+   #initialPathURL;
 
    /**
     * Tree state control.
@@ -75,23 +68,34 @@ export class NavigationData
     */
    constructor(dmtComponentData)
    {
-      this.basePath = dmtComponentData.basePath;
-      this.baseURL = dmtComponentData.baseURL;
-      this.initialPathURL = dmtComponentData.initialPathURL;
+      this.#basePath = dmtComponentData.basePath;
+      this.#baseURL = dmtComponentData.baseURL;
+      this.#initialPathURL = dmtComponentData.initialPathURL;
 
-      // Retrieve the storage prepend string from global DMT options or use a default key.
-      this.storagePrepend = dmtComponentData.storagePrepend ?? 'docs-unnamed';
+      this.#currentPathURL = this.#initialPathURL;
 
-      this.#currentPathURL = this.initialPathURL;
-
-      const { subscribe, update } = writable(this.initialPathURL);
+      const { subscribe, update } = writable(this.#initialPathURL);
 
       this.#storeCurrentPathURL = Object.freeze({ subscribe });
       this.#storeCurrentPathURLUpdate = update;
 
       this.#treeStateControl = new TreeStateControl(this, dmtComponentData);
+   }
 
-      this.#createDerivedStores();
+   /**
+    * @returns {string} The relative path prepend for all entry path links.
+    */
+   get basePath()
+   {
+      return this.#basePath;
+   }
+
+   /**
+    * @returns {string} The documentation base URL.
+    */
+   get baseURL()
+   {
+      return this.#baseURL;
    }
 
    /**
@@ -103,6 +107,14 @@ export class NavigationData
    }
 
    /**
+    * @returns {string} The initial path URL.
+    */
+   get initialPathURL()
+   {
+      return this.#initialPathURL;
+   }
+
+   /**
     * @returns {import('svelte/store').Readable<string>} The current tree state entry path URL store.
     */
    get storeCurrentPathURL()
@@ -111,32 +123,19 @@ export class NavigationData
    }
 
    /**
+    * @returns {Writable<boolean>}
+    */
+   get storeHelpPanelOpen()
+   {
+      return this.#storeHelpPanelOpen;
+   }
+
+   /**
     * @returns {TreeStateControl} The tree state control.
     */
    get treeState()
    {
       return this.#treeStateControl;
-   }
-
-   /**
-    * Creates derived stores after the navigation tree / index state has been initialized.
-    */
-   #createDerivedStores()
-   {
-      // Create a derived store from all session storage stores; on any update reduce all values and set state
-      // to whether all folders are opened or not.
-      this.storeSessionAllOpen = derived([...this.treeState.source.sessionStorage.stores()],
-       (stores, set) => set(!!stores.reduce((previous, current) => previous & current, true)));
-   }
-
-   /**
-    * Closes or opens all navigation folders / session store state.
-    *
-    * @param {boolean}  state - New open / close state.
-    */
-   setStoresAllOpen(state)
-   {
-      for (const store of this.treeState.source.sessionStorage.stores()) { store.set(state); }
    }
 
    /**
@@ -151,5 +150,13 @@ export class NavigationData
 
       this.#currentPathURL = pathURL;
       this.#storeCurrentPathURLUpdate(() => pathURL);
+   }
+
+   /**
+    * Swaps the help panel open state.
+    */
+   swapHelpPanelOpen()
+   {
+      this.#storeHelpPanelOpen.set(!get(this.#storeHelpPanelOpen));
    }
 }

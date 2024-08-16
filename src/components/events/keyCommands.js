@@ -1,8 +1,4 @@
-import { get }                from 'svelte/store';
-
 import { A11yHelper }         from '#runtime/util/browser';
-
-import { nextAnimationFrame } from "#runtime/util/animate";
 
 /**
  * Provides the following global keyboard commands:
@@ -40,12 +36,14 @@ export function keyCommands(dmtComponentData)
          }
 
          case 'KeyE':
-            navigationData.setStoresAllOpen(!get(navigationData.storeSessionAllOpen));
+            // Only open / close source folders in source navigation tree state.
+            navigationData.treeState.source.swapFoldersAllOpen();
+
             event.preventDefault();
             break;
 
          case 'KeyH':
-            navigationData.storeHelpPanelOpen.set(!get(navigationData.storeHelpPanelOpen));
+            navigationData.swapHelpPanelOpen();
             event.preventDefault();
             break;
 
@@ -65,12 +63,8 @@ export function keyCommands(dmtComponentData)
          case 'KeyN':
          {
             // Ensure current path is open and focus current path navigation entry.
-            const currentPathURL = navigationData.currentPathURL;
-            navigationData.state.ensureCurrentPath(navigationData.currentPathURL);
+            navigationData.treeState.ensureCurrentPath({ focus: true });
 
-            // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
-            nextAnimationFrame().then(() => document.querySelector('nav.tsd-navigation')?.querySelector(
-             `a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
             event.preventDefault();
             break;
          }
