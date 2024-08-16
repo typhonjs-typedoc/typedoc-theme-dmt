@@ -12,7 +12,12 @@
    /** @type {DMTComponentData} */
    export let dmtComponentData = void 0;
 
+   /** @type {NavigationData} */
    const { navigationData } = dmtComponentData;
+
+   const { storeCurrentPathURL } = dmtComponentData.navigationData;
+
+   $: console.log(`!!! DMT - Navigation.svelte - storeCurrentPathURL: `, $storeCurrentPathURL)
 
    const detailsAnimation = new DetailsAnimation();
    const storeSettingsAnimate = dmtComponentData.dmtLocalStorage.getStore(localConstants.dmtThemeAnimate);
@@ -22,27 +27,21 @@
 
    // Handle setting animation state for default theme detail elements.
    $: detailsAnimation.setEnabled($storeSettingsAnimate);
-
-   function onHashchange(event)
-   {
-      navigationData.treeStateSource.onHashchange(event);
-   }
 </script>
 
 <svelte:options accessors={true}/>
-<svelte:window on:hashchange={onHashchange} />
 
 <SidebarLinks />
 
-{#if navigationData.treeStateMarkdown.hasData}
+{#if navigationData.treeState.markdown.hasData}
    <section>
-      <NavigationTree treeState={navigationData.treeStateMarkdown} />
+      <NavigationTree treeState={navigationData.treeState.markdown} />
    </section>
 {/if}
 
 <NavigationBar />
 
-<NavigationTree treeState={navigationData.treeStateSource} bottomMargin={true} />
+<NavigationTree treeState={navigationData.treeState.source} bottomMargin={true} />
 
 <style>
    section {

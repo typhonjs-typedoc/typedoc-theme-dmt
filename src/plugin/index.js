@@ -52,7 +52,7 @@ export function load(app)
             // At the end of rendering generate the compressed global component data.
             app.renderer.on(RendererEvent.END, (event) => GlobalResources.build(event, app, options), -100);
 
-            // TODO: TYPEDOC 0.26 CHANGES / REMOVE - `removeComponent` no longer available.
+            // TODO: REMOVE TYPEDOC 0.26 CHANGES - `removeComponent` no longer available.
             // ------------------------------------------
             // Remove unused default theme components.
             // app.renderer.removeComponent('javascript-index');

@@ -47,13 +47,6 @@ export interface INavigationData {
    storeCurrentPathURL: Writable<string>;
 
    /**
-    * The navigation index.
-    *
-    * @type {DMTNavigationElement[]}
-    */
-   index: DMTNavigationElement[];
-
-   /**
     * The initial path URL.
     *
     * @type {string}
@@ -63,16 +56,9 @@ export interface INavigationData {
    /**
     * Markdown tree state control.
     *
-    * @type {import('./TreeState.js').TreeState}
+    * @type {import('./data/TreeStateControl').TreeStateControl}
     */
-   treeStateMarkdown: import('./TreeState.js').TreeState;
-
-   /**
-    * Navigation tree state control.
-    *
-    * @type {import('./TreeState.js').TreeState}
-    */
-   treeStateSource: import('./TreeState.js').TreeState;
+   treeState: import('./data/TreeStateControl.js').TreeStateControl;
 
    /**
     * A derived store with the open / close state of all session stores.

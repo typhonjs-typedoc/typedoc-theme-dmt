@@ -62,6 +62,11 @@ export type DMTComponentData = {
    linksService: DMTIconLink[];
 
    /**
+    * Default markdown index.
+    */
+   markdownIndex: NavigationElement[];
+
+   /**
     * When true 'Module' in page titles is replaced with 'Package'.
     */
    moduleIsPackage: boolean;

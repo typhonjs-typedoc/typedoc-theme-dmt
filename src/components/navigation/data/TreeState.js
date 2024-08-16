@@ -11,10 +11,8 @@ export class TreeState
    /** @type {import('typedoc').NavigationElement[]} */
    #elementIndex;
 
-   /** @type {import('./NavigationData').NavigationData} */
+   /** @type {import('./NavigationData.js').NavigationData} */
    #navData;
-
-   #onHashchangeBound;
 
    /**
     * The navigation session storage store manager.
@@ -31,7 +29,7 @@ export class TreeState
    #storeTopLevelNodeCount = writable(0);
 
    /**
-    * @param {import('./NavigationData').NavigationData} navData - Navigation data instance.
+    * @param {import('./NavigationData.js').NavigationData} navData - Navigation data instance.
     *
     * @param {import('typedoc').NavigationElement[]} elementIndex - Navigation element data.
     */
@@ -41,9 +39,10 @@ export class TreeState
       this.#elementIndex = elementIndex;
 
       this.#sessionStorage = new TJSSessionStorage();
-      this.#onHashchangeBound = this.#onHashchange.bind(this);
 
       this.#setInitialState();
+
+      globalThis.addEventListener('hashchange', this.#onHashchange.bind(this));
    }
 
    /**
@@ -55,11 +54,6 @@ export class TreeState
     * @returns {boolean} If there is navigation element data available.
     */
    get hasData() { return this.#elementIndex?.length > 0 }
-
-   /**
-    * @returns {Function} Window hashchange listener.
-    */
-   get onHashchange() { return this.#onHashchangeBound; }
 
    /**
     * @returns {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
@@ -102,7 +96,7 @@ export class TreeState
     * Sets all session storage stores from the given entry. This supports `Alt-<Click>` action to open / close all
     * child folders.
     *
-    * @param {import('./types').DMTNavigationElement} fromEntry - The entry to start traversing tree.
+    * @param {import('../types.js').DMTNavigationElement} fromEntry - The entry to start traversing tree.
     *
     * @param {boolean} state - New state.
     */
@@ -141,9 +135,13 @@ export class TreeState
          const fullURLNoHash = globalThis.location.href.split('#')[0];
          const anchorURLNoHash = this.href.split('#')[0];
 
+         console.log(`!!! DMT - TreeState.js - hashAnchorClick - 0 - fullURLNoHash: `, fullURLNoHash)
+         console.log(`!!! DMT - TreeState.js - hashAnchorClick - 1 - anchorURLNoHash: `, anchorURLNoHash)
+
          // If the main URLs or hash differ then set the window location. The `onHashchange` function will trigger.
          if (fullURLNoHash !== anchorURLNoHash || globalThis.location.hash !== this.hash)
          {
+            console.log(`!!! DMT - TreeState.js - hashAnchorClick - A`)
             globalThis.location.href = this.href;
             return;
          }
@@ -153,14 +151,23 @@ export class TreeState
 
          const pathURL = this.href.replace(baseURL, '');
 
+         console.log(`!!! DMT - TreeState.js - hashAnchorClick - 2 - pathURL: `, pathURL)
+
          if (!navigationState.ensureCurrentPath(pathURL) && pathURL.includes('#'))
          {
+            console.log(`!!! DMT - TreeState.js - hashAnchorClick - B1`)
+
             // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
             // without the hash fragment.
             const match = pathURL.split('#');
 
             // No hash URL
-            if (match[0]) { navigationState.ensureCurrentPath(match[0]); }
+            if (match[0])
+            {
+               console.log(`!!! DMT - TreeState.js - hashAnchorClick - B2 - match[0]: `, match[0])
+
+               navigationState.ensureCurrentPath(match[0]);
+            }
 
             // Manually scroll to hash fragment.
             navigationState.#scrollContentToHash(match[1]);
@@ -230,6 +237,8 @@ export class TreeState
     */
    async #onHashchange(event)
    {
+      console.log(`!!! TreeState - global listener - #onHashchange`)
+
       const newPathURL = event.newURL.replace(this.#navData.baseURL, '');
 
       // Ensure any tree nodes are open for `newURLPath`.
@@ -279,7 +288,7 @@ export class TreeState
    /**
     * Helper function to recursively search for the path and perform the operation given for each tree node.
     *
-    * @param {import('./types').DMTNavigationElement} entry - Current NavigationElement.
+    * @param {import('../types.js').DMTNavigationElement} entry - Current NavigationElement.
     *
     * @param {string}   pathURL - The path URL to locate.
     *
@@ -380,9 +389,9 @@ export class TreeState
    /**
     * Walks the navigation index / tree for each path recursively.
     *
-    * @param {import('./types').DMTNavigationElement} entry - The current entry.
+    * @param {import('../types.js').DMTNavigationElement} entry - The current entry.
     *
-    * @param {import('./types').DMTNavigationElement} parentEntry - The parent entry.
+    * @param {import('../types.js').DMTNavigationElement} parentEntry - The parent entry.
     *
     * @param {TreeOperation}  operation - Tree entry operation to apply.
     */
@@ -424,7 +433,7 @@ export class TreeState
     *
     * @param {TreeOperation}  operation - Tree entry operation to apply.
     *
-    * @param {import('./types').DMTNavigationElement} entry - The current entry.
+    * @param {import('../types.js').DMTNavigationElement} entry - The current entry.
     */
    #walkTreeFrom(operation, entry)
    {
@@ -434,7 +443,7 @@ export class TreeState
 
 /**
  * @typedef {((
- *    entry: import('./types').DMTNavigationElement,
+ *    entry: import('../types.js').DMTNavigationElement,
  *    parentEntry?: import('./types').DMTNavigationElement) => void
  * )} TreeOperation A function to invoke for tree nodes when walking the tree.
  */

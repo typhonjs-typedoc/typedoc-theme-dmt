@@ -9,7 +9,7 @@ import {
    scrollActivation }            from './events';
 
 import Navigation                from './navigation/Navigation.svelte';
-import { NavigationData }        from './navigation/NavigationData.js';
+import { NavigationData }        from './navigation/data/NavigationData.js';
 
 import DMTSettings               from './settings/DMTSettings.svelte';
 

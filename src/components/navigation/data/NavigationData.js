@@ -2,12 +2,10 @@ import {
    derived,
    writable }                 from 'svelte/store';
 
-import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
-
-import { TreeState }    from './TreeState.js';
+import { TreeStateControl }   from './TreeStateControl.js';
 
 /**
- * @implements {import('./types').INavigationData}
+ * @implements {import('../types.js').INavigationData}
  */
 export class NavigationData
 {
@@ -26,25 +24,23 @@ export class NavigationData
    baseURL;
 
    /**
-    * The current entry path URL.
+    * The current tree state entry path URL.
     *
     * @type {string}
     */
-   currentPathURL;
+   #currentPathURL;
 
    /**
-    * The current path URL store.
+    * The current tree state entry path URL store.
     *
-    * @type {import('svelte/store').Writable<string>}
+    * @type {import('svelte/store').Readable<string>}
     */
-   storeCurrentPathURL;
+   #storeCurrentPathURL;
 
    /**
-    * The navigation index.
-    *
-    * @type {import('./types').DMTNavigationElement[]}
+    * @type {import('svelte/store').Updater<string>}
     */
-   index;
+   #storeCurrentPathURLUpdate;
 
    /**
     * The initial path URL.
@@ -68,18 +64,11 @@ export class NavigationData
    storeSessionAllOpen;
 
    /**
-    * Markdown document tree state control.
+    * Tree state control.
     *
-    * @type {import('./TreeState.js').TreeState}
+    * @type {TreeStateControl}
     */
-   treeStateMarkdown;
-
-   /**
-    * Source tree state control.
-    *
-    * @type {import('./TreeState.js').TreeState}
-    */
-   treeStateSource;
+   #treeStateControl;
 
    /**
     * @param {DMTComponentData}  dmtComponentData - Global component data.
@@ -89,19 +78,44 @@ export class NavigationData
       this.basePath = dmtComponentData.basePath;
       this.baseURL = dmtComponentData.baseURL;
       this.initialPathURL = dmtComponentData.initialPathURL;
-      this.navigationIndex = dmtComponentData.navigationIndex;
-      this.markdownIndex = dmtComponentData.markdownIndex;
 
       // Retrieve the storage prepend string from global DMT options or use a default key.
       this.storagePrepend = dmtComponentData.storagePrepend ?? 'docs-unnamed';
 
-      this.currentPathURL = this.initialPathURL;
-      this.storeCurrentPathURL = writable(this.initialPathURL);
+      this.#currentPathURL = this.initialPathURL;
 
-      this.treeStateMarkdown = new TreeState(this, this.markdownIndex);
-      this.treeStateSource = new TreeState(this, this.navigationIndex);
+      const { subscribe, update } = writable(this.initialPathURL);
+
+      this.#storeCurrentPathURL = Object.freeze({ subscribe });
+      this.#storeCurrentPathURLUpdate = update;
+
+      this.#treeStateControl = new TreeStateControl(this, dmtComponentData);
 
       this.#createDerivedStores();
+   }
+
+   /**
+    * @returns {string} The current tree state entry path URL.
+    */
+   get currentPathURL()
+   {
+      return this.#currentPathURL;
+   }
+
+   /**
+    * @returns {import('svelte/store').Readable<string>} The current tree state entry path URL store.
+    */
+   get storeCurrentPathURL()
+   {
+      return this.#storeCurrentPathURL;
+   }
+
+   /**
+    * @returns {TreeStateControl} The tree state control.
+    */
+   get treeState()
+   {
+      return this.#treeStateControl;
    }
 
    /**
@@ -111,7 +125,7 @@ export class NavigationData
    {
       // Create a derived store from all session storage stores; on any update reduce all values and set state
       // to whether all folders are opened or not.
-      this.storeSessionAllOpen = derived([...this.treeStateSource.sessionStorage.stores()],
+      this.storeSessionAllOpen = derived([...this.treeState.source.sessionStorage.stores()],
        (stores, set) => set(!!stores.reduce((previous, current) => previous & current, true)));
    }
 
@@ -122,7 +136,7 @@ export class NavigationData
     */
    setStoresAllOpen(state)
    {
-      for (const store of this.treeStateSource.sessionStorage.stores()) { store.set(state); }
+      for (const store of this.treeState.source.sessionStorage.stores()) { store.set(state); }
    }
 
    /**
@@ -132,7 +146,10 @@ export class NavigationData
     */
    setCurrentPathURL(pathURL)
    {
-      this.currentPathURL = pathURL;
-      this.storeCurrentPathURL.set(pathURL);
+      console.log(`!!! DMT - NavigationData.setCurrentPathURL - pathURL: `, pathURL);
+      console.trace();
+
+      this.#currentPathURL = pathURL;
+      this.#storeCurrentPathURLUpdate(() => pathURL);
    }
 }

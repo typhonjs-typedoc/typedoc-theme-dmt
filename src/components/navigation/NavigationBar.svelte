@@ -10,10 +10,7 @@
       navigationData,
       moduleIsPackage } = dmtComponentData;
 
-   const {
-      treeStateSource } = navigationData;
-
-   const storeTopLevelNodeCount = treeStateSource.storeTopLevelNodeCount;
+   const storeTopLevelNodeCount = navigationData.treeState.source.storeTopLevelNodeCount;
 
    const moduleIndexLabel = moduleIsPackage ? 'Package Index' : 'Module Index';
 
