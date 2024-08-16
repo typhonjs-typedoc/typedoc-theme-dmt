@@ -35,9 +35,9 @@ export class NavigationIndex
    /**
     * Parses and separates top level Markdown documents from the main navigation index.
     *
-    * @param {import('typedoc').NavigationElement[]} index
-
-    * @returns {import('typedoc').NavigationElement[]}
+    * @param {import('typedoc').NavigationElement[]} index - The original navigation index.
+    *
+    * @returns {import('typedoc').NavigationElement[]} Separated Markdown navigation index.
     */
    static #parseMarkdownTree(index)
    {

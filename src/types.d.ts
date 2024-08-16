@@ -18,7 +18,7 @@ import type {
    NavigationElement,
    ReflectionKind }                    from 'typedoc';
 
-import type { INavigationData }        from './components/navigation/types.ts';
+import type { INavigationData }        from '#types/frontend';
 
 export type DMTComponentData = {
    /**

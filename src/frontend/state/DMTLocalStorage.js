@@ -1,7 +1,7 @@
 import { TJSLocalStorage }    from '#runtime/svelte/store/web-storage';
 import { A11yHelper }         from '#runtime/util/browser';
 
-import { DetailsAnimation }   from '../augment/DetailsAnimation.js';
+import { DetailsAnimation }   from './external/augment/DetailsAnimation.js';
 
 import { localConstants }     from '#constants';
 

@@ -1,7 +1,7 @@
 <script>
    import { getContext }   from 'svelte';
 
-   /** @type {import('#types/state').DMTNavigationElement} */
+   /** @type {import('#types/frontend').DMTNavigationElement} */
    export let entry;
 
    /**

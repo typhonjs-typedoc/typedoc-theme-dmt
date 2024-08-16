@@ -39,7 +39,7 @@ export interface INavigationData {
    get initialPathURL(): string;
 
    /**
-    * @returns {import('svelte/store').Readable<string>} The current tree state entry path URL store.
+    * @returns {Readable<string>} The current tree state entry path URL store.
     */
    get storeCurrentPathURL(): Readable<string>;
 

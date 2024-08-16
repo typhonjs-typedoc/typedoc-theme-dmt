@@ -2,15 +2,15 @@
    import {
       getContext,
       onMount,
-      setContext }               from 'svelte';
+      setContext }                     from 'svelte';
 
-   import { writable }           from 'svelte/store';
+   import { writable }                 from 'svelte/store';
 
-   import { slideFade }          from '#runtime/svelte/transition';
+   import { slideFade }                from '#runtime/svelte/transition';
 
-   import SearchResults          from './SearchResults.svelte';
+   import SearchResults                from './SearchResults.svelte';
 
-   import { processSearchQuery } from '../state/search-main/processSearchQuery.js';
+   import { processMainSearchQuery }   from '#state/frontend';
 
    /**
     * Stores the current selected ID for navigating search query results in {@link SearchResults}.
@@ -75,7 +75,7 @@
 
    // Perform the search when the query input changes.
    $: {
-      results = processSearchQuery($storeQuery,  { ...queryOptions });
+      results = processMainSearchQuery($storeQuery,  { ...queryOptions });
       currentIndex = -1;
       storeCurrentId.set(void 0);
    }

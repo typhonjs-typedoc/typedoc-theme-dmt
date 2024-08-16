@@ -20,7 +20,7 @@
  *
  * @returns {ProcessedSearchDocument[]} Processed query results.
  */
-export function processSearchQuery(query, { basePath, navModuleIcon = true, searchFullName = false,
+export function processMainSearchQuery(query, { basePath, navModuleIcon = true, searchFullName = false,
  searchLimit = 10 } = {})
 {
    if (!globalThis.dmtSearchMainIndex || !globalThis.dmtSearchMainRows) { return []; }

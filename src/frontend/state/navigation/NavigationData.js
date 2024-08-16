@@ -5,7 +5,7 @@ import {
 import { TreeStateControl }   from './TreeStateControl.js';
 
 /**
- * @implements {import('../types.ts').INavigationData}
+ * @implements {import('#types/frontend').INavigationData}
  */
 export class NavigationData
 {
@@ -123,7 +123,7 @@ export class NavigationData
    }
 
    /**
-    * @returns {Writable<boolean>} The navigation bar help panel opened state store.
+    * @returns {import('svelte/store').Writable<boolean>} The navigation bar help panel opened state store.
     */
    get storeHelpPanelOpen()
    {
@@ -145,9 +145,6 @@ export class NavigationData
     */
    setCurrentPathURL(pathURL)
    {
-      console.log(`!!! DMT - NavigationData.setCurrentPathURL - pathURL: `, pathURL);
-      console.trace();
-
       this.#currentPathURL = pathURL;
       this.#storeCurrentPathURLUpdate(() => pathURL);
    }
