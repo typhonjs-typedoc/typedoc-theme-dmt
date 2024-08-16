@@ -51,7 +51,7 @@ export interface INavigationData {
    /**
     * @returns The tree state control.
     */
-   get treeState(): import('./data/TreeStateControl.js').TreeStateControl;
+   get treeState(): import('./navigation/TreeStateControl.js').TreeStateControl;
 
    /**
     * Sets the current path URL local data and store.

@@ -5,7 +5,7 @@ import {
 import { TreeStateControl }   from './TreeStateControl.js';
 
 /**
- * @implements {import('../types.js').INavigationData}
+ * @implements {import('../types.ts').INavigationData}
  */
 export class NavigationData
 {

@@ -10,7 +10,7 @@
 
    import SearchResults          from './SearchResults.svelte';
 
-   import { processSearchQuery } from './processSearchQuery.js';
+   import { processSearchQuery } from '../state/search-main/processSearchQuery.js';
 
    /**
     * Stores the current selected ID for navigating search query results in {@link SearchResults}.

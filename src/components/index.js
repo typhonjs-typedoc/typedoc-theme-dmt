@@ -6,8 +6,8 @@ import {
    keyCommands,
    scrollActivation }            from './events';
 
-import Navigation                from './navigation/view/Navigation.svelte';
-import { NavigationData }        from './navigation/data/NavigationData.js';
+import Navigation                from './navigation/Navigation.svelte';
+import { NavigationData }        from './state/navigation/NavigationData.js';
 
 import DMTSettings               from './settings/DMTSettings.svelte';
 
@@ -15,13 +15,13 @@ import Toolbar                   from './toolbar/Toolbar.svelte';
 
 import SearchMain                from './search-main/SearchMain.svelte';
 
-import { loadMainSearchData }    from './search-main/loadMainSearchData.js';
+import { loadMainSearchData }    from './state/search-main/loadMainSearchData.js';
 
-import { DMTLocalStorage }       from './settings/DMTLocalStorage.js';
+import { DMTLocalStorage }       from './state/DMTLocalStorage.js';
 
 // TODO: Implement SearchQuick
 // import SearchQuick               from './search-quick/SearchQuick.svelte';
-// import { loadQuickSearchData }   from './search-quick/loadQuickSearchData.js';
+// import { loadQuickSearchData }   from './state/search-quick/loadQuickSearchData.js';
 
 // Loads compressed global component data.
 import './dmt-component-data.js';
