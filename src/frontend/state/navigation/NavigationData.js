@@ -24,13 +24,6 @@ export class NavigationData
    #baseURL;
 
    /**
-    * The current tree state entry path URL.
-    *
-    * @type {string}
-    */
-   #currentPathURL;
-
-   /**
     * Indicates that a root `modules.html` is generated.
     *
     * @type {boolean}
@@ -45,30 +38,11 @@ export class NavigationData
    #navModuleIcon;
 
    /**
-    * The current tree state entry path URL store.
-    *
-    * @type {import('svelte/store').Readable<string>}
-    */
-   #storeCurrentPathURL;
-
-   /**
-    * @type {import('svelte/store').Updater<string>}
-    */
-   #storeCurrentPathURLUpdate;
-
-   /**
     * The navigation bar help panel opened state.
     *
     * @type {Writable<boolean>}
     */
    #storeHelpPanelOpen = writable(false);
-
-   /**
-    * The initial path URL.
-    *
-    * @type {string}
-    */
-   #initialPathURL;
 
    /**
     * Tree state control.
@@ -85,15 +59,7 @@ export class NavigationData
       this.#basePath = dmtComponentData.basePath;
       this.#baseURL = dmtComponentData.baseURL;
       this.#hasModulesIndex = dmtComponentData.hasModulesIndex;
-      this.#initialPathURL = dmtComponentData.initialPathURL;
       this.#navModuleIcon = dmtComponentData.navModuleIcon;
-
-      this.#currentPathURL = this.#initialPathURL;
-
-      const { subscribe, update } = writable(this.#initialPathURL);
-
-      this.#storeCurrentPathURL = Object.freeze({ subscribe });
-      this.#storeCurrentPathURLUpdate = update;
 
       this.#treeStateControl = new TreeStateControl(this, dmtComponentData);
    }
@@ -115,14 +81,6 @@ export class NavigationData
    }
 
    /**
-    * @returns {string} The current tree state entry path URL.
-    */
-   get currentPathURL()
-   {
-      return this.#currentPathURL;
-   }
-
-   /**
     * @returns {boolean} Indicates that a root `modules.html` is generated.
     */
    get hasModulesIndex()
@@ -131,27 +89,11 @@ export class NavigationData
    }
 
    /**
-    * @returns {string} The initial path URL.
-    */
-   get initialPathURL()
-   {
-      return this.#initialPathURL;
-   }
-
-   /**
     * @returns {boolean} When true SVG icons for all navigation module entries are displayed.
     */
    get navModuleIcon()
    {
       return this.#navModuleIcon;
-   }
-
-   /**
-    * @returns {import('svelte/store').Readable<string>} The current tree state entry path URL store.
-    */
-   get storeCurrentPathURL()
-   {
-      return this.#storeCurrentPathURL;
    }
 
    /**
@@ -168,17 +110,6 @@ export class NavigationData
    get treeState()
    {
       return this.#treeStateControl;
-   }
-
-   /**
-    * Sets the current path URL local data and store.
-    *
-    * @param {string}   pathURL - New current path URL.
-    */
-   setCurrentPathURL(pathURL)
-   {
-      this.#currentPathURL = pathURL;
-      this.#storeCurrentPathURLUpdate(() => pathURL);
    }
 
    /**

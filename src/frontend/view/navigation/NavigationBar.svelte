@@ -80,7 +80,7 @@
    </button>
 
    {#if hasModulesIndex}
-      <a href={`${navigationData.baseURL}modules.html`} class:current={navigationData.currentPathURL === 'modules.html'}>
+      <a href={`${navigationData.baseURL}modules.html`} class:current={navigationData.treeState.currentPathURL === 'modules.html'}>
          {moduleIndexLabel}
       </a>
    {/if}

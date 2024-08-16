@@ -11,11 +11,11 @@ import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
  */
 export class TreeState
 {
+   /** @type {string} */
+   #baseURL;
+
    /** @type {import('typedoc').NavigationElement[]} */
    #elementIndex;
-
-   /** @type {import('./NavigationData.js').NavigationData} */
-   #navData;
 
    /**
     * The navigation session storage store manager.
@@ -23,6 +23,13 @@ export class TreeState
     * @type {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
     */
    #sessionStorage;
+
+   /**
+    * Update function for current tree entry path URL.
+    *
+    * @type {(url: string) => void} setCurrentPathURL
+    */
+   #setCurrentPathURL;
 
    /**
     * The prepend string for session storage keys.
@@ -46,21 +53,28 @@ export class TreeState
    #storeTopLevelNodeCount = writable(0);
 
    /**
-    * @param {import('./NavigationData.js').NavigationData} navData - Navigation data instance.
+    * @param {object} options - Options;
     *
-    * @param {import('typedoc').NavigationElement[]} elementIndex - Navigation element data.
+    * @param {string} options.baseURL - The base path URL.
     *
-    * @param {string} storagePrepend - The session storage key prepend.
+    * @param {string} options.currentPathURL - The initial current path URL.
+    *
+    * @param {(url: string) => void} options.setCurrentPathURL - Update function for current tree entry path URL.
+    *
+    * @param {import('typedoc').NavigationElement[]} options.elementIndex - Navigation element data.
+    *
+    * @param {string} options.storagePrepend - The session storage key prepend.
     */
-   constructor(navData, elementIndex, storagePrepend)
+   constructor({ baseURL, currentPathURL, setCurrentPathURL, elementIndex, storagePrepend })
    {
-      this.#navData = navData;
+      this.#baseURL = baseURL;
+      this.#setCurrentPathURL = setCurrentPathURL;
       this.#elementIndex = elementIndex;
       this.#storagePrepend = storagePrepend;
 
       this.#sessionStorage = new TJSSessionStorage();
 
-      this.#setInitialState();
+      this.#setInitialState(currentPathURL);
 
       this.#createDerivedStores();
 
@@ -120,7 +134,7 @@ export class TreeState
 
       const result = this.#searchTree(pathURL, operation);
 
-      if (result && setCurrent) { this.#navData.setCurrentPathURL(pathURL); }
+      if (result && setCurrent) { this.#setCurrentPathURL(pathURL); }
 
       return result;
    }
@@ -180,8 +194,7 @@ export class TreeState
     */
    #hashAnchorLinks()
    {
-      const baseURL = this.#navData.baseURL;
-      const navigationState = this;
+      const thisTreeState = this;
 
       /**
        * Handle any clicks on content anchors with a hash ensuring that the clicked upon anchor is always visible in the
@@ -206,9 +219,9 @@ export class TreeState
          // Otherwise a link is clicked and the URL / hash reference is the same as the current page. Ensure that
          // the navigation tree shows the current entry.
 
-         const pathURL = this.href.replace(baseURL, '');
+         const pathURL = this.href.replace(thisTreeState.#baseURL, '');
 
-         if (!navigationState.ensureCurrentPath(pathURL) && pathURL.includes('#'))
+         if (!thisTreeState.ensureCurrentPath(pathURL) && pathURL.includes('#'))
          {
             // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
             // without the hash fragment.
@@ -217,11 +230,11 @@ export class TreeState
             // No hash URL
             if (match[0])
             {
-               navigationState.ensureCurrentPath(match[0]);
+               thisTreeState.ensureCurrentPath(match[0]);
             }
 
             // Manually scroll to hash fragment.
-            navigationState.#scrollContentToHash(match[1]);
+            thisTreeState.#scrollContentToHash(match[1]);
          }
       }
 
@@ -285,7 +298,7 @@ export class TreeState
     */
    #onHashchange(event)
    {
-      const newPathURL = event.newURL.replace(this.#navData.baseURL, '');
+      const newPathURL = event.newURL.replace(this.#baseURL, '');
 
       // Ensure any tree nodes are open for `newURLPath`.
       if (!this.ensureCurrentPath(newPathURL) && newPathURL.includes('#'))
@@ -401,26 +414,26 @@ export class TreeState
 
    /**
     * Handles setting the initial open state and scrolling the main content div to any hash fragment.
+    *
+    * @param {string} currentPathURL - The initial current path URL.
     */
-   #setInitialState()
+   #setInitialState(currentPathURL)
    {
       this.#initializeTree();
 
-      const pathURL = this.#navData.initialPathURL;
-
       // Attempt to set initial current path; there may be a hash fragment.
-      const initialResult = this.#initializeCurrentPath(pathURL);
+      const initialResult = this.#initializeCurrentPath(currentPathURL);
 
       // Handle the case of a hash fragment.
-      if (pathURL.includes('#'))
+      if (currentPathURL.includes('#'))
       {
-         const match = pathURL.split('#');
+         const match = currentPathURL.split('#');
 
          // Try setting initial result again with the path URL without the hash fragment.
          if (!initialResult)
          {
             const noHashURL = match[0];
-            if (noHashURL && this.#initializeCurrentPath(noHashURL)) { this.#navData.setCurrentPathURL(noHashURL); }
+            if (noHashURL && this.#initializeCurrentPath(noHashURL)) { this.#setCurrentPathURL(noHashURL); }
          }
 
          // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
