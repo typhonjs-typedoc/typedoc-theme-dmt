@@ -8,9 +8,8 @@
    import Entry                  from './Entry.svelte';
    import Folder                 from './Folder.svelte';
 
+   /** @type {TreeState} */
    export let treeState;
-
-   export let bottomMargin = false;
 
    setContext('#treeState', treeState);
 
@@ -32,7 +31,7 @@
    }
 
    // Always indent first level entries to match any module / namespace entries w/ children.
-   const indentIcon = 'indent-no-icon';
+   const indentIcon = treeState.hasFolders ? 'indent-no-icon' : 'indent-none';
 
    /**
     * Prevents the space key from scrolling the tree view; for Chrome.
@@ -45,12 +44,9 @@
    }
 </script>
 
-<svelte:options accessors={true}/>
-
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div bind:this={navigationEl}
      class=dmt-navigation-content
-     class:bottom-margin={bottomMargin}
      on:keydown|capture={onKeydown}
      tabindex=-1>
    {#each treeState.elementIndex as entry (entry.path)}
@@ -80,16 +76,13 @@
 
       outline: transparent;
       overflow-x: auto;
-      padding-top: 0.25rem;
-      padding-left: 3px; /* space for chevron focus-visible outline */
+      padding-top: var(--dmt-nav-tree-padding-top, 0.25rem);
+      padding-left: var(--dmt-nav-tree-padding-left, 3px); /* space for chevron focus-visible outline */
       touch-action: pan-x pan-y;
    }
 
-   /* This allows the bottom most element in the nav bar to be visible above browser URL hint. */
+   /* Adjust `--dmt-nav-tree-bottom-margin` accordingly for any bottom margin after last child. */
    .dmt-navigation-content > :global(:last-child) {
-      margin-bottom: 0.25rem;
-   }
-   .dmt-navigation-content.bottom-margin > :global(:last-child) {
-      margin-bottom: 1rem;
+      margin-bottom: var(--dmt-nav-tree-bottom-margin, 0.25rem);
    }
 </style>

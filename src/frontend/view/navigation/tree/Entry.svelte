@@ -48,6 +48,7 @@
       class:current={isCurrent}
       class:indent-icon={indentIcon === 'indent-icon'}
       class:indent-no-icon={indentIcon === 'indent-no-icon'}
+      class:indent-none={indentIcon === 'indent-none'}
       data-storage-key={storageKey}>
       {#if icon}
          <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${icon}`}></use></svg>
@@ -80,5 +81,10 @@
 
    .indent-no-icon {
       margin-left: var(--dmt-nav-entry-indent-no-icon, 18px);
+   }
+
+   /* Small indent for border */
+   .indent-none {
+      margin-left: 0.25rem;
    }
 </style>

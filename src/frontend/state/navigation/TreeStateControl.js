@@ -1,10 +1,18 @@
+import { writable }           from 'svelte/store';
+
 import { nextAnimationFrame } from '#runtime/util/animate';
 
 import { TreeState }          from './TreeState.js';
-import {writable} from "svelte/store";
 
 export class TreeStateControl
 {
+   /**
+    * Stores the active tree name set in `setCurrentPathURL`.
+    *
+    * @type {string}
+    */
+   #activeTreeName = '';
+
    /**
     * The current tree state entry path URL.
     *
@@ -31,6 +39,8 @@ export class TreeStateControl
 
    /**
     * Markdown document tree state control.
+    *
+    * @type {TreeState}
     */
    #treeMarkdown;
 
@@ -67,7 +77,8 @@ export class TreeStateControl
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
          elementIndex: dmtComponentData.markdownIndex ?? [],
-         storagePrepend: `${storagePrepend}-markdown`
+         storagePrepend: `${storagePrepend}-markdown`,
+         treeName: 'markdown'
       });
 
       this.#treeSource = new TreeState({
@@ -75,8 +86,17 @@ export class TreeStateControl
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
          elementIndex: dmtComponentData.navigationIndex ?? [],
-         storagePrepend: `${storagePrepend}-source`
+         storagePrepend: `${storagePrepend}-source`,
+         treeName: 'source'
       });
+   }
+
+   /**
+    * @returns {string} The currently active tree name.
+    */
+   get activeTreeName()
+   {
+      return this.#activeTreeName;
    }
 
    /**
@@ -142,9 +162,21 @@ export class TreeStateControl
     * Sets the current path URL local data and store.
     *
     * @param {string}   pathURL - New current path URL.
+    *
+    * @param {string}   treeName - The active tree name.
     */
-   #setCurrentPathURL(pathURL)
+   #setCurrentPathURL(pathURL, treeName)
    {
+      switch (treeName)
+      {
+         case 'markdown':
+         case 'source':
+            this.#activeTreeName = treeName;
+            break;
+         default:
+            this.#activeTreeName = '';
+      }
+
       this.#currentPathURL = pathURL;
       this.#storeCurrentPathURLUpdate(() => pathURL);
    }

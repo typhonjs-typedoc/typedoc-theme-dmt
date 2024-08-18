@@ -1,7 +1,6 @@
 import {
    derived,
-   get,
-   writable }                 from 'svelte/store';
+   get }                      from 'svelte/store';
 
 import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
@@ -18,6 +17,13 @@ export class TreeState
    #elementIndex;
 
    /**
+    * When true there are folders / node entries with children.
+    *
+    * @type {boolean}
+    */
+   #hasFolders = false;
+
+   /**
     * The navigation session storage store manager.
     *
     * @type {import('#runtime/svelte/store/web-storage').TJSSessionStorage}
@@ -27,7 +33,7 @@ export class TreeState
    /**
     * Update function for current tree entry path URL.
     *
-    * @type {(url: string) => void} setCurrentPathURL
+    * @type {(url: string, treeName: string) => void} setCurrentPathURL
     */
    #setCurrentPathURL;
 
@@ -46,11 +52,11 @@ export class TreeState
    #storeFoldersAllOpen;
 
    /**
-    * Indicates the count of top level nodes if there are entries with children / tree nodes present.
+    * Stores the tree name.
     *
-    * @type {Writable<number>}
+    * @type {string}
     */
-   #storeTopLevelNodeCount = writable(0);
+   #treeName;
 
    /**
     * @param {object} options - Options;
@@ -59,18 +65,22 @@ export class TreeState
     *
     * @param {string} options.currentPathURL - The initial current path URL.
     *
-    * @param {(url: string) => void} options.setCurrentPathURL - Update function for current tree entry path URL.
+    * @param {(url: string, treeName: string) => void} options.setCurrentPathURL - Update function for current tree
+    *        entry path URL.
     *
     * @param {import('typedoc').NavigationElement[]} options.elementIndex - Navigation element data.
     *
     * @param {string} options.storagePrepend - The session storage key prepend.
+    *
+    * @param {string} options.treeName - The tree name.
     */
-   constructor({ baseURL, currentPathURL, setCurrentPathURL, elementIndex, storagePrepend })
+   constructor({ baseURL, currentPathURL, setCurrentPathURL, elementIndex, storagePrepend, treeName })
    {
       this.#baseURL = baseURL;
       this.#setCurrentPathURL = setCurrentPathURL;
       this.#elementIndex = elementIndex;
       this.#storagePrepend = storagePrepend;
+      this.#treeName = treeName;
 
       this.#sessionStorage = new TJSSessionStorage();
 
@@ -92,6 +102,11 @@ export class TreeState
    get hasData() { return this.#elementIndex?.length > 0; }
 
    /**
+    * @returns {boolean} When true there are folders / node entries with children.
+    */
+   get hasFolders() { return this.#hasFolders; }
+
+   /**
     * @returns {import('#runtime/svelte/store/web-storage').TJSSessionStorage} The tree folder open / close session
     * storage instance.
     */
@@ -105,12 +120,6 @@ export class TreeState
    {
       return this.#storeFoldersAllOpen;
    }
-
-   /**
-    * @returns {Writable<number>} Indicates the count of top level nodes if there are entries with children / tree
-    * nodes present.
-    */
-   get storeTopLevelNodeCount() { return this.#storeTopLevelNodeCount; }
 
    /**
     * Finds the child nodes that match the given path URL by a depth first search and recursively finds any associated
@@ -134,7 +143,7 @@ export class TreeState
 
       const result = this.#searchTree(pathURL, operation);
 
-      if (result && setCurrent) { this.#setCurrentPathURL(pathURL); }
+      if (result && setCurrent) { this.#setCurrentPathURL(pathURL, this.#treeName); }
 
       return result;
    }
@@ -271,11 +280,11 @@ export class TreeState
     */
    #initializeTree()
    {
-      let topLevelNodes = 0;
+      let topLevelFolders = 0;
 
       const operation = (entry, parentEntry) =>
       {
-         if (!parentEntry) { topLevelNodes++; }
+         if (!parentEntry) { topLevelFolders++; }
 
          // Set storage key to DMTNavigationEntry.
          const parentPath = parentEntry ? parentEntry.path ?? parentEntry.text : '';
@@ -287,7 +296,7 @@ export class TreeState
 
       this.#walkTree(operation);
 
-      this.#storeTopLevelNodeCount.set(topLevelNodes);
+      this.#hasFolders = topLevelFolders > 0;
    }
 
    /**
@@ -421,11 +430,17 @@ export class TreeState
    {
       this.#initializeTree();
 
+      // Modify all content links with hash fragments.
+      this.#hashAnchorLinks();
+
       // Attempt to set initial current path; there may be a hash fragment.
       const initialResult = this.#initializeCurrentPath(currentPathURL);
 
-      // Handle the case of a hash fragment.
-      if (currentPathURL.includes('#'))
+      if (initialResult)
+      {
+         this.#setCurrentPathURL(currentPathURL, this.#treeName);
+      }
+      else if (currentPathURL.includes('#')) // Handle the case of a hash fragment.
       {
          const match = currentPathURL.split('#');
 
@@ -433,16 +448,16 @@ export class TreeState
          if (!initialResult)
          {
             const noHashURL = match[0];
-            if (noHashURL && this.#initializeCurrentPath(noHashURL)) { this.#setCurrentPathURL(noHashURL); }
+            if (noHashURL && this.#initializeCurrentPath(noHashURL))
+            {
+               this.#setCurrentPathURL(noHashURL, this.#treeName);
+            }
          }
 
          // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
          // Note: Firefox does without manual scrolling.
          this.#scrollContentToHash(match[1]);
       }
-
-      // Modify all content links with hash fragments.
-      this.#hashAnchorLinks();
    }
 
    /**

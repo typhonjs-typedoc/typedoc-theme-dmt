@@ -2,6 +2,8 @@ import {
    inflateAndUnpack,
    inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
 
+import { TJSSessionStorage }     from '#runtime/svelte/store/web-storage';
+
 import {
    keyCommands,
    scrollActivation }            from './state/external/events';
@@ -53,6 +55,7 @@ const componentContext = new Map();
 componentContext.set('#dmtComponentData', dmtComponentData);
 componentContext.set('#dmtLocalStorage', dmtLocalStorage);
 componentContext.set('#dmtNavigationData', navigationData);
+componentContext.set('#dmtSessionStorage', new TJSSessionStorage());
 componentContext.set('#dmtStoreSettingAnimate', dmtLocalStorage.getStore(localConstants.dmtThemeAnimate));
 
 // Must initialize first so that `animate` local storage initially is configured from OS / browser

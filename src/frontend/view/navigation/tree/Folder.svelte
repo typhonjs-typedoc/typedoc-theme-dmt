@@ -41,9 +41,6 @@
       styles: parentIcon ? { '--tjs-folder-details-margin-left': '3.5px' } : void 0
    }
 
-   // Theme animation local storage state.
-   $: animate = $storeSettingAnimate;
-
    /**
     * Handle closing all child folders if the `Alt` key is pressed when this folder is closed.
     *
@@ -65,7 +62,7 @@
    }
 </script>
 
-<TJSSvgFolder {folder} {animate} {onClose} {onOpen}>
+<TJSSvgFolder {folder} {onClose} {onOpen} animate={$storeSettingAnimate}>
    <Entry {entry} {removeIcon} {storageKey} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}

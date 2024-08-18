@@ -40,7 +40,7 @@
       border: var(--dmt-container-border);
       border-radius: var(--dmt-container-border-radius);
       box-shadow: var(--dmt-container-box-shadow);
-      margin: 0.5rem 1rem 0.25rem 0;
+      margin: 0 1rem 0 0;
       padding: 0.25rem;
    }
 </style>
