@@ -244,6 +244,21 @@ details .tsd-accordion-summary {
   }
 }
 
+nav.tsd-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  > section:first-child {
+    margin-top: 0.75rem;
+
+    // The source index / navigation tree has no margin top when first child.
+    &.source-index {
+      margin-top: 0;
+    }
+  }
+}
+
 // Ensure padding of navigation links; matches default theme; no changes as the nav folder layout depends on this.
 .tsd-navigation a, .tsd-navigation summary > span, .tsd-page-navigation a {
   padding: 0.25rem;
