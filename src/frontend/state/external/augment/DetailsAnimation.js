@@ -17,7 +17,7 @@ export class DetailsAnimation
       globalThis.requestAnimationFrame(() =>
       {
          const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
-          'details.tsd-accordion');
+          'details.tsd-accordion, details.tsd-index-accordion');
 
          // Add the toggleDetails actions to all default theme detail elements storing the update action.
          for (const detailEl of detailElList)
@@ -37,7 +37,7 @@ export class DetailsAnimation
    #setEnabled(animate)
    {
       const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
-       'details.tsd-accordion');
+       'details.tsd-accordion, details.tsd-index-accordion');
 
       for (const detailEl of detailElList)
       {
