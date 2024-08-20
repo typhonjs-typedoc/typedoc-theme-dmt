@@ -2,7 +2,7 @@
    import { getContext }   from 'svelte';
 
    import NavigationTree   from '../tree/NavigationTree.svelte';
-   import TJSSvgFolder     from '../tree/TJSSvgFolder.svelte';
+   import TJSSvgFolder     from '../../external/TJSSvgFolder.svelte';
 
    const { storagePrepend } = getContext('#dmtComponentData');
 
@@ -46,8 +46,9 @@
    }
 
    section {
-      --tjs-folder-summary-margin: 0 0.25rem;
       --dmt-nav-tree-padding-left: 0;
+      --tjs-folder-summary-margin: 0 0.25rem;
+      --tjs-folder-summary-width: 100%;
 
       background: var(--dmt-container-background);
       border: var(--dmt-container-border);

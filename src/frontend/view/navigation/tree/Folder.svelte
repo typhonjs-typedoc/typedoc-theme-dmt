@@ -9,7 +9,7 @@
    import { getContext }   from 'svelte';
 
    import Entry            from './Entry.svelte';
-   import TJSSvgFolder     from './TJSSvgFolder.svelte';
+   import TJSSvgFolder     from '../../external/TJSSvgFolder.svelte';
 
    /** @type {import('#types/frontend').DMTNavigationElement} */
    export let entry;
