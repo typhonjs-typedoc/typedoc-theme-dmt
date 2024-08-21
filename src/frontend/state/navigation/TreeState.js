@@ -10,9 +10,6 @@ import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
  */
 export class TreeState
 {
-   /** @type {string} */
-   #baseURL;
-
    /** @type {import('typedoc').NavigationElement[]} */
    #elementIndex;
 
@@ -61,8 +58,6 @@ export class TreeState
    /**
     * @param {object} options - Options;
     *
-    * @param {string} options.baseURL - The base path URL.
-    *
     * @param {string} options.currentPathURL - The initial current path URL.
     *
     * @param {(url: string, treeName: string) => void} options.setCurrentPathURL - Update function for current tree
@@ -74,9 +69,8 @@ export class TreeState
     *
     * @param {string} options.treeName - The tree name.
     */
-   constructor({ baseURL, currentPathURL, setCurrentPathURL, elementIndex, storagePrepend, treeName })
+   constructor({ currentPathURL, setCurrentPathURL, elementIndex, storagePrepend, treeName })
    {
-      this.#baseURL = baseURL;
       this.#setCurrentPathURL = setCurrentPathURL;
       this.#elementIndex = elementIndex;
       this.#storagePrepend = storagePrepend;
@@ -87,8 +81,6 @@ export class TreeState
       this.#setInitialState(currentPathURL);
 
       this.#createDerivedStores();
-
-      globalThis.addEventListener('hashchange', this.#onHashchange.bind(this));
    }
 
    /**
@@ -198,64 +190,6 @@ export class TreeState
    }
 
    /**
-    * Create custom click handlers for all main content anchors that have a hash fragment. `hashAnchorClick` will
-    * ensure that the Navigation entry is visible when clicked even if the main URL hash fragment doesn't change.
-    */
-   #hashAnchorLinks()
-   {
-      const thisTreeState = this;
-
-      /**
-       * Handle any clicks on content anchors with a hash ensuring that the clicked upon anchor is always visible in the
-       * navigation tree.
-       *
-       * @param {PointerEvent}   event -
-       */
-      function hashAnchorClick(event)
-      {
-         event.preventDefault(); // Prevent the default anchor click behavior.
-
-         const fullURLNoHash = globalThis.location.href.split('#')[0];
-         const anchorURLNoHash = this.href.split('#')[0];
-
-         // If the main URLs or hash differ then set the window location. The `onHashchange` function will trigger.
-         if (fullURLNoHash !== anchorURLNoHash || globalThis.location.hash !== this.hash)
-         {
-            globalThis.location.href = this.href;
-            return;
-         }
-
-         // Otherwise a link is clicked and the URL / hash reference is the same as the current page. Ensure that
-         // the navigation tree shows the current entry.
-
-         const pathURL = this.href.replace(thisTreeState.#baseURL, '');
-
-         if (!thisTreeState.ensureCurrentPath(pathURL) && pathURL.includes('#'))
-         {
-            // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
-            // without the hash fragment.
-            const match = pathURL.split('#');
-
-            // No hash URL
-            if (match[0])
-            {
-               thisTreeState.ensureCurrentPath(match[0]);
-            }
-
-            // Manually scroll to hash fragment.
-            thisTreeState.#scrollContentToHash(match[1]);
-         }
-      }
-
-      // Find all anchor links in the main content body and page navigation.
-      const hashAnchors = document.querySelectorAll(
-       'div.col-content a[href*="#"], details.tsd-page-navigation a[href*="#"]');
-
-      // Add custom hash anchor click handling.
-      for (const anchorEl of hashAnchors) { anchorEl.addEventListener('click', hashAnchorClick); }
-   }
-
-   /**
     * Finds the child nodes that match the given path URL by a depth first search and sets the entries session storage
     * key to true / opened for all entry tree nodes from the path URL given. This overrides any stored values from
     * session storage on initial render ensuring that the current entry is always visible.
@@ -297,60 +231,6 @@ export class TreeState
       this.#walkTree(operation);
 
       this.#hasFolders = topLevelFolders > 0;
-   }
-
-   /**
-    * Updates the session storage state opening all tree nodes to the new URL path. This is added as a listener for
-    * `hashchange` on `window`.
-    *
-    * @param {HashChangeEvent}   event - A HashChange event.
-    */
-   #onHashchange(event)
-   {
-      const newPathURL = event.newURL.replace(this.#baseURL, '');
-
-      // Ensure any tree nodes are open for `newURLPath`.
-      if (!this.ensureCurrentPath(newPathURL) && newPathURL.includes('#'))
-      {
-         // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
-         // without the hash fragment.
-         const noHashURL = newPathURL.split('#')[0];
-         if (noHashURL) { this.ensureCurrentPath(noHashURL); }
-      }
-   }
-
-   /**
-    * Scrolls the current page to the given hash fragment.
-    * TODO: This is a workaround attempt for a Chromium / Chrome bug where hash fragments are not properly scrolled to.
-    * Hash fragment scrolling into view works fine w/ Firefox.
-    *
-    * I have deemed it currently not worth having a workaround in place, but left the workaround attempt for a later
-    * review.
-    *
-    * See:
-    * https://bugs.chromium.org/p/chromium/issues/detail?id=1417660
-    * https://bugs.chromium.org/p/chromium/issues/detail?id=833617
-    *
-    * @param {string}   hashFragment - Target hash fragment.
-    */
-   #scrollContentToHash(hashFragment) // eslint-disable-line no-unused-vars
-   {
-      // if (typeof hashFragment !== 'string') { return; }
-      //
-      // nextAnimationFrame().then(() =>
-      // {
-      //    const targetEl = document.querySelector(`div.col-content a[href*="#${hashFragment}"]`);
-      //    const contentEl = document.querySelector('div.container.container-main');
-      //
-      //    if (targetEl && contentEl)
-      //    {
-      //       contentEl.focus();
-      //       contentEl.scrollTo({
-      //          top: targetEl.getBoundingClientRect().top - 60,
-      //          behavior: 'instant'
-      //       });
-      //    }
-      // });
    }
 
    /**
@@ -430,9 +310,6 @@ export class TreeState
    {
       this.#initializeTree();
 
-      // Modify all content links with hash fragments.
-      this.#hashAnchorLinks();
-
       // Attempt to set initial current path; there may be a hash fragment.
       const initialResult = this.#initializeCurrentPath(currentPathURL);
 
@@ -453,10 +330,6 @@ export class TreeState
                this.#setCurrentPathURL(noHashURL, this.#treeName);
             }
          }
-
-         // Chrome for whatever reason doesn't automatically scroll to the hash fragment, so manually do it.
-         // Note: Firefox does without manual scrolling.
-         this.#scrollContentToHash(match[1]);
       }
    }
 

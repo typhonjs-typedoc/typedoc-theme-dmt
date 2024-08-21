@@ -73,7 +73,6 @@ export class TreeStateControl
       const setCurrentPathURLBound = this.#setCurrentPathURL.bind(this);
 
       this.#treeMarkdown = new TreeState({
-         baseURL: navData.baseURL,
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
          elementIndex: dmtComponentData.markdownIndex ?? [],
@@ -82,13 +81,17 @@ export class TreeStateControl
       });
 
       this.#treeSource = new TreeState({
-         baseURL: navData.baseURL,
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
          elementIndex: dmtComponentData.navigationIndex ?? [],
          storagePrepend: `${storagePrepend}-source`,
          treeName: 'source'
       });
+
+      // Modify all content links with hash fragments.
+      this.#hashAnchorLinks();
+
+      globalThis.addEventListener('hashchange', this.#onHashchange.bind(this));
    }
 
    /**
@@ -132,31 +135,107 @@ export class TreeStateControl
    }
 
    /**
-    * Ensures that the current path from any navigation tree is open.
+    * Ensures that the current or given path from any navigation tree is open.
     *
     * @param {object} [options] - Options.
     *
+    * @param {string} [options.pathURL] A new tree entry path URL to select and ensure open.
+    *
     * @param {boolean}  [options.focus=false] - Attempt to manually focus the current path entry.
     */
-   ensureCurrentPath({ focus = false } = {})
+   ensureCurrentPath({ pathURL = this.#currentPathURL, focus = false } = {})
    {
-      // Ensure current path is open and focus current path navigation entry.
-      const currentPathURL = this.#currentPathURL;
-
       let result = false;
 
-      result |= this.#treeMarkdown.ensureCurrentPath(currentPathURL);
-      result |= this.#treeSource.ensureCurrentPath(currentPathURL);
+      result |= this.#treeMarkdown.ensureCurrentPath(pathURL);
+      result |= this.#treeSource.ensureCurrentPath(pathURL);
 
       // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
       if (result && focus)
       {
          nextAnimationFrame().then(() => document.querySelector('nav.tsd-navigation')?.querySelector(
-          `a[href*="${currentPathURL}"]`)?.focus({ focusVisible: true }));
+          `a[href*="${pathURL}"]`)?.focus({ focusVisible: true }));
       }
    }
 
    // Internal implementation ----------------------------------------------------------------------------------------
+
+   /**
+    * Create custom click handlers for all main content anchors that have a hash fragment. `hashAnchorClick` will
+    * ensure that the Navigation entry is visible when clicked even if the main URL hash fragment doesn't change.
+    */
+   #hashAnchorLinks()
+   {
+      const thisTreeControl = this;
+
+      /**
+       * Handle any clicks on content anchors with a hash ensuring that the clicked upon anchor is always visible in the
+       * navigation tree.
+       *
+       * @param {PointerEvent}   event -
+       *
+       * @this {HTMLAnchorElement}
+       */
+      function hashAnchorClick(event)
+      {
+         event.preventDefault(); // Prevent the default anchor click behavior.
+
+         const fullURLNoHash = globalThis.location.href.split('#')[0];
+         const anchorURLNoHash = this.href.split('#')[0];
+
+         // If the main URLs or hash differ then set the window location. The `onHashchange` function will trigger.
+         if (fullURLNoHash !== anchorURLNoHash || globalThis.location.hash !== this.hash)
+         {
+            globalThis.location.href = this.href;
+            return;
+         }
+
+         // Otherwise a link is clicked and the URL / hash reference is the same as the current page. Ensure that
+         // the navigation tree shows the current entry.
+
+         const pathURL = this.href.replace(thisTreeControl.#navData.baseURL, '');
+
+         if (!thisTreeControl.ensureCurrentPath({ pathURL }) && pathURL.includes('#'))
+         {
+            // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
+            // without the hash fragment.
+            const match = pathURL.split('#');
+
+            // No hash URL
+            if (match[0])
+            {
+               thisTreeControl.ensureCurrentPath({ pathURL: match[0] });
+            }
+         }
+      }
+
+      // Find all anchor links in the main content body and page navigation.
+      const hashAnchors = document.querySelectorAll(
+       'div.col-content a[href*="#"], details.tsd-page-navigation a[href*="#"]');
+
+      // Add custom hash anchor click handling.
+      for (const anchorEl of hashAnchors) { anchorEl.addEventListener('click', hashAnchorClick); }
+   }
+
+   /**
+    * Updates the session storage state opening all tree nodes to the new URL path. This is added as a listener for
+    * `hashchange` on `window`.
+    *
+    * @param {HashChangeEvent}   event - A HashChange event.
+    */
+   #onHashchange(event)
+   {
+      const pathURL = event.newURL.replace(this.#navData.baseURL, '');
+
+      // Ensure any tree nodes are open for `newURLPath`.
+      if (!this.ensureCurrentPath({ pathURL }) && pathURL.includes('#'))
+      {
+         // Handle the case where the hash fragment is not in the navigation index. Attempt to ensure current path
+         // without the hash fragment.
+         const noHashURL = pathURL.split('#')[0];
+         if (noHashURL) { this.ensureCurrentPath({ pathURL: noHashURL }); }
+      }
+   }
 
    /**
     * Sets the current path URL local data and store.
