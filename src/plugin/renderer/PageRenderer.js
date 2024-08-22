@@ -91,6 +91,14 @@ export class PageRenderer
       // Remove the footer if there is no content.
       if (hideGenerator && !customFooterHtml) { $('body main footer').remove(); }
 
+      // Add DMT message to any generator footer ---------------------------------------------------------------------
+
+      const generatorEl = $('footer .tsd-generator');
+      if (generatorEl)
+      {
+         generatorEl.html(`${generatorEl.html()} / <a href="https://www.npmjs.com/package/@typhonjs-typedoc/typedoc-theme-dmt" target="_blank">Default Modern Theme</a>`);
+      }
+
       // Replace inline script content removing unnecessary style `display` gating for page display. -----------------
 
       const inlineScript = $('body script:first-child');
