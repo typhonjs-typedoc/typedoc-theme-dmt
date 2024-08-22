@@ -480,7 +480,7 @@ a {
 
 // Hide `On This Page` when col-sidebar becomes activated and moves content to the left.
 @media (width < 1200px) {
-  .tsd-index-accordion.tsd-page-navigation {
+  .tsd-accordion.tsd-page-navigation {
     display: none;
   }
 
@@ -538,7 +538,7 @@ a {
   }
 
   // Styling for sidebar `On This Page`
-  details.tsd-index-accordion.tsd-page-navigation {
+  details.tsd-accordion.tsd-page-navigation {
     background: var(--dmt-container-background);
     border: var(--dmt-container-border);
     border-radius: var(--dmt-container-border-radius);
@@ -558,7 +558,7 @@ a {
   }
 
   // Styling for sidebar `On This Page` detail element open.
-  details[open].tsd-index-accordion.tsd-page-navigation {
+  details[open].tsd-accordion.tsd-page-navigation {
     padding: var(--dmt-container-padding) 0 0 var(--dmt-container-padding);
 
     .tsd-accordion-summary {
