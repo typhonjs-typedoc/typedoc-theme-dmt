@@ -79,6 +79,18 @@ export class PageRenderer
     */
    #augmentGlobal($)
    {
+      // Move header, container-main, and footer elements into the `main` element ------------------------------------
+      const bodyEl = $('body');
+      bodyEl.prepend('<main></main>');
+
+      $('body > header, body > .container-main, body > footer').appendTo('body > main');
+
+      const hideGenerator = this.#app.options.getValue('hideGenerator');
+      const customFooterHtml = this.#app.options.getValue('customFooterHtml');
+
+      // Remove the footer if there is no content.
+      if (hideGenerator && !customFooterHtml) { $('body main footer').remove(); }
+
       // Replace inline script content removing unnecessary style `display` gating for page display. -----------------
 
       const inlineScript = $('body script:first-child');
@@ -128,19 +140,6 @@ export class PageRenderer
          const parameterListEl = $(this);
          if (parameterListEl.children().length === 0) { parameterListEl.addClass('no-children'); }
       });
-
-      // Move generator element to column content --------------------------------------------------------------------
-
-      const generatorEl = $('.tsd-generator');
-      if (generatorEl.length)
-      {
-         const newGeneratorEl = generatorEl.clone();
-         newGeneratorEl.find('p').append(
-          ' and the <a href="https://www.npmjs.com/package/@typhonjs-typedoc/typedoc-theme-dmt" target="_blank">Default Modern Theme</a>');
-
-         $('.col-content').append(newGeneratorEl);
-         generatorEl.remove();
-      }
 
       // Remove errant `tabindex` / `role` from index details summary header -----------------------------------------
 

@@ -22,9 +22,6 @@
   // `On This Page`.
   --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - 1.5rem);
 
-  // A defined max-height for the col-sidebar when it displays.
-  --dmt-sidebar-max-height: calc(100vh - var(--dmt-header-height));
-
   // Focus visible control
   --dmt-focus-visible-color: orange;
   --dmt-outline-focus-visible: 3px solid var(--dmt-focus-visible-color);
@@ -89,6 +86,23 @@
 
 /* Layout additions ------------------------------------------------------------------------------------------------- */
 
+body {
+  main {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  footer {
+    flex-shrink: 0;
+    height: fit-content;
+    width: 100%;
+  }
+}
+
 // Default theme only defines width for vertical scroll bars and not height for horizontal scrollbars.
 *::-webkit-scrollbar {
   height: 0.75rem;
@@ -137,9 +151,8 @@ div.container.container-main {
 /* Layout Tweaks ---------------------------------------------------------------------------------------------------- */
 
 header.tsd-page-toolbar {
-  position: fixed;
   height: var(--dmt-header-height);
-  top: 0;
+  flex-shrink: 0;
 }
 
 // Unset default theme max-width allowing full expansion. Add max-width to .col-content instead and
@@ -148,13 +161,17 @@ header.tsd-page-toolbar {
 }
 
 .container.container-main {
-  margin-top: var(--dmt-header-height);
-  max-height: var(--dmt-container-max-height);
+  flex-grow: 1;
   overflow-x: hidden;
-  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .col-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
   height: fit-content;
   margin-bottom: 1rem;
   margin-top: 0.75rem;
@@ -162,8 +179,10 @@ header.tsd-page-toolbar {
 }
 
 .site-menu {
+  // Overrides TypeDoc styles.
   margin-top: 0;
-  max-height: var(--dmt-sidebar-max-height);
+  max-height: unset;
+
   padding-left: 0.1rem; // For outline
   top: 0;
 
@@ -191,17 +210,9 @@ header.tsd-page-toolbar {
   position: sticky;
 }
 
-// Style generator div as container.
-.tsd-generator {
-  background: var(--dmt-container-background);
-  border: var(--dmt-container-border);
-  border-radius: var(--dmt-container-border-radius);
-  margin-bottom: 0.75rem;
-}
-
 @media (min-width: 770px) and (max-width: 1399px) {
   .col-sidebar {
-    max-height: var(--dmt-sidebar-max-height);
+    max-height: unset;
     padding-top: 0;
     top: 0;
   }
@@ -455,10 +466,13 @@ a {
 // For 4k / large screen sizes. Cap grid columns then expand left margin and right padding to center content while
 // keeping the main container scrollbar pinned to the far right side of the screen.
 @media (min-width: 2190px) {
+  .page-menu {
+    max-width: 350px;
+  }
+
   .container-main {
     grid-template-columns: minmax(0, 520px) minmax(0, 1300px) 1fr;
-    margin-left: calc((100% - 2190px) / 2);
-    padding-right: calc((100% - 2190px) / 2);
+    padding-left: calc((100% - 2190px) / 2);
   }
 }
 
