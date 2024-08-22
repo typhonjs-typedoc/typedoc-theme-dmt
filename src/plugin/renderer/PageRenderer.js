@@ -81,7 +81,7 @@ export class PageRenderer
    {
       // Move header, container-main, and footer elements into the `main` element ------------------------------------
       const bodyEl = $('body');
-      bodyEl.prepend('<main></main>');
+      bodyEl.append('<main></main>');
 
       $('body > header, body > .container-main, body > footer').appendTo('body > main');
 

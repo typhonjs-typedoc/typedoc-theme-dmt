@@ -130,4 +130,12 @@ globalThis.requestAnimationFrame(() =>
    const style = document.createElement('style');
    style.innerHTML = 'body { visibility: visible; }';
    document.head.appendChild(style);
+
+   // Dynamically set CSS variable for the footer element so that scrolling for the details element for `On This Page`
+   // can account for the footer height.
+   const footerEl = document.querySelector('body main footer');
+   if (footerEl)
+   {
+      document.documentElement.style.setProperty('--dmt-footer-height', `${footerEl.offsetHeight}px`);
+   }
 });

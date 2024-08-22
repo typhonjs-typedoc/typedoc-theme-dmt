@@ -19,8 +19,8 @@
   --dmt-nav-folder-contents-border-color: var(--color-active-menu-item);
 
   // Additional 1.5 rem to take into account padding at top and to give the appearance of padding at the bottom for
-  // `On This Page`.
-  --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - 1.5rem);
+  // `On This Page`. Also note: `--dmt-footer-height` is set dynamically in Javascript.
+  --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - var(--dmt-footer-height, 0px) - 1.5rem);
 
   // Focus visible control
   --dmt-focus-visible-color: orange;
@@ -153,6 +153,11 @@ div.container.container-main {
 header.tsd-page-toolbar {
   height: var(--dmt-header-height);
   flex-shrink: 0;
+
+  position: unset;
+  z-index: unset;
+  top: unset;
+  left: unset;
 }
 
 // Unset default theme max-width allowing full expansion. Add max-width to .col-content instead and
