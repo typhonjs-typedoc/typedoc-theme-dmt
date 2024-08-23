@@ -75,7 +75,7 @@ export class TreeStateControl
       this.#treeMarkdown = new TreeState({
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
-         elementIndex: dmtComponentData.markdownIndex ?? [],
+         elementIndex: dmtComponentData.navigationIndex?.markdown ?? [],
          storagePrepend: `${storagePrepend}-markdown`,
          treeName: 'markdown'
       });
@@ -83,7 +83,7 @@ export class TreeStateControl
       this.#treeSource = new TreeState({
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
-         elementIndex: dmtComponentData.navigationIndex ?? [],
+         elementIndex: dmtComponentData?.navigationIndex?.source ?? [],
          storagePrepend: `${storagePrepend}-source`,
          treeName: 'source'
       });

@@ -50,19 +50,13 @@ export class GlobalResources
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
-      const defaultNavIndex = app.renderer.theme?.getNavigation?.(event.project) ?? [];
-
-      const { navigationIndex, markdownIndex } = NavigationIndex.transform(defaultNavIndex, options,
-       event?.project?.packageName);
-
       const data = {
          hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
-         markdownIndex,
          moduleIsPackage: options.moduleRemap.isPackage,
          navModuleIcon: options.navigation.moduleIcon,
-         navigationIndex,
+         navigationIndex: NavigationIndex.data,
          navigationLinks: app.options.getValue('navigationLinks'),
          ReflectionKind: this.#getReflectionKind(options),
          search: options.search,

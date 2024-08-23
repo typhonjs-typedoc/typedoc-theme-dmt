@@ -8,28 +8,70 @@ import { ModuleTreeMap }   from './ModuleTreeMap.js';
 export class NavigationIndex
 {
    /**
-    * @param {import('typedoc').NavigationElement[]}  index - Original navigation index.
+    * @type {({
+    *    markdown: import('typedoc').NavigationElement[],
+    *    source: import('typedoc').NavigationElement[]
+    * })} Processed navigation index.
+    */
+   static #data = { markdown: [], source: [] };
+
+   /**
+    * @returns {({
+    *    markdown: import('typedoc').NavigationElement[],
+    *    source: import('typedoc').NavigationElement[]
+    * })} Processed navigation index.
+    */
+   static get data()
+   {
+      return this.#data;
+   }
+
+   /**
+    * @returns {boolean} Whether there is Markdown document data.
+    */
+   static get hasMarkdown()
+   {
+      return this.#data.markdown.length > 0;
+   }
+
+   /**
+    * @returns {boolean} Whether there is source data.
+    */
+   static get hasSource()
+   {
+      return this.#data.source.length > 0;
+   }
+
+   /**
+    * @param {import('typedoc').Application} app -
+    *
+    * @param {import('typedoc').ProjectReflection} project -
     *
     * @param {ThemeOptions} options - Theme options.
     *
-    * @param {string}   [packageName] Any associated package name.
-    *
     * @returns {({
-    *    markdownIndex: import('typedoc').NavigationElement[],
-    *    navigationIndex: import('typedoc').NavigationElement[]
+    *    markdown: import('typedoc').NavigationElement[],
+    *    source: import('typedoc').NavigationElement[]
     * })} Processed navigation index.
     */
-   static transform(index, options, packageName)
+   static transform(app, project, options)
    {
-      const markdownIndex = this.#parseMarkdownTree(index);
+      /** @type {import('typedoc').NavigationElement[]} */
+      const index = app.renderer.theme?.getNavigation?.(project) ?? [];
+
+      const packageName = project?.packageName;
+
+      const markdown = this.#parseMarkdownTree(index);
 
       // No processing necessary so directly return the index.
       const tree = options.navigation.style === 'flat' ? index : this.#parseModuleTree(index, options, packageName);
 
-      return {
-         markdownIndex,
-         navigationIndex: options.navigation.style === 'compact' ? ModuleTreeMap.compactSingularPaths(tree) : tree
+      this.#data = {
+         markdown,
+         source: options.navigation.style === 'compact' ? ModuleTreeMap.compactSingularPaths(tree) : tree
       };
+
+      return this.#data;
    }
 
    /**

@@ -55,11 +55,6 @@ export type DMTComponentData = {
    linksService: DMTIconLink[];
 
    /**
-    * Default markdown index.
-    */
-   markdownIndex: NavigationElement[];
-
-   /**
     * When true 'Module' in page titles is replaced with 'Package'.
     */
    moduleIsPackage: boolean;
@@ -70,9 +65,12 @@ export type DMTComponentData = {
    navigationLinks?: Record<string, string>;
 
    /**
-    * Default navigation index.
+    * Navigation index for separate markdown and source trees.
     */
-   navigationIndex: NavigationElement[];
+   navigationIndex: {
+      markdown: NavigationElement[]
+      source: NavigationElement[]
+   };
 
    /**
     * When true SVG icons for all navigation module entries are displayed.

@@ -9,6 +9,7 @@ import {
 
 import {
    GlobalResources,
+   NavigationIndex,
    PageRenderer,
    SearchIndexPackr }      from './renderer/index.js';
 
@@ -48,6 +49,9 @@ export function load(app)
             // Make the `dmt` sub-folder on `assets`.
             app.renderer.on(RendererEvent.BEGIN, (event) => fs.mkdirSync(path.join(event.outputDirectory, 'assets',
              'dmt'), { recursive: true }));
+
+            // Transform / parse TypeDoc navigation index.
+            app.renderer.on(RendererEvent.BEGIN, (event) => NavigationIndex.transform(app, event.project, options));
 
             // At the end of rendering generate the compressed global component data.
             app.renderer.on(RendererEvent.END, (event) => GlobalResources.build(event, app, options), -100);
