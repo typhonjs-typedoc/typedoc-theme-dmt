@@ -6,12 +6,12 @@
 
    const { dmtURL } = dmtComponentData;
 
-   const linksIcon = dmtComponentData?.linksIcon ?? [];
-   const linksService = dmtComponentData?.linksService ?? [];
+   const linksService = dmtComponentData?.iconLinks?.service ?? [];
+   const linksUser = dmtComponentData?.iconLinks?.user ?? [];
 </script>
 
 <section>
-   {#each linksIcon as entry (entry.url)}
+   {#each linksUser as entry (entry.url)}
       <a href={entry.url} target="_blank" title={entry.title}>
          <img src={typeof entry.dmtPath === 'string' ? `${dmtURL}${entry.dmtPath}` : entry.iconURL} alt={entry.title} />
       </a>

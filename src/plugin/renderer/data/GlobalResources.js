@@ -69,8 +69,10 @@ export class GlobalResources
        app.options.getValue('navigationLinks'));
 
       const data = {
-         linksIcon: this.#processLinksIcon(event, options),
-         linksService: this.#processLinksService(event, options),
+         iconLinks: {
+            service: this.#processIconLinksService(event, options),
+            user: this.#processIconLinksUser(event, options)
+         },
          modulesIndex,
          moduleIsPackage: options.moduleRemap.isPackage,
          navModuleIcon: options.navigation.moduleIcon,
@@ -185,7 +187,7 @@ export class GlobalResources
     *
     * @returns {DMTIconLink[]} List of DMTIconLinks.
     */
-   static #processLinksIcon(event, options)
+   static #processIconLinksUser(event, options)
    {
       const result = [];
       const links = options.linksIcon;
@@ -229,7 +231,7 @@ export class GlobalResources
     *
     * @returns {DMTIconLink[]} List of service DMTIconLinks.
     */
-   static #processLinksService(event, options)
+   static #processIconLinksService(event, options)
    {
       const result = [];
       const links = options.linksService;

@@ -44,14 +44,12 @@ export type DMTComponentData = {
    initialPathURL: string;
 
    /**
-    * Resolved user icon links.
+    * The combined user icon / service header links.
     */
-   linksIcon: DMTIconLink[];
-
-   /**
-    * Resolved service icon links.
-    */
-   linksService: DMTIconLink[];
+   iconLinks: {
+      service: DMTIconLink[],
+      user: DMTIconLink[]
+   };
 
    /**
     * The relative path to any module / modules index.
