@@ -24,11 +24,11 @@ export class NavigationData
    #baseURL;
 
    /**
-    * Indicates that a root `modules.html` is generated.
+    * Path to module / modules index.
     *
-    * @type {boolean}
+    * @type {string | undefined}
     */
-   #hasModulesIndex;
+   #modulesIndex;
 
    /**
     * When true SVG icons for all navigation module entries are displayed.
@@ -58,7 +58,7 @@ export class NavigationData
    {
       this.#basePath = dmtComponentData.basePath;
       this.#baseURL = dmtComponentData.baseURL;
-      this.#hasModulesIndex = dmtComponentData.hasModulesIndex;
+      this.#modulesIndex = dmtComponentData.modulesIndex;
       this.#navModuleIcon = dmtComponentData.navModuleIcon;
 
       this.#treeStateControl = new TreeStateControl(this, dmtComponentData);
@@ -81,11 +81,11 @@ export class NavigationData
    }
 
    /**
-    * @returns {boolean} Indicates that a root `modules.html` is generated.
+    * @returns {string | undefined} Path to module / modules index.
     */
-   get hasModulesIndex()
+   get modulesIndex()
    {
-      return this.#hasModulesIndex;
+      return this.#modulesIndex;
    }
 
    /**

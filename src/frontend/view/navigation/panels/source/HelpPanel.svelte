@@ -3,7 +3,7 @@
 
    import { slideFade }    from '#runtime/svelte/transition';
 
-   export let hasModulesIndex = false;
+   export let modulesIndex = false;
 
    export let moduleIsPackage = false;
 
@@ -46,7 +46,7 @@
    <span><i class=key>Alt + H</i>Open / close help</span>
    <span><i class=key>Alt + I</i>Go to home / index page</span>
    <span><i class=key>Alt + N</i>(Nav) focus selected</span>
-   {#if hasModulesIndex}<span><i class=key>Alt + M</i>Go to {moduleIndexLabel} page</span>{/if}
+   {#if modulesIndex}<span><i class=key>Alt + M</i>Go to {moduleIndexLabel} page</span>{/if}
    <span><i class=key>Alt + O</i>Focus "On This Page"</span>
    <span><i class=key>Alt + S</i>Activate search</span>
    {#if hasFolders}<span><i class=key>Alt</i>Press when opening / closing folders to open / close all child folders.</span>{/if}

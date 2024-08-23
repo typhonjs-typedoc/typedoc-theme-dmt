@@ -51,9 +51,9 @@ export function keyCommands(navigationData)
             break;
 
          case 'KeyM':
-            if (navigationData.hasModulesIndex)
+            if (typeof navigationData.modulesIndex === 'string')
             {
-               window.location.href = `${navigationData.baseURL}modules.html`;
+               window.location.href = `${navigationData.baseURL}${navigationData.modulesIndex}`;
             }
             event.preventDefault();
             break;

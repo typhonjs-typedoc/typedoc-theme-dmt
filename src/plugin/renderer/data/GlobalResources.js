@@ -50,10 +50,21 @@ export class GlobalResources
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
+      let modulesIndex;
+
+      if (fs.existsSync(path.join(event.outputDirectory, 'modules.html')))
+      {
+         modulesIndex = 'modules.html';
+      }
+      else if (fs.existsSync(path.join(event.outputDirectory, 'modules', 'index.html')))
+      {
+         modulesIndex = 'modules/index.html';
+      }
+
       const data = {
-         hasModulesIndex: event?.project?.url === 'modules.html',
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
+         modulesIndex,
          moduleIsPackage: options.moduleRemap.isPackage,
          navModuleIcon: options.navigation.moduleIcon,
          navigationIndex: NavigationIndex.data,

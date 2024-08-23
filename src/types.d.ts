@@ -55,6 +55,11 @@ export type DMTComponentData = {
    linksService: DMTIconLink[];
 
    /**
+    * The relative path to any module / modules index.
+    */
+   modulesIndex: string | undefined;
+
+   /**
     * When true 'Module' in page titles is replaced with 'Package'.
     */
    moduleIsPackage: boolean;

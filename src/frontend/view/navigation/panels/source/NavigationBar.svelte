@@ -10,7 +10,7 @@
    const navigationData = getContext('#dmtNavigationData');
 
    const {
-      hasModulesIndex,
+      modulesIndex,
       moduleIsPackage } = dmtComponentData;
 
    const hasFolders = navigationData.treeState.source.hasFolders;
@@ -79,14 +79,14 @@
       </svg>
    </button>
 
-   {#if hasModulesIndex}
-      <a href={`${navigationData.baseURL}modules.html`} class:current={navigationData.treeState.currentPathURL === 'modules.html'}>
+   {#if typeof modulesIndex === 'string'}
+      <a href={`${navigationData.baseURL}${modulesIndex}`} class:current={navigationData.treeState.currentPathURL === modulesIndex}>
          {moduleIndexLabel}
       </a>
    {/if}
 
    {#if $storeHelpPanelOpen}
-      <HelpPanel {hasModulesIndex} {moduleIsPackage} {hasFolders} />
+      <HelpPanel {modulesIndex} {moduleIsPackage} {hasFolders} />
    {/if}
 </section>
 
