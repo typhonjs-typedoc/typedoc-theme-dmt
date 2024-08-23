@@ -50,6 +50,8 @@ export class GlobalResources
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
+      // Determine if there is any module / modules index ------------------------------------------------------------
+
       let modulesIndex;
 
       if (fs.existsSync(path.join(event.outputDirectory, 'modules.html')))
@@ -61,6 +63,11 @@ export class GlobalResources
          modulesIndex = 'modules/index.html';
       }
 
+      // Combine 'sidebarLinks' and 'navigationLinks' ----------------------------------------------------------------
+
+      const sidebarLinks = Object.assign({}, app.options.getValue('sidebarLinks'),
+       app.options.getValue('navigationLinks'));
+
       const data = {
          linksIcon: this.#processLinksIcon(event, options),
          linksService: this.#processLinksService(event, options),
@@ -68,10 +75,9 @@ export class GlobalResources
          moduleIsPackage: options.moduleRemap.isPackage,
          navModuleIcon: options.navigation.moduleIcon,
          navigationIndex: NavigationIndex.data,
-         navigationLinks: app.options.getValue('navigationLinks'),
          ReflectionKind: this.#getReflectionKind(options),
          search: options.search,
-         sidebarLinks: app.options.getValue('sidebarLinks'),
+         sidebarLinks,
          storagePrepend: `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
       };
 

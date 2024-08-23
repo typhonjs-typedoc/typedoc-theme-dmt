@@ -6,17 +6,11 @@
    /** @type {Record<string, string>} */
    const sidebarLinks = dmtComponentData?.sidebarLinks ?? {};
 
-   /** @type {Record<string, string>} */
-   const navigationLinks = dmtComponentData?.navigationLinks ?? {};
-
-   const hasLinks = (Object.keys(sidebarLinks).length + Object.keys(navigationLinks).length) > 0;
+   const hasLinks = Object.keys(sidebarLinks).length > 0;
 </script>
 
 {#if hasLinks}
    <section>
-      {#each Object.keys(navigationLinks) as key (navigationLinks[key])}
-         <a href={`${navigationLinks[key]}`} target=_blank><span>{key}</span></a>
-      {/each}
       {#each Object.keys(sidebarLinks) as key (sidebarLinks[key])}
          <a href={`${sidebarLinks[key]}`} target=_blank><span>{key}</span></a>
       {/each}

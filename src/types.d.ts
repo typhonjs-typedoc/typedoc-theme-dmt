@@ -10,7 +10,6 @@ import type {
    inflateAndUnpackB64 }               from '#runtime/data/format/msgpack/compress';
 
 import type { TrieSearch }             from '#runtime/data/struct/search/trie';
-import type { TJSLocalStorage }        from '#runtime/svelte/store/web-storage';
 
 import type lunr                       from 'lunr';
 
@@ -65,11 +64,6 @@ export type DMTComponentData = {
    moduleIsPackage: boolean;
 
    /**
-    * Default navigation links
-    */
-   navigationLinks?: Record<string, string>;
-
-   /**
     * Navigation index for separate markdown and source trees.
     */
    navigationIndex: {
@@ -93,7 +87,7 @@ export type DMTComponentData = {
    ReflectionKind: Record<string, string|number>;
 
    /**
-    * Default sidebar links.
+    * Combined `sidebarLinks` and `navigationLinks`.
     */
    sidebarLinks?: Record<string, string>;
 
