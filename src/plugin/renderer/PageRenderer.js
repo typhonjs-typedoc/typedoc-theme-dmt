@@ -68,10 +68,6 @@ export class PageRenderer
       // For no Javascript loading reverse the above style on load. The main Svelte component bundle will reverse this
       // style after all components have been loaded on a requestAnimationFrame callback.
       headEl.append('<noscript><style>body { visibility: visible; }</style></noscript>');
-
-      // Remove unused default theme assets --------------------------------------------------------------------------
-
-      headEl.find('script[src$="assets/search.js"]').remove();
    }
 
    /**
@@ -99,7 +95,7 @@ export class PageRenderer
       const generatorEl = $('footer .tsd-generator');
       if (generatorEl)
       {
-         generatorEl.html(`${generatorEl.html()} / <a href="https://www.npmjs.com/package/@typhonjs-typedoc/typedoc-theme-dmt" target="_blank">Default Modern Theme</a>`);
+         generatorEl.html(`${generatorEl.html()} with the <a href="https://www.npmjs.com/package/@typhonjs-typedoc/typedoc-theme-dmt" target="_blank">Default Modern Theme</a>`);
       }
 
       // Replace inline script content removing unnecessary style `display` gating for page display. -----------------
@@ -293,11 +289,11 @@ export class PageRenderer
    {
       const $ = load(page.contents);
 
-      // Remove the default theme navigation script.
-      $('script[src*="/navigation.js"]').remove();
-
       // Append scripts to load web components.
       this.#addAssets($, page);
+
+      // Remove unused assets / scripts from TypeDoc default theme.
+      this.#removeAssets($);
 
       if (page.model.kind === ReflectionKind.Module) { this.#augmentModule($, page); }
 
@@ -309,5 +305,19 @@ export class PageRenderer
       this.#augmentGlobalOptions($, page);
 
       page.contents = $.html();
+   }
+
+   /**
+    * Remove unused assets / scripts from TypeDoc default theme.
+    *
+    * @param {import('cheerio').Cheerio} $ -
+    */
+   #removeAssets($)
+   {
+      // Remove the default theme navigation script.
+      $('script[src$="assets/navigation.js"]').remove();
+
+      // Remove unused default theme assets.
+      $('script[src$="assets/search.js"]').remove();
    }
 }

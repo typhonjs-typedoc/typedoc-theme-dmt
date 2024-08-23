@@ -37,6 +37,7 @@ export class GlobalResources
    {
       this.#buildComponentData(event, app, options);
       this.#copyResources(event, app, options);
+      this.#cleanupUnusedTypedoc(event);
    }
 
    /**
@@ -85,6 +86,21 @@ export class GlobalResources
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),
        `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
+   }
+
+   /**
+    * Cleans up unused TypeDoc resources. Since TypeDoc `0.26` `removeComponent` is no longer available, so it is
+    * impossible to disable some default theme components. This includes 'javascript-index' and 'navigation-tree'.
+    *
+    * @param {RendererEvent} event -
+    */
+   static #cleanupUnusedTypedoc(event)
+   {
+      const navigationPath = path.join(event.outputDirectory, 'assets', 'navigation.js');
+      const searchPath = path.join(event.outputDirectory, 'assets', 'search.js');
+
+      if (fs.existsSync(navigationPath)) { fs.unlinkSync(navigationPath); }
+      if (fs.existsSync(searchPath)) { fs.unlinkSync(searchPath); }
    }
 
    /**
