@@ -1,10 +1,12 @@
-import fs            from 'node:fs';
+import fs                  from 'node:fs';
 
-import { load }      from 'cheerio';
+import { load }            from 'cheerio';
 
 import {
    PageEvent,
-   ReflectionKind }  from 'typedoc';
+   ReflectionKind }        from 'typedoc';
+
+import { NavigationIndex } from './data/navigation/NavigationIndex.js';
 
 export class PageRenderer
 {
@@ -80,6 +82,7 @@ export class PageRenderer
    #augmentGlobal($)
    {
       // Move header, container-main, and footer elements into the `main` element ------------------------------------
+
       const bodyEl = $('body');
       bodyEl.append('<main></main>');
 
@@ -91,7 +94,7 @@ export class PageRenderer
       // Remove the footer if there is no content.
       if (hideGenerator && !customFooterHtml) { $('body main footer').remove(); }
 
-      // Add DMT message to any generator footer ---------------------------------------------------------------------
+      // Add DMT link to any generator footer ------------------------------------------------------------------------
 
       const generatorEl = $('footer .tsd-generator');
       if (generatorEl)
@@ -161,6 +164,36 @@ export class PageRenderer
 
       // On This Page / Inner Element
       $('details.tsd-page-navigation .tsd-accordion-details').attr('tabindex', -1);
+
+      // Breadcrumb modifications ------------------------------------------------------------------------------------
+
+      const breadcrumbListElements = $('.tsd-breadcrumb li');
+      const breadcrumbArray = breadcrumbListElements.toArray();
+
+      if (breadcrumbArray.length > 0)
+      {
+         const firstElement = $(breadcrumbArray[0]);
+
+         if (firstElement.text() === NavigationIndex.packageName)
+         {
+            firstElement.remove();
+            breadcrumbArray.shift();
+         }
+      }
+
+      if (breadcrumbArray.length > 0 && NavigationIndex.hasMarkdown)
+      {
+         const firstElement = $(breadcrumbArray[0]);
+
+         if (firstElement.text() === NavigationIndex.markdownIndexName)
+         {
+            firstElement.remove();
+            breadcrumbArray.shift();
+         }
+      }
+
+      // There is only one link level left, so remove all links.
+      if (breadcrumbArray.length === 1) { breadcrumbListElements.remove(); }
    }
 
    /**
@@ -172,21 +205,6 @@ export class PageRenderer
     */
    #augmentGlobalOptions($, page)
    {
-      // Breadcrumb modifications ------------------------------------------------------------------------------------
-
-      // Always remove the default theme top level default module / namespace from breadcrumb links.
-      const breadcrumbListElements = $('.tsd-breadcrumb li');
-      const breadcrumbArray = breadcrumbListElements.toArray();
-      if (breadcrumbArray.length > 2)
-      {
-         $(breadcrumbArray[0]).remove();
-      }
-      else
-      {
-         // There is only one link level besides the module, so remove all links.
-         breadcrumbListElements.remove();
-      }
-
       // Potentially replace module page titles with `Package`. ------------------------------------------------------
 
       if (this.#options.moduleRemap.isPackage && page?.model?.kind === ReflectionKind.Module)

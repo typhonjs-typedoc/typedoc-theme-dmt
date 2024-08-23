@@ -16,6 +16,20 @@ export class NavigationIndex
    static #data = { markdown: [], source: [] };
 
    /**
+    * The module NavigationElement name for the fabricated tree index.
+    *
+    * @type {string}
+    */
+   static #markdownIndexName = '';
+
+   /**
+    * Project package name.
+    *
+    * @type {string}
+    */
+   static #packageName = '';
+
+   /**
     * @returns {({
     *    markdown: import('typedoc').NavigationElement[],
     *    source: import('typedoc').NavigationElement[]
@@ -43,6 +57,22 @@ export class NavigationIndex
    }
 
    /**
+    * @returns {string} The module NavigationElement name for the fabricated tree index.
+    */
+   static get markdownIndexName()
+   {
+      return this.#markdownIndexName;
+   }
+
+   /**
+    * @returns {string} Returns the project package name.
+    */
+   static get packageName()
+   {
+      return this.#packageName;
+   }
+
+   /**
     * @param {import('typedoc').Application} app -
     *
     * @param {import('typedoc').ProjectReflection} project -
@@ -59,12 +89,13 @@ export class NavigationIndex
       /** @type {import('typedoc').NavigationElement[]} */
       const index = app.renderer.theme?.getNavigation?.(project) ?? [];
 
-      const packageName = project?.packageName;
+      this.#packageName = project?.packageName;
 
       const markdown = this.#parseMarkdownTree(index);
 
       // No processing necessary so directly return the index.
-      const tree = options.navigation.style === 'flat' ? index : this.#parseModuleTree(index, options, packageName);
+      const tree = options.navigation.style === 'flat' ? index : this.#parseModuleTree(index, options,
+       this.#packageName);
 
       this.#data = {
          markdown,
@@ -103,7 +134,10 @@ export class NavigationIndex
       {
          const children = index[0]?.children ?? [];
 
-         index.pop();
+         const markdownIndex = index.pop();
+
+         this.#markdownIndexName = markdownIndex.text;
+
          index.push(...children);
       }
 
