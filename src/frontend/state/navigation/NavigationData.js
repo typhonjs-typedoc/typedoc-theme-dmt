@@ -10,37 +10,9 @@ import { TreeStateControl }   from './TreeStateControl.js';
 export class NavigationData
 {
    /**
-    * The relative path prepend for all entry path links.
-    *
-    * @type {string}
-    */
-   #basePath;
-
-   /**
-    * The documentation base URL.
-    *
-    * @type {string}
-    */
-   #baseURL;
-
-   /**
-    * Path to module / modules index.
-    *
-    * @type {string | undefined}
-    */
-   #modulesIndex;
-
-   /**
-    * When true SVG icons for all navigation module entries are displayed.
-    *
-    * @type {boolean}
-    */
-   #navModuleIcon;
-
-   /**
     * The navigation bar help panel opened state.
     *
-    * @type {Writable<boolean>}
+    * @type {import('svelte/store').Writable<boolean>}
     */
    #storeHelpPanelOpen = writable(false);
 
@@ -53,47 +25,12 @@ export class NavigationData
 
    /**
     * @param {DMTComponentData}  dmtComponentData - Global component data.
+    *
+    * @param {DMTNavigationIndex} navigationIndex - BCMP navigation index.
     */
-   constructor(dmtComponentData)
+   constructor(dmtComponentData, navigationIndex)
    {
-      this.#basePath = dmtComponentData.basePath;
-      this.#baseURL = dmtComponentData.baseURL;
-      this.#modulesIndex = dmtComponentData.modulesIndex;
-      this.#navModuleIcon = dmtComponentData.navModuleIcon;
-
-      this.#treeStateControl = new TreeStateControl(this, dmtComponentData);
-   }
-
-   /**
-    * @returns {string} The relative path prepend for all entry path links.
-    */
-   get basePath()
-   {
-      return this.#basePath;
-   }
-
-   /**
-    * @returns {string} The documentation base URL.
-    */
-   get baseURL()
-   {
-      return this.#baseURL;
-   }
-
-   /**
-    * @returns {string | undefined} Path to module / modules index.
-    */
-   get modulesIndex()
-   {
-      return this.#modulesIndex;
-   }
-
-   /**
-    * @returns {boolean} When true SVG icons for all navigation module entries are displayed.
-    */
-   get navModuleIcon()
-   {
-      return this.#navModuleIcon;
+      this.#treeStateControl = new TreeStateControl(this, dmtComponentData, navigationIndex);
    }
 
    /**

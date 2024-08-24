@@ -4,13 +4,12 @@
    import NavigationBar  from './NavigationBar.svelte';
    import NavigationTree from '../../tree/NavigationTree.svelte';
 
-   /** @type {NavigationData} */
-   const navigationData = getContext('#dmtNavigationData');
+   const { navigation } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 </script>
 
 <section class=source-index>
    <NavigationBar />
-   <NavigationTree treeState={navigationData.treeState.source} />
+   <NavigationTree treeState={navigation.treeState.source} />
 </section>
 
 <style>

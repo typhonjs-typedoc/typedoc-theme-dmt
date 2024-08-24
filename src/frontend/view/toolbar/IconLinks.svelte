@@ -1,13 +1,10 @@
 <script>
    import { getContext }   from 'svelte';
 
-   /** @type {DMTComponentData} */
-   const dmtComponentData = getContext('#dmtComponentData');
+   const { dmtURL, iconLinks } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   const { dmtURL } = dmtComponentData;
-
-   const linksService = dmtComponentData?.iconLinks?.service ?? [];
-   const linksUser = dmtComponentData?.iconLinks?.user ?? [];
+   const linksService = iconLinks?.service ?? [];
+   const linksUser = iconLinks?.user ?? [];
 </script>
 
 <section>

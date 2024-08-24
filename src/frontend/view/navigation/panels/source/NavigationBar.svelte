@@ -3,19 +3,15 @@
 
    import HelpPanel        from './HelpPanel.svelte';
 
-   /** @type {DMTComponentData} */
-   const dmtComponentData = getContext('#dmtComponentData');
-
-   /** @type {NavigationData} */
-   const navigationData = getContext('#dmtNavigationData');
-
    const {
+      baseURL,
       modulesIndex,
-      moduleIsPackage } = dmtComponentData;
+      moduleIsPackage,
+      navigation } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   const hasFolders = navigationData.treeState.source.hasFolders;
+   const hasFolders = navigation.treeState.source.hasFolders;
 
-   const storeHelpPanelOpen = navigationData.storeHelpPanelOpen;
+   const storeHelpPanelOpen = navigation.storeHelpPanelOpen;
 
    const moduleIndexLabel = moduleIsPackage ? 'Package Index' : 'Module Index';
 
@@ -44,7 +40,7 @@
          </symbol>
       </svg>
 
-      <button on:click={() => navigationData.treeState.source.setFoldersAllOpen(true)}
+      <button on:click={() => navigation.treeState.source.setFoldersAllOpen(true)}
               on:keydown={onKeydownRepeat}
               on:pointerdown|stopPropagation
               title={'Open All'}>
@@ -53,7 +49,7 @@
          </svg>
       </button>
 
-      <button on:click={() => navigationData.treeState.source.setFoldersAllOpen(false)}
+      <button on:click={() => navigation.treeState.source.setFoldersAllOpen(false)}
               on:keydown={onKeydownRepeat}
               on:pointerdown|stopPropagation
               title={'Close All'}>
@@ -63,7 +59,7 @@
       </button>
    {/if}
 
-   <button on:click={() => navigationData.swapHelpPanelOpen()}
+   <button on:click={() => navigation.swapHelpPanelOpen()}
            on:keydown={onKeydownRepeat}
            title={helpTitle}>
       <svg viewBox="0 0 973.1 973.1">
@@ -80,7 +76,7 @@
    </button>
 
    {#if typeof modulesIndex === 'string'}
-      <a href={`${navigationData.baseURL}${modulesIndex}`} class:current={navigationData.treeState.currentPathURL === modulesIndex}>
+      <a href={`${baseURL}${modulesIndex}`} class:current={navigation.treeState.currentPathURL === modulesIndex}>
          {moduleIndexLabel}
       </a>
    {/if}

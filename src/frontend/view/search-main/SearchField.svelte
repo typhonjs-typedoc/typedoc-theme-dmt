@@ -21,23 +21,22 @@
 
    setContext('#storeCurrentId', storeCurrentId);
 
-   /** @type {string} */
-   const basePath = getContext('#basePath');
+   const {
+      basePath,
+      showModuleIcon,
+      searchOptions,
+      settingStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+
+   const storeThemeAnimate = settingStores.themeAnimate;
 
    /** @type {boolean} */
-   const navModuleIcon = getContext('#navModuleIcon');
-
-   /** @type {boolean} */
-   const searchFullName = getContext('#searchFullName');
+   const searchFullName = searchOptions?.fullName ?? false;
 
    /** @type {number} */
-   const searchLimit = getContext('#searchLimit');
+   const searchLimit = searchOptions?.limit ?? 10;
 
    /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = getContext('#storeVisible');
-
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
 
    /**
     * Stores the input query string from the main search input element.
@@ -46,11 +45,11 @@
     */
    const storeQuery = writable('');
 
-   const animateTransition = $storeSettingAnimate ? slideFade : () => void 0;
+   const animateTransition = $storeThemeAnimate ? slideFade : () => void 0;
 
    const queryOptions = {
       basePath,
-      navModuleIcon,
+      showModuleIcon,
       searchFullName,
       searchLimit
    }

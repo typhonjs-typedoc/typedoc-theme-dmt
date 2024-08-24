@@ -13,10 +13,6 @@
    /** @type {import('svelte/store').Writable<boolean>} */
    const storeVisible = writable(false);
 
-   setContext('#basePath', dmtComponentData.basePath)
-   setContext('#navModuleIcon', dmtComponentData.navModuleIcon)
-   setContext('#searchFullName', dmtComponentData.search.fullName)
-   setContext('#searchLimit', dmtComponentData.search?.limit ?? 10)
    setContext('#storeVisible', storeVisible)
 
    /**

@@ -66,9 +66,13 @@ export class GlobalResources
 
       // Combine 'sidebarLinks' and 'navigationLinks' ----------------------------------------------------------------
 
+      /** @type {Record<string, string>} */
       const sidebarLinks = Object.assign({}, app.options.getValue('sidebarLinks'),
        app.options.getValue('navigationLinks'));
 
+      const storagePrepend = `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`;
+
+      /** @type {DMTComponentDataBCMP} */
       const data = {
          iconLinks: {
             service: this.#processIconLinksService(event, options),
@@ -76,12 +80,12 @@ export class GlobalResources
          },
          modulesIndex,
          moduleIsPackage: options.moduleRemap.isPackage,
-         navModuleIcon: options.navigation.moduleIcon,
          navigationIndex: NavigationIndex.data,
          ReflectionKind: this.#getReflectionKind(options),
-         search: options.search,
+         searchOptions: options.search,
+         showModuleIcon: options.navigation.moduleIcon,
          sidebarLinks,
-         storagePrepend: `docs-${event?.project?.packageName ?? Math.random().toString(36).substring(2, 18)}`
+         storagePrepend
       };
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),

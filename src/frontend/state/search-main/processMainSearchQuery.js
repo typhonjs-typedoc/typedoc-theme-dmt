@@ -12,7 +12,7 @@
  *
  * @param {string}   options.basePath - The current relative base path.
  *
- * @param {boolean}  [options.navModuleIcon=true] - Include SVG icon / kind in results for modules.
+ * @param {boolean}  [options.showModuleIcon=true] - Include SVG icon / kind in results for modules.
  *
  * @param {boolean}  [options.searchFullName=false] - Always include parent reflection full name.
  *
@@ -20,7 +20,7 @@
  *
  * @returns {ProcessedSearchDocument[]} Processed query results.
  */
-export function processMainSearchQuery(query, { basePath, navModuleIcon = true, searchFullName = false,
+export function processMainSearchQuery(query, { basePath, showModuleIcon = true, searchFullName = false,
  searchLimit = 10 } = {})
 {
    if (!globalThis.dmtSearchMainIndex || !globalThis.dmtSearchMainRows) { return []; }
@@ -73,8 +73,8 @@ export function processMainSearchQuery(query, { basePath, navModuleIcon = true, 
          )}.</span>${name}`;
       }
 
-      // Don't include kind when theme option `navModuleIcon` is false and result is a `Module`.
-      const kind = !navModuleIcon && row.k === 2 ? void 0 : row.k;
+      // Don't include kind when theme option `showModuleIcon` is false and result is a `Module`.
+      const kind = !showModuleIcon && row.k === 2 ? void 0 : row.k;
 
       processedDocuments.push({
          id: index,

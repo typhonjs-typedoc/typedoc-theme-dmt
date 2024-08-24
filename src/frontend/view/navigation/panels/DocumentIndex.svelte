@@ -4,21 +4,18 @@
    import NavigationTree   from '../tree/NavigationTree.svelte';
    import TJSSvgFolder     from '../../external/TJSSvgFolder.svelte';
 
-   const { storagePrepend } = getContext('#dmtComponentData');
+   const {
+      dmtSessionStorage,
+      navigation,
+      settingStores,
+      storagePrepend } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   /** @type {NavigationData} */
-   const navigationData = getContext('#dmtNavigationData');
+   const storeThemeAnimate = settingStores.themeAnimate;
 
-   /** @type {import('#runtime/svelte/store/web-storage').TJSWebStorage} */
-   const storage = getContext('#dmtSessionStorage');
-
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
-
-   const store = storage.getStore(`${storagePrepend}-document-index`, false);
+   const store = dmtSessionStorage.getStore(`${storagePrepend}-document-index`, false);
 
    // If the active tree is the markdown tree then ensure that the document index is open.
-   if (navigationData.treeState.activeTreeName === 'markdown') { $store = true; }
+   if (navigation.treeState.activeTreeName === 'markdown') { $store = true; }
 
    const folder = {
       store,
@@ -27,11 +24,11 @@
    }
 </script>
 
-{#if navigationData.treeState.markdown.hasData}
+{#if navigation.treeState.markdown.hasData}
    <section>
-      <TJSSvgFolder {folder} animate={$storeSettingAnimate}>
+      <TJSSvgFolder {folder} animate={$storeThemeAnimate}>
          <hr>
-         <NavigationTree treeState={navigationData.treeState.markdown} />
+         <NavigationTree treeState={navigation.treeState.markdown} />
       </TJSSvgFolder>
    </section>
 {/if}

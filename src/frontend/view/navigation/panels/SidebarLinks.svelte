@@ -1,10 +1,7 @@
 <script>
    import { getContext } from 'svelte';
 
-   const dmtComponentData = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
-
-   /** @type {Record<string, string>} */
-   const sidebarLinks = dmtComponentData?.sidebarLinks ?? {};
+   const { sidebarLinks } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
    const hasLinks = Object.keys(sidebarLinks).length > 0;
 </script>

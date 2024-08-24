@@ -3,12 +3,13 @@
 
    import LabeledCheckbox     from './LabeledCheckbox.svelte';
 
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeAnimate = getContext('#dmtStoreSettingAnimate');
+   const { settingStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+
+   const storeThemeAnimate = settingStores.themeAnimate;
 </script>
 
 <section>
-   <LabeledCheckbox store={storeAnimate} label={'Animation'} />
+   <LabeledCheckbox store={storeThemeAnimate} label={'Animation'} />
 </section>
 
 <style>

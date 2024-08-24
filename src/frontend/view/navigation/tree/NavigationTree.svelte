@@ -13,10 +13,11 @@
 
    setContext('#treeState', treeState);
 
-   /** @type {NavigationData} */
-   const navigationData = getContext('#dmtNavigationData');
+   const {
+      navigation,
+      showModuleIcon } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   const { storeCurrentPathURL } = navigationData;
+   const { storeCurrentPathURL } = navigation;
 
    let navigationEl;
 
@@ -54,7 +55,7 @@
          <Folder {entry} />
       {:else}
          <!-- Potentially remove icons when entry.kind is `module` with no children -->
-         <Entry {entry} {indentIcon} removeIcon={!navigationData.navModuleIcon && entry?.kind === 2} />
+         <Entry {entry} {indentIcon} removeIcon={!showModuleIcon && entry?.kind === 2} />
       {/if}
    {/each}
 </div>

@@ -55,8 +55,10 @@ export class TreeStateControl
     * @param {NavigationData} navData - NavigationData instance.
     *
     * @param {DMTComponentData}  dmtComponentData - DMT component data.
+    *
+    * @param {DMTNavigationIndex} navigationIndex - BCMP navigation index.
     */
-   constructor(navData, dmtComponentData)
+   constructor(navData, dmtComponentData, navigationIndex)
    {
       this.#navData = navData;
 
@@ -68,14 +70,14 @@ export class TreeStateControl
       this.#storeCurrentPathURLUpdate = update;
 
       // Retrieve the storage prepend string from global DMT options or use a default key.
-      const storagePrepend = dmtComponentData.storagePrepend ?? 'docs-unnamed';
+      const storagePrepend = dmtComponentData.storagePrepend;
 
       const setCurrentPathURLBound = this.#setCurrentPathURL.bind(this);
 
       this.#treeMarkdown = new TreeState({
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
-         elementIndex: dmtComponentData.navigationIndex?.markdown ?? [],
+         elementIndex: navigationIndex?.markdown ?? [],
          storagePrepend: `${storagePrepend}-markdown`,
          treeName: 'markdown'
       });
@@ -83,7 +85,7 @@ export class TreeStateControl
       this.#treeSource = new TreeState({
          currentPathURL: this.#currentPathURL,
          setCurrentPathURL: setCurrentPathURLBound,
-         elementIndex: dmtComponentData?.navigationIndex?.source ?? [],
+         elementIndex: navigationIndex?.source ?? [],
          storagePrepend: `${storagePrepend}-source`,
          treeName: 'source'
       });

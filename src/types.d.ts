@@ -17,32 +17,7 @@ import type {
    NavigationElement,
    ReflectionKind }                    from 'typedoc';
 
-export type DMTComponentData = {
-   /**
-    * Relative path to the documentation root from current page.
-    */
-   basePath: string;
-
-   /**
-    * Full base URL to documentation root.
-    */
-   baseURL: string;
-
-   /**
-    * Full URL to assets/dmt.
-    */
-   dmtURL: string;
-
-   /**
-    * True when a project `modules.html` is generated.
-    */
-   hasModulesIndex: boolean;
-
-   /**
-    * Initial path URL for current page.
-    */
-   initialPathURL: string;
-
+export type DMTComponentDataBCMP = {
    /**
     * The combined user icon / service header links.
     */
@@ -64,25 +39,22 @@ export type DMTComponentData = {
    /**
     * Navigation index for separate markdown and source trees.
     */
-   navigationIndex: {
-      markdown: NavigationElement[]
-      source: NavigationElement[]
-   };
-
-   /**
-    * When true SVG icons for all navigation module entries are displayed.
-    */
-   navModuleIcon: boolean;
-
-   /**
-    * The `dmtSearch` option; when true the main search index is active.
-    */
-   search: DMTSearch;
+   navigationIndex: DMTNavigationIndex;
 
    /**
     * TypeDoc ReflectionKind
     */
    ReflectionKind: Record<string, string|number>;
+
+   /**
+    * The `dmtSearch` option; when truthy the main search index is active.
+    */
+   searchOptions: DMTSearchOptions;
+
+   /**
+    * When true SVG icons for all module reflections are displayed.
+    */
+   showModuleIcon: boolean;
 
    /**
     * Combined `sidebarLinks` and `navigationLinks`.
@@ -152,9 +124,17 @@ export type DMTNavigation = {
 }
 
 /**
+ * Navigation index for separate markdown and source trees.
+ */
+export type DMTNavigationIndex = {
+   markdown: NavigationElement[];
+   source: NavigationElement[];
+}
+
+/**
  * Defines the DMT search options; may be a boolean or object. When `false` search is disabled.
  */
-export type DMTSearch = false | {
+export type DMTSearchOptions = false | {
    /**
     * Include full parent names.
     */

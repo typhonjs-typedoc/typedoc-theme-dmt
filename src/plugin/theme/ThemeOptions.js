@@ -264,7 +264,7 @@ export class ThemeOptions
    /** @returns {DMTNavigation} navigation option */
    get navigation() { return this.#options.navigation; }
 
-   /** @returns {DMTSearch} search option */
+   /** @returns {DMTSearchOptions} search option */
    get search() { return this.#options.search; }
 
    /**
@@ -486,5 +486,5 @@ const s_SERVICE_LINKS = new Map([
  *
  * @property {DMTNavigation} navigation - Navigation options.
  *
- * @property {DMTSearch} search Search options.
+ * @property {DMTSearchOptions} search Search options.
  */

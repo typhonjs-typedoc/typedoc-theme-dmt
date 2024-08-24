@@ -10,12 +10,11 @@
    /** @type {boolean} */
    export let hasFolders = false;
 
-   const { ReflectionKind } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+   const { settingStores, ReflectionKind } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
+   const storeThemeAnimate = settingStores.themeAnimate;
 
-   const animateTransition = $storeSettingAnimate ? slideFade : () => void 0;
+   const animateTransition = $storeThemeAnimate ? slideFade : () => void 0;
 
    const moduleIndexLabel = moduleIsPackage ? 'package' : 'module';
 

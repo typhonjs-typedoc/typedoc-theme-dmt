@@ -16,19 +16,20 @@
 
    export let parentIcon = false;
 
-   const { navModuleIcon } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+   const {
+      settingStores,
+      showModuleIcon } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+
+   const storeThemeAnimate = settingStores.themeAnimate;
 
    /** @type {TreeState} */
    const treeState = getContext('#treeState');
-
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeSettingAnimate = getContext('#dmtStoreSettingAnimate');
 
    const storageKey = entry.storageKey;
 
    const store = storageKey ? treeState.sessionStorage.getStore(storageKey, false) : void 0;
 
-   const removeIcon = !navModuleIcon && (entry.kind === void 0 || entry.kind === 2);
+   const removeIcon = !showModuleIcon && (entry.kind === void 0 || entry.kind === 2);
 
    const indentIcon = !removeIcon ? 'indent-icon' : 'indent-no-icon';
 
@@ -62,13 +63,13 @@
    }
 </script>
 
-<TJSSvgFolder {folder} {onClose} {onOpen} animate={$storeSettingAnimate}>
+<TJSSvgFolder {folder} {onClose} {onOpen} animate={$storeThemeAnimate}>
    <Entry {entry} {removeIcon} {storageKey} slot=label />
    {#each entry.children as child (child.path)}
       {#if Array.isArray(child.children)}
          <svelte:self entry={child} parentIcon={!removeIcon} />
       {:else}
-         <Entry entry={child} {indentIcon} removeIcon={!navModuleIcon && child?.kind === 2} />
+         <Entry entry={child} {indentIcon} removeIcon={!showModuleIcon && child?.kind === 2} />
       {/if}
    {/each}
 </TJSSvgFolder>

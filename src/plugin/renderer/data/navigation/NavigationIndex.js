@@ -8,10 +8,7 @@ import { ModuleTreeMap }   from './ModuleTreeMap.js';
 export class NavigationIndex
 {
    /**
-    * @type {({
-    *    markdown: import('typedoc').NavigationElement[],
-    *    source: import('typedoc').NavigationElement[]
-    * })} Processed navigation index.
+    * @type {DMTNavigationIndex} Processed navigation index.
     */
    static #data = { markdown: [], source: [] };
 
@@ -30,10 +27,7 @@ export class NavigationIndex
    static #packageName = '';
 
    /**
-    * @returns {({
-    *    markdown: import('typedoc').NavigationElement[],
-    *    source: import('typedoc').NavigationElement[]
-    * })} Processed navigation index.
+    * @returns {DMTNavigationIndex} Processed navigation index.
     */
    static get data()
    {

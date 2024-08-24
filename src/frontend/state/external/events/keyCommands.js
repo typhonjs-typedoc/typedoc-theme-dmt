@@ -1,4 +1,4 @@
-import { A11yHelper }         from '#runtime/util/browser';
+import { A11yHelper }   from '#runtime/util/browser';
 
 /**
  * Provides the following global keyboard commands:
@@ -10,10 +10,12 @@ import { A11yHelper }         from '#runtime/util/browser';
  * - <Alt-N>: Scroll to current page in navigation panel and focus it.
  * - <Alt-O>: If available, focus first anchor in `On This Page` container.
  *
- * @param {NavigationData} navigationData - NavigationData instance.
+ * @param {DMTComponentData} dmtComponentData - component data.
  */
-export function keyCommands(navigationData)
+export function keyCommands(dmtComponentData)
 {
+   const { baseURL, navigation } = dmtComponentData;
+
    // Direct focus target.
    globalThis.document.addEventListener('keydown', (event) =>
    {
@@ -35,25 +37,25 @@ export function keyCommands(navigationData)
 
          case 'KeyE':
             // Only open / close source folders in source navigation tree state.
-            navigationData.treeState.source.swapFoldersAllOpen();
+            navigation.treeState.source.swapFoldersAllOpen();
 
             event.preventDefault();
             break;
 
          case 'KeyH':
-            navigationData.swapHelpPanelOpen();
+            navigation.swapHelpPanelOpen();
             event.preventDefault();
             break;
 
          case 'KeyI':
-            window.location.href = `${navigationData.baseURL}index.html`;
+            window.location.href = `${baseURL}index.html`;
             event.preventDefault();
             break;
 
          case 'KeyM':
-            if (typeof navigationData.modulesIndex === 'string')
+            if (typeof navigation.modulesIndex === 'string')
             {
-               window.location.href = `${navigationData.baseURL}${navigationData.modulesIndex}`;
+               window.location.href = `${baseURL}${navigation.modulesIndex}`;
             }
             event.preventDefault();
             break;
@@ -61,7 +63,7 @@ export function keyCommands(navigationData)
          case 'KeyN':
          {
             // Ensure current path is open and focus current path navigation entry.
-            navigationData.treeState.ensureCurrentPath({ focus: true });
+            navigation.treeState.ensureCurrentPath({ focus: true });
 
             event.preventDefault();
             break;

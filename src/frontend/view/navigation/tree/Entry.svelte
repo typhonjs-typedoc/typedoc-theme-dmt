@@ -20,15 +20,16 @@
     */
    export let storageKey = null;
 
-   /** @type {NavigationData} */
-   const navigationData = getContext('#dmtNavigationData');
+   const {
+      basePath,
+      navigation } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
    /** @type {import('svelte/store').Readable<string>} */
-   const storeCurrentPathURL = navigationData.treeState.storeCurrentPathURL;
+   const storeCurrentPathURL = navigation.treeState.storeCurrentPathURL;
 
    const icon = !removeIcon && entry.kind ? entry.kind : void 0;
 
-   const path = entry.path ? `${navigationData.basePath}${entry.path}` : void 0;
+   const path = entry.path ? `${basePath}${entry.path}` : void 0;
 
    $: isCurrent = entry.path ? entry.path === $storeCurrentPathURL : false;
 
