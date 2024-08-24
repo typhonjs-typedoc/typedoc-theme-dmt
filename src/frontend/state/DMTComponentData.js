@@ -1,8 +1,10 @@
 import { get, writable }      from 'svelte/store';
 
-import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
+import {
+   TJSLocalStorage,
+   TJSSessionStorage }        from '#runtime/svelte/store/web-storage';
 
-import { DMTLocalStorage }    from './DMTLocalStorage.js';
+import { A11yHelper }         from '#runtime/util/browser';
 
 import { NavigationData }     from './navigation';
 
@@ -46,10 +48,10 @@ export class DMTComponentData
    #stateStores;
 
    /**
-    * @type {{ session: TJSSessionStorage, local: DMTLocalStorage }}
+    * @type {{ session: TJSSessionStorage, local: TJSLocalStorage }}
     */
    #storage = {
-      local: new DMTLocalStorage(),
+      local: new TJSLocalStorage(),
       session: new TJSSessionStorage()
    };
 
@@ -72,6 +74,8 @@ export class DMTComponentData
       const depth = (initialPathURL.match(/\//) ?? []).length;
       const basePath = '../'.repeat(depth);
 
+
+      // Initialize local runtime resources -
       this.#localData = {
          basePath,
          baseURL,
@@ -82,7 +86,8 @@ export class DMTComponentData
       this.#navigationData = new NavigationData(this, this.#dmtComponentDataBCMP.navigationIndex);
 
       this.#settingStores = Object.freeze({
-         themeAnimate: this.#storage.local.getStore(localConstants.dmtThemeAnimate)
+         // Ensure that the setting / animate local storage store is initialized with A11y motion preference.
+         themeAnimate: this.#storage.local.getStore(localConstants.dmtThemeAnimate, !A11yHelper.prefersReducedMotion)
       });
 
       this.#stateStores = Object.freeze({

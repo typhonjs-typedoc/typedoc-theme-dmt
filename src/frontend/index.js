@@ -4,18 +4,15 @@ import {
 
 import {
    keyCommands,
-   scrollActivation }            from './state/external/events';
-
-import {
    loadMainSearchData,
-   // loadQuickSearchData, // TODO: Implement SearchQuick
+   scrollActivation,
+   DetailsAnimation,
    DMTComponentData }            from '#state/frontend';
 
 import {
    DMTSettings,
    Navigation,
    SearchMain,
-   // SearchQuick,
    Toolbar }                     from './view';
 
 // Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
@@ -26,6 +23,9 @@ globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 // Loads the binary compressed message pack component data. Set as the main context in all components via
 // `#dmtComponentData`.
 const dmtComponentData = new DMTComponentData(import.meta.url);
+
+// Augments details elements adding animation.
+DetailsAnimation.initialize(dmtComponentData);
 
 // Mount Svelte components -------------------------------------------------------------------------------------------
 
@@ -76,16 +76,6 @@ if (dmtComponentData.searchOptions)
       context: componentContext
    });
 }
-
-// TODO: Work in progress - Finish `searchQuick` functionality.
-// // Only load quick search index if enabled.
-// if (dmtComponentData.searchQuick)
-// {
-//    loadQuickSearchData().then((result) =>
-//    {
-//       if (result) { new SearchQuick({ target: globalThis.document.body }); }
-//    });
-// }
 
 // -------------------------------------------------------------------------------------------------------------------
 

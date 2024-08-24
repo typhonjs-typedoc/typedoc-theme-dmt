@@ -7,12 +7,12 @@ import { toggleDetails }   from '#runtime/svelte/action/animate';
  */
 export class DetailsAnimation
 {
-   #actionUpdateFn = [];
+   static #actionUpdateFn = [];
 
    /**
-    * @param {import('svelte/store').Writable<boolean>}  storeSettingsAnimate - Animation setting store.
+    * @param {DMTComponentData}  dmtComponentData - DMT component data.
     */
-   constructor(storeSettingsAnimate)
+   static initialize(dmtComponentData)
    {
       globalThis.requestAnimationFrame(() =>
       {
@@ -25,7 +25,7 @@ export class DetailsAnimation
             this.#actionUpdateFn.push(toggleDetails(detailEl, { store: writable(detailEl.open) }).update);
          }
 
-         storeSettingsAnimate.subscribe((enabled) => this.#setEnabled(enabled));
+         dmtComponentData.settingStores.themeAnimate.subscribe((enabled) => this.#setEnabled(enabled));
       });
    }
 
@@ -34,7 +34,7 @@ export class DetailsAnimation
     *
     * @param {boolean}  animate - Current animation state.
     */
-   #setEnabled(animate)
+   static #setEnabled(animate)
    {
       const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
        'details.tsd-accordion, details.tsd-index-accordion');
