@@ -1,4 +1,14 @@
 <script>
+   // TODO: Work in progress - Finish `searchQuick` functionality. This is code that goes in the main `index.js`
+   // // Only load quick search index if enabled.
+   // if (dmtComponentData.searchQuick)
+   // {
+   //    loadQuickSearchData().then((result) =>
+   //    {
+   //       if (result) { new SearchQuick({ target: globalThis.document.body }); }
+   //    });
+   // }
+
    import {
       onDestroy,
       onMount }   from 'svelte';
