@@ -25,8 +25,10 @@
       basePath,
       showModuleIcon,
       searchOptions,
-      settingStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+      settingStores,
+      stateStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
+   const storeSearchVisible = stateStores.mainSearchVisible;
    const storeThemeAnimate = settingStores.themeAnimate;
 
    /** @type {boolean} */
@@ -34,9 +36,6 @@
 
    /** @type {number} */
    const searchLimit = searchOptions?.limit ?? 10;
-
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeVisible = getContext('#storeVisible');
 
    /**
     * Stores the input query string from the main search input element.
@@ -121,7 +120,7 @@
 
          case 'Escape':
             // Only set visibility to false when the query is empty.
-            if ($storeVisible && !$storeQuery.length) { $storeVisible = false; }
+            if ($storeSearchVisible && !$storeQuery.length) { $storeSearchVisible = false; }
             break;
 
          case 'Tab':
@@ -151,7 +150,7 @@
     */
    function handlePointerdown(event)
    {
-      if (event.target !== inputEl && !resultsEl?.contains?.(event.target)) { $storeVisible = false; }
+      if (event.target !== inputEl && !resultsEl?.contains?.(event.target)) { $storeSearchVisible = false; }
    }
 </script>
 

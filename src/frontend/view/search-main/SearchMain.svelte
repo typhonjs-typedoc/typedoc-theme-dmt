@@ -1,42 +1,15 @@
 <script>
-   import {
-      getContext,
-      setContext }      from 'svelte';
-   import { writable }  from 'svelte/store';
+   import { getContext }   from 'svelte';
 
-   import SearchButton  from './SearchButton.svelte';
-   import SearchField   from './SearchField.svelte';
+   import SearchButton     from './SearchButton.svelte';
+   import SearchField      from './SearchField.svelte';
 
-   /** @type {DMTComponentData} */
-   const dmtComponentData = getContext('#dmtComponentData');
+   const { stateStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeVisible = writable(false);
-
-   setContext('#storeVisible', storeVisible)
-
-   /**
-    * Open search when <Alt-s> is pressed.
-    *
-    * @param {KeyboardEvent}  event -
-    */
-   function handleKeydown(event)
-   {
-      if (!event.altKey || event.repeat) { return; }
-
-      switch (event.code)
-      {
-         case 'KeyS':
-            event.preventDefault();
-            $storeVisible = true;
-            break;
-      }
-   }
+   const storeSearchVisible = stateStores.mainSearchVisible;
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
-
-{#if $storeVisible}
+{#if $storeSearchVisible}
    <SearchField />
 {/if}
 <div class="dmt-widget dmt-toolbar-icon search no-caption">

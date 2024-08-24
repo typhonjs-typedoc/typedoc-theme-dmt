@@ -7,15 +7,16 @@
       baseURL,
       modulesIndex,
       moduleIsPackage,
-      navigation } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+      navigation,
+      stateStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
    const hasFolders = navigation.treeState.source.hasFolders;
 
-   const storeHelpPanelOpen = navigation.storeHelpPanelOpen;
+   const storeHelpPanelVisible = stateStores.helpPanelVisible;
 
    const moduleIndexLabel = moduleIsPackage ? 'Package Index' : 'Module Index';
 
-   $: helpTitle = $storeHelpPanelOpen ? 'Close Help' : 'Open Help';
+   $: helpTitle = $storeHelpPanelVisible ? 'Close Help' : 'Open Help';
 
    /**
     * Stops repeat on "Enter" key.
@@ -59,7 +60,7 @@
       </button>
    {/if}
 
-   <button on:click={() => navigation.swapHelpPanelOpen()}
+   <button on:click={() => $storeHelpPanelVisible = !$storeHelpPanelVisible}
            on:keydown={onKeydownRepeat}
            title={helpTitle}>
       <svg viewBox="0 0 973.1 973.1">
@@ -81,7 +82,7 @@
       </a>
    {/if}
 
-   {#if $storeHelpPanelOpen}
+   {#if $storeHelpPanelVisible}
       <HelpPanel {modulesIndex} {moduleIsPackage} {hasFolders} />
    {/if}
 </section>

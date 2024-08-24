@@ -14,7 +14,7 @@ import { A11yHelper }   from '#runtime/util/browser';
  */
 export function keyCommands(dmtComponentData)
 {
-   const { baseURL, navigation } = dmtComponentData;
+   const { baseURL, modulesIndex, navigation, stateStores } = dmtComponentData;
 
    // Direct focus target.
    globalThis.document.addEventListener('keydown', (event) =>
@@ -43,7 +43,7 @@ export function keyCommands(dmtComponentData)
             break;
 
          case 'KeyH':
-            navigation.swapHelpPanelOpen();
+            stateStores.swapHelpPanelVisible();
             event.preventDefault();
             break;
 
@@ -53,9 +53,9 @@ export function keyCommands(dmtComponentData)
             break;
 
          case 'KeyM':
-            if (typeof navigation.modulesIndex === 'string')
+            if (typeof modulesIndex === 'string')
             {
-               window.location.href = `${baseURL}${navigation.modulesIndex}`;
+               window.location.href = `${baseURL}${modulesIndex}`;
             }
             event.preventDefault();
             break;
@@ -85,6 +85,11 @@ export function keyCommands(dmtComponentData)
             event.preventDefault();
             break;
          }
+
+         case 'KeyS':
+            stateStores.mainSearchVisible.set(true);
+            event.preventDefault();
+            break;
       }
    });
 }

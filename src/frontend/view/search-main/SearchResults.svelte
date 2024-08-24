@@ -9,21 +9,21 @@
    /** @type {HTMLUListElement} */
    export let resultsEl = void 0;
 
-   const { settingStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+   const {
+      settingStores,
+      stateStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
+   const storeSearchVisible = stateStores.mainSearchVisible;
    const storeThemeAnimate = settingStores.themeAnimate;
 
    /** @type {import('svelte/store').Writable<number>} */
    const storeCurrentId = getContext('#storeCurrentId');
 
-   /** @type {import('svelte/store').Writable<boolean>} */
-   const storeVisible = getContext('#storeVisible');
-
    const animateTransition = $storeThemeAnimate ? slideFade : () => void 0;
 
    function onClick(href)
    {
-      $storeVisible = false;
+      $storeSearchVisible = false;
 
       globalThis.location.href = href;
    }

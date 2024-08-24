@@ -1,3 +1,5 @@
+import { get, writable }      from 'svelte/store';
+
 import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
 import { DMTLocalStorage }    from './DMTLocalStorage.js';
@@ -39,6 +41,11 @@ export class DMTComponentData
    #settingStores;
 
    /**
+    * @type {DMTStateStores}
+    */
+   #stateStores;
+
+   /**
     * @type {{ session: TJSSessionStorage, local: DMTLocalStorage }}
     */
    #storage = {
@@ -77,6 +84,13 @@ export class DMTComponentData
       this.#settingStores = Object.freeze({
          themeAnimate: this.#storage.local.getStore(localConstants.dmtThemeAnimate)
       });
+
+      this.#stateStores = Object.freeze({
+         helpPanelVisible: writable(false),
+         mainSearchVisible: writable(false),
+
+         swapHelpPanelVisible: () => this.#stateStores.helpPanelVisible.set(!get(this.#stateStores.helpPanelVisible))
+      });
    }
 
    // Local runtime data ---------------------------------------------------------------------------------------------
@@ -95,6 +109,22 @@ export class DMTComponentData
    get baseURL()
    {
       return this.#localData.baseURL;
+   }
+
+   /**
+    * @returns {DMTLocalStorage} Local storage store manager.
+    */
+   get dmtLocalStorage()
+   {
+      return this.#storage.local;
+   }
+
+   /**
+    * @returns {TJSSessionStorage} Session storage store manager.
+    */
+   get dmtSessionStorage()
+   {
+      return this.#storage.session;
    }
 
    /**
@@ -129,25 +159,15 @@ export class DMTComponentData
       return this.#settingStores;
    }
 
-   // ---------------
-
    /**
-    * @returns {DMTLocalStorage} Local storage store manager.
+    * @returns {DMTStateStores} Shared state across components.
     */
-   get dmtLocalStorage()
+   get stateStores()
    {
-      return this.#storage.local;
+      return this.#stateStores;
    }
 
-   /**
-    * @returns {TJSSessionStorage} Session storage store manager.
-    */
-   get dmtSessionStorage()
-   {
-      return this.#storage.session;
-   }
-
-   // -------------------------
+   // Data forwarded on from BCMP data -------------------------------------------------------------------------------
 
    /**
     * @returns {{service: DMTIconLink[], user: DMTIconLink[]}} icon links for `IconLinks` component.
@@ -219,4 +239,14 @@ export class DMTComponentData
  * @typedef {object} DMTSettingStores Additional theme settings stored in local storage.
  *
  * @property {import('svelte/store').Writable<boolean>} themeAnimate Enables / disables theme animation.
+ */
+
+/**
+ * @typedef {object} DMTStateStores Shared state across components.
+ *
+ * @property {import('svelte/store').Writable<boolean>} helpPanelVisible Enables / disables help panel display.
+ *
+ * @property {import('svelte/store').Writable<boolean>} mainSearchVisible Enables / disables main search display.
+ *
+ * @property {Function} swapHelpPanelVisible Swaps the help panel visible state.
  */
