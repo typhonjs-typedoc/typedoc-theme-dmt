@@ -84,7 +84,7 @@ export class TreeState
    }
 
    /**
-    * @returns {import('#types/frontend').DMTNavigationElement[]} The tree element index.
+    * @returns {import('#frontend/types').DMTNavigationElement[]} The tree element index.
     */
    get elementIndex() { return this.#elementIndex; }
 
@@ -144,7 +144,7 @@ export class TreeState
     * Sets all session storage stores from the given entry. This supports `Alt-<Click>` action to open / close all
     * child folders.
     *
-    * @param {import('#types/frontend').DMTNavigationElement} fromEntry - The entry to start traversing tree.
+    * @param {import('#frontend/types').DMTNavigationElement} fromEntry - The entry to start traversing tree.
     *
     * @param {boolean} state - New state.
     */
@@ -236,7 +236,7 @@ export class TreeState
    /**
     * Helper function to recursively search for the path and perform the operation given for each tree node.
     *
-    * @param {import('#types/frontend').DMTNavigationElement} entry - Current NavigationElement.
+    * @param {import('#frontend/types').DMTNavigationElement} entry - Current NavigationElement.
     *
     * @param {string}   pathURL - The path URL to locate.
     *
@@ -336,9 +336,9 @@ export class TreeState
    /**
     * Walks the navigation index / tree for each path recursively.
     *
-    * @param {import('#types/frontend').DMTNavigationElement} entry - The current entry.
+    * @param {import('#frontend/types').DMTNavigationElement} entry - The current entry.
     *
-    * @param {import('#types/frontend').DMTNavigationElement} parentEntry - The parent entry.
+    * @param {import('#frontend/types').DMTNavigationElement} parentEntry - The parent entry.
     *
     * @param {TreeOperation}  operation - Tree entry operation to apply.
     */
@@ -380,7 +380,7 @@ export class TreeState
     *
     * @param {TreeOperation}  operation - Tree entry operation to apply.
     *
-    * @param {import('#types/frontend').DMTNavigationElement} entry - The current entry.
+    * @param {import('#frontend/types').DMTNavigationElement} entry - The current entry.
     */
    #walkTreeFrom(operation, entry)
    {
@@ -390,7 +390,7 @@ export class TreeState
 
 /**
  * @typedef {((
- *    entry: import('#types/frontend').DMTNavigationElement,
- *    parentEntry?: import('#types/frontend').DMTNavigationElement) => void
+ *    entry: import('#frontend/types').DMTNavigationElement,
+ *    parentEntry?: import('#frontend/types').DMTNavigationElement) => void
  * )} TreeOperation A function to invoke for tree nodes when walking the tree.
  */

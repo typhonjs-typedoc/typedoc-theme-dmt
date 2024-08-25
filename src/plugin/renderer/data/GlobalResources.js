@@ -9,7 +9,7 @@ import { ReflectionKind }     from 'typedoc';
 
 import { NavigationIndex }    from './navigation/NavigationIndex.js';
 
-import { copyDirectory }      from '#utils';
+import { copyDirectory }      from '#plugin/utils';
 
 /**
  * Copies all DMT global resources to output directory and builds Svelte component data.

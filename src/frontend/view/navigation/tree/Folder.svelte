@@ -11,7 +11,7 @@
    import Entry            from './Entry.svelte';
    import TJSSvgFolder     from '../../external/TJSSvgFolder.svelte';
 
-   /** @type {import('#types/frontend').DMTNavigationElement} */
+   /** @type {import('#frontend/types').DMTNavigationElement} */
    export let entry;
 
    export let parentIcon = false;

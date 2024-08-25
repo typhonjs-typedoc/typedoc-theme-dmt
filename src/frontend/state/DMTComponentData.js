@@ -8,7 +8,7 @@ import { A11yHelper }         from '#runtime/util/browser';
 
 import { NavigationData }     from './navigation';
 
-import { localConstants }     from '#constants';
+import { localConstants }     from '#frontend/constants';
 
 // Loads compressed global component data.
 import '../dmt-component-data.js';

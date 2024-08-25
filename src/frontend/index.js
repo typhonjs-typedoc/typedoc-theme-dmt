@@ -7,7 +7,7 @@ import {
    loadMainSearchData,
    scrollActivation,
    DetailsAnimation,
-   DMTComponentData }            from '#state/frontend';
+   DMTComponentData }            from '#frontend/state';
 
 import {
    DMTSettings,
