@@ -5,8 +5,8 @@ import {
 import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
 /**
- * Provides the ability to walk the navigation index and manage state for initial opened state for entries and ensuring
- * opened state when URL hash changes occur.
+ * Provides the ability to control and retrieve data for a navigation tree. Each tree has an independent session
+ * storage manager for all folder open / close state.
  */
 export class TreeState
 {

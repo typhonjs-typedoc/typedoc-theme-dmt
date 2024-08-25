@@ -1,7 +1,7 @@
 import { TreeStateControl }   from './TreeStateControl.js';
 
 /**
- * Provides state and control for all navigation components.
+ * Provides state and control for all navigation / tree components.
  */
 export class NavigationData
 {

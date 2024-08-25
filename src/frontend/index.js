@@ -24,9 +24,6 @@ globalThis.dmtInflateAndUnpackB64 = inflateAndUnpackB64;
 // `#dmtComponentData`.
 const dmtComponentData = new DMTComponentData(import.meta.url);
 
-// Augments details elements adding animation.
-DetailsAnimation.initialize(dmtComponentData);
-
 // Mount Svelte components -------------------------------------------------------------------------------------------
 
 // Provides the main context for all Svelte components.
@@ -77,7 +74,7 @@ if (dmtComponentData.searchOptions)
    });
 }
 
-// -------------------------------------------------------------------------------------------------------------------
+// Extended event handling -------------------------------------------------------------------------------------------
 
 // Provides global keyboard commands.
 keyCommands(dmtComponentData);
@@ -85,6 +82,13 @@ keyCommands(dmtComponentData);
 // Provide automatic focusing of DMT scrollable containers on `pointerover` when there is no explicitly focused
 // element allowing intuitive scrolling.
 scrollActivation();
+
+// Augmentation ------------------------------------------------------------------------------------------------------
+
+// Augments default theme details elements adding animation.
+DetailsAnimation.initialize(dmtComponentData);
+
+// After first render ------------------------------------------------------------------------------------------------
 
 // Adds a new style rule to set `body` visibility to `visible` after all scripts have loaded. This allows a smoother
 // transition for the `main.js` default template script to take effect along with all Svelte components loaded before

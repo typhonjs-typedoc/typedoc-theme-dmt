@@ -9,6 +9,7 @@ import { A11yHelper }   from '#runtime/util/browser';
  * - <Alt-M>: If there is a `modules.html` index then go to it.
  * - <Alt-N>: Scroll to current page in navigation panel and focus it.
  * - <Alt-O>: If available, focus first anchor in `On This Page` container.
+ * - <Alt-S>: Open main search.
  *
  * @param {DMTComponentData} dmtComponentData - component data.
  */

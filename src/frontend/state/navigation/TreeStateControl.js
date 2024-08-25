@@ -4,6 +4,10 @@ import { nextAnimationFrame } from '#runtime/util/animate';
 
 import { TreeState }          from './TreeState.js';
 
+/**
+ * Provides the ability to access each navigation tree in addition to managing state for initial opened state for
+ * entries in any tree and ensuring opened state when URL hash changes occur.
+ */
 export class TreeStateControl
 {
    /**

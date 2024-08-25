@@ -25,6 +25,7 @@ export class DetailsAnimation
             this.#actionUpdateFn.push(toggleDetails(detailEl, { store: writable(detailEl.open) }).update);
          }
 
+         // Subscribe to the DMT theme animation setting changing the enabled state for all details elements.
          dmtComponentData.settingStores.themeAnimate.subscribe((enabled) => this.#setEnabled(enabled));
       });
    }

@@ -10,18 +10,27 @@ import { NavigationData }     from './navigation';
 
 import { localConstants }     from '#frontend/constants';
 
-// Loads compressed global component data.
+// Loads compressed global component data into `globalThis.dmtComponentDataBCMP`.
 import '../dmt-component-data.js';
 
+/**
+ * Loads and wraps the binary compressed message pack data bundle for all Svelte components.
+ */
 export class DMTComponentData
 {
    /**
+    * The unpacked raw data bundle.
+    *
     * @type {DMTComponentDataBCMP}
     */
    #dmtComponentDataBCMP;
 
    /**
     * Data that is derived at runtime.
+    * ```
+    * - basepath: Relative path to the documentation root from current page.
+    * - baseURL: Full base URL to documentation root.
+    * ```
     *
     * @type {({
     *    basePath: string,
@@ -33,21 +42,29 @@ export class DMTComponentData
    #localData;
 
    /**
+    * The navigation tree data / control.
+    *
     * @type {NavigationData}
     */
    #navigationData;
 
    /**
+    * Additional DMT theme setting stores.
+    *
     * @type {DMTSettingStores}
     */
    #settingStores;
 
    /**
+    * Shared state stores between components / key handling system.
+    *
     * @type {DMTStateStores}
     */
    #stateStores;
 
    /**
+    * Application wide local / session web storage store managers.
+    *
     * @type {{ session: TJSSessionStorage, local: TJSLocalStorage }}
     */
    #storage = {
@@ -60,6 +77,7 @@ export class DMTComponentData
     */
    constructor(importMetaURL)
    {
+      // Unpack the global component data.
       this.#dmtComponentDataBCMP = /** @type {DMTComponentDataBCMP} */
        (typeof globalThis.dmtComponentDataBCMP === 'string' ?
         globalThis.dmtInflateAndUnpackB64(globalThis.dmtComponentDataBCMP) : {});
@@ -74,8 +92,7 @@ export class DMTComponentData
       const depth = (initialPathURL.match(/\//) ?? []).length;
       const basePath = '../'.repeat(depth);
 
-
-      // Initialize local runtime resources -
+      // Initialize local runtime resources.
       this.#localData = {
          basePath,
          baseURL,
