@@ -244,7 +244,7 @@ export class PageRenderer
          const childrenEl = indexPanelEl.children();
 
          const detailsEl = $(
-         `<details class="tsd-index-content tsd-index-accordion">
+         `<details class="tsd-index-content tsd-index-accordion dmt-index-content">
             <summary class="tsd-accordion-summary tsd-index-summary" data-key="module-index">
                <h3 class="tsd-index-heading uppercase">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg> Index
