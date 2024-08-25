@@ -236,17 +236,18 @@ details.dmt-index-content {
   }
 }
 
+// All default theme detail -> summary -> svg elements are marked with this class; add transition.
+// Note: adding this class programmatically prevents initial transition animation.
+// See: `DetailsAnimation.js`
+.dmt-summary-svg {
+  transition: transform 0.1s;
+}
+
 /* Content style tweaks --------------------------------------------------------------------------------------------- */
 
 // Required when toggling fullscreen.
 .container-main {
   background: var(--color-background);
-}
-
-// All default theme detail -> summary -> svg elements are marked with this class; add transition.
-// Note: adding this class programmatically prevents initial transition animation.
-.dmt-summary-svg {
-  transition: transform 0.1s;
 }
 
 *:focus-visible {

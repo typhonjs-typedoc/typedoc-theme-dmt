@@ -22,6 +22,10 @@ export class DetailsAnimation
          // Add the toggleDetails actions to all default theme detail elements storing the update action.
          for (const detailEl of detailElList)
          {
+            // Add class to provide transition for svg chevron. This is manually added to avoid transform on page load.
+            const svgEl = detailEl.querySelector('summary svg');
+            if (svgEl) { svgEl.classList.add('dmt-summary-svg'); }
+
             this.#actionUpdateFn.push(toggleDetails(detailEl, { store: writable(detailEl.open) }).update);
          }
 
@@ -37,17 +41,7 @@ export class DetailsAnimation
     */
    static #setEnabled(animate)
    {
-      const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
-       'details.tsd-accordion, details.tsd-index-accordion');
-
-      for (const detailEl of detailElList)
-      {
-         // Add class to provide transition for svg chevron. This is manually added to avoid transform on page load.
-         const svgEl = detailEl.querySelector('summary svg');
-         if (svgEl) { svgEl.classList[animate ? 'add' : 'remove']('dmt-summary-svg'); }
-      }
-
-      // Update the toggleDetails actions
+      // Update the toggleDetails actions.
       for (const actionUpdate of this.#actionUpdateFn) { actionUpdate({ animate }); }
    }
 }
