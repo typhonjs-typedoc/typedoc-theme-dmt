@@ -43,7 +43,6 @@
    }
 
    section {
-      --dmt-nav-tree-padding-left: 0;
       --tjs-folder-summary-margin: 0 0.25rem;
       --tjs-folder-summary-width: 100%;
 
