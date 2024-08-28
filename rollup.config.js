@@ -50,8 +50,8 @@ export default [
    },
 
    {
-      input: 'src/components/index.js',
-      external: ['./dmt-component-data.js'],
+      input: 'src/frontend/index.js',
+      external: ['../dmt-component-data.js'],
       output: {
          banner,
          file: 'dist/assets/dmt-components.js',
