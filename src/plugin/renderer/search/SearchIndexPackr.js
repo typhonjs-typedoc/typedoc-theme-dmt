@@ -29,6 +29,9 @@ export class SearchIndexPackr
    /** @type {boolean} */
    #searchInComments;
 
+   /** @type {boolean} */
+   #searchInDocuments;
+
    /**
     * @param {import('typedoc').Application} app -
     *
@@ -41,6 +44,7 @@ export class SearchIndexPackr
       this.#app.renderer.on(RendererEvent.BEGIN, this.#onRendererBegin.bind(this), -100);
 
       this.#searchInComments = this.#app.options.getValue('searchInComments');
+      this.#searchInDocuments = this.#app.options.getValue('searchInDocuments');
       this.#searchFullName = options.search.fullName;
    }
 
@@ -83,10 +87,11 @@ export class SearchIndexPackr
          switch (key)
          {
             case 'comment':
-               if (this.#searchInComments)
-               {
-                  builder.field('c', { boost });
-               }
+               if (this.#searchInComments) { builder.field('c', { boost }); }
+               break;
+
+            case 'document':
+               if (this.#searchInDocuments) { builder.field('d', { boost }); }
                break;
 
             case 'name':
@@ -155,6 +160,11 @@ export class SearchIndexPackr
             buildEntry.c = externalSearchField?.comment ?? this.#getCommentSearchText(reflection);
          }
 
+         if (this.#searchInDocuments)
+         {
+            buildEntry.d = externalSearchField?.document ?? this.#getDocumentSearchText(reflection);
+         }
+
          builder.add(
             buildEntry,
             { boost }
@@ -190,5 +200,15 @@ export class SearchIndexPackr
        .flatMap((c) => { return [...c.summary, ...c.blockTags.flatMap((t) => t.content)]; })
        .map((part) => part.text)
        .join('\n');
+   }
+
+   /**
+    * @param {DeclarationReflection} reflection -
+    *
+    * @returns {string | undefined} Reflection document content to add.
+    */
+   #getDocumentSearchText(reflection)
+   {
+      return reflection.isDocument() ? reflection.content.flatMap((c) => c.text).join('\n') : void 0;
    }
 }

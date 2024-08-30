@@ -7,6 +7,7 @@
    import { writable }                 from 'svelte/store';
 
    import { slideFade }                from '#runtime/svelte/transition';
+   import { Timing }                   from '#runtime/util'
 
    import SearchResults                from './SearchResults.svelte';
 
@@ -46,6 +47,10 @@
 
    const animateTransition = $storeThemeAnimate ? slideFade : () => void 0;
 
+   // Debounce queries by 250ms.
+   const debouncedSearchQuery = Timing.debounce(
+    (query, options) => results = processMainSearchQuery(query, options), 250);
+
    const queryOptions = {
       basePath,
       showModuleIcon,
@@ -59,7 +64,7 @@
    let inputEl;
 
    /** @type {ProcessedSearchDocument[]} */
-   let results;
+   let results = [];
 
    /**
     * Bound from {@link SearchResults} to check for window pointer down events outside input & results elements.
@@ -71,9 +76,11 @@
    // Focus input element on mount.
    onMount(() => inputEl.focus());
 
-   // Perform the search when the query input changes.
-   $: {
-      results = processMainSearchQuery($storeQuery,  { ...queryOptions });
+   // Runs a 250ms debounced query updating `results`.
+   $: debouncedSearchQuery($storeQuery, { ...queryOptions });
+
+   // When results change reset current index / ID.
+   $: if (results?.length) {
       currentIndex = -1;
       storeCurrentId.set(void 0);
    }
