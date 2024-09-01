@@ -63,6 +63,10 @@ export class DetailsAccordion
 
       // Find matching accordion pairs between `main section` and `On This Page`.
       const regex = new RegExp(`${storagePrepend}-accordion-(?<type>section-|tsd-otp-)(?<key>.*)`);
+
+      /**
+       * @type {Map<string, Set<HTMLDetailsElement>>}
+       */
       const pairMaps = new Map();
 
       for (const [key, detailEl] of detailElMap)
@@ -82,17 +86,32 @@ export class DetailsAccordion
          {
             // Otherwise hook up a "one off" details element.
             const store = this.detailsSessionStorage.getStore(key, detailEl.open);
-            this.#actionUpdateFn.push(toggleDetails(detailEl, { store }).update);
+            this.#actionUpdateFn.push(toggleDetails(detailEl, { store }));
          }
       }
+
+      const urlHash = globalThis.location.hash;
 
       // Hook up paired details elements with the same store / shared key.
       for (const [key, detailElSet] of pairMaps)
       {
          const store = this.detailsSessionStorage.getStore(key, true);
+
+         // If there is a URL hash check if any child element of details element matches the hash and set the backing
+         // session store open. This handles the case if the section is closed and the page is reloaded with a hash in
+         // the closed section ensuring that scrolling to the hash occurs.
+         if (urlHash)
+         {
+            for (const detailEl of detailElSet)
+            {
+               const forceOpen = Array.from(detailEl.querySelectorAll('*')).find((child) => `#${child.id}` === urlHash);
+               if (forceOpen) { store.set(true); }
+            }
+         }
+
          for (const detailEl of detailElSet)
          {
-            this.#actionUpdateFn.push(toggleDetails(detailEl, { store }).update);
+            this.#actionUpdateFn.push(toggleDetails(detailEl, { store }));
          }
       }
 
@@ -115,6 +134,6 @@ export class DetailsAccordion
    static #setEnabled(animate)
    {
       // Update the toggleDetails actions.
-      for (const actionUpdate of this.#actionUpdateFn) { actionUpdate({ animate }); }
+      for (const actionUpdate of this.#actionUpdateFn) { actionUpdate?.update({ animate }); }
    }
 }
