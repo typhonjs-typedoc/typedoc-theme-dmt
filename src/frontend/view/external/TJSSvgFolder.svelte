@@ -126,7 +126,7 @@
 
    import { toggleDetails }      from '#runtime/svelte/action/animate';
    import { applyStyles }        from '#runtime/svelte/action/dom';
-   import { isSvelteComponent }  from '#runtime/svelte/util';
+   import { TJSSvelteUtil }      from '#runtime/svelte/util';
    import { isObject }           from '#runtime/util/object';
 
    import {
@@ -443,7 +443,7 @@ changing the open state.  -->
       {/if}
 
       <slot name=label>
-         {#if isSvelteComponent(folder?.slotLabel?.class)}
+         {#if TJSSvelteUtil.isComponent(folder?.slotLabel?.class)}
             <svelte:component this={folder.slotLabel.class} {...(isObject(folder?.slotLabel?.props) ? folder.slotLabel.props : {})} />
          {:else}
             <div bind:this={labelEl} class=label>{label}</div>
@@ -451,7 +451,7 @@ changing the open state.  -->
       </slot>
 
       <slot name="summary-end">
-         {#if isSvelteComponent(folder?.slotSummaryEnd?.class)}
+         {#if TJSSvelteUtil.isComponent(folder?.slotSummaryEnd?.class)}
             <svelte:component this={folder.slotSummaryEnd.class} {...(isObject(folder?.slotSummaryEnd?.props) ? folder.slotSummaryEnd.props : {})} />
          {/if}
       </slot>
@@ -460,7 +460,7 @@ changing the open state.  -->
    <div class=contents>
       {#if visible}
          <slot>
-            {#if isSvelteComponent(folder?.slotDefault?.class)}
+            {#if TJSSvelteUtil.isComponent(folder?.slotDefault?.class)}
                <svelte:component this={folder.slotDefault.class} {...(isObject(folder?.slotDefault?.props) ? folder.slotDefault.props : {})} />
             {/if}
          </slot>
