@@ -132,9 +132,9 @@ export class GlobalResources
       app.logger.verbose(`[typedoc-theme-default-modern] Copying assets to output assets directory.`);
       copyDirectory(path.join(localDir, 'assets'), outAssets);
 
-      // Update main.js default theme removing `initSearch` / `initNav` functions ------------------------------------
+      // Update main.js default theme removing `initSearch` / `initNav` functions and registering default `Accordion`.
 
-      // TypeDoc 0.25.3+
+      // TypeDoc 0.26.6+
 
       // This can be a potentially fragile replacement. The regex below removes any functions / content between
       // `Object.defineProperty()` and the closing of the IIFE `})();`. This works for mangled / minified code.
@@ -144,18 +144,42 @@ export class GlobalResources
       const mainJSPath = path.join(event.outputDirectory, 'assets', 'main.js');
       if (fs.existsSync(mainJSPath))
       {
-         const mainData = fs.readFileSync(mainJSPath, 'utf-8');
+         let mainData = fs.readFileSync(mainJSPath, 'utf-8');
 
-         const regex = /(Object\.defineProperty\(window,"app",\{.*?}\);)\s*.*?(?=}\)\(\);)/gm;
+         let alteredData = true;
+         let alteredData2 = true;
 
-         if (regex.test(mainData))
+         // Remove the initialization of the default theme navigation sidebar and search client side JS as the DMT
+         // handles these sections.
+         const regexInitNavSearch = /(Object\.defineProperty\(window,"app",\{.*?}\);)\s*.*?(?=}\)\(\);)/gm;
+         if (regexInitNavSearch.test(mainData))
          {
-            fs.writeFileSync(mainJSPath, mainData.replace(regex, '$1'), 'utf-8');
+            mainData = mainData.replace(regexInitNavSearch, '$1');
          }
          else
          {
+            alteredData = false;
             app.logger.error(
-             `[typedoc-theme-default-modern] Failed to remove default theme search initialization in 'main.js' asset.`);
+             `[typedoc-theme-default-modern] Failed to remove default theme search and navigation initialization in 'main.js' asset.`);
+         }
+
+         // Remove default theme `Accordion` component registration as the DMT handles accordion / details elements.
+         const regexRegisterAccordion = /;([^;]*?),"\.tsd-accordion"\);/gm;
+         if (regexRegisterAccordion.test(mainData))
+         {
+            mainData = mainData.replace(regexRegisterAccordion, ';');
+         }
+         else
+         {
+            alteredData2 = false;
+            app.logger.error(
+             `[typedoc-theme-default-modern] Failed to remove default theme Accordion component registration in 'main.js' asset.`);
+         }
+
+         // If any data is altered then rewrite the `main.js` file.
+         if (alteredData || alteredData2)
+         {
+            fs.writeFileSync(mainJSPath, mainData, 'utf-8');
          }
       }
       else
