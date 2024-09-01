@@ -226,7 +226,7 @@ header.tsd-page-toolbar {
 
 // The DMT adds a details element to the `module.html` index file. A CSS transform vs JS is used to rotate the SVG
 // chevron. See: `PageRenderer#augmentModule`.
-details.dmt-index-content {
+details.tsd-accordion {
   &[open] svg {
     transform: rotate(0deg);
   }
