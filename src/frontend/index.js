@@ -6,7 +6,7 @@ import {
    keyCommands,
    loadMainSearchData,
    scrollActivation,
-   DetailsAnimation,
+   DetailsAccordion,
    DMTComponentData }            from '#frontend/state';
 
 import {
@@ -85,8 +85,8 @@ scrollActivation();
 
 // Augmentation ------------------------------------------------------------------------------------------------------
 
-// Augments default theme details elements adding animation.
-DetailsAnimation.initialize(dmtComponentData);
+// Augments default theme details elements to manage all accordions.
+DetailsAccordion.initialize(dmtComponentData);
 
 // After first render ------------------------------------------------------------------------------------------------
 
