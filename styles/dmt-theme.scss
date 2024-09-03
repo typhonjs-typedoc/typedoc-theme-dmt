@@ -377,15 +377,12 @@ a {
     border-radius: 0;
   }
 
-  // `Index` details element -------------------------------
+  // `Index` / `Hierarchy` details element -------------------------------
 
   .tsd-panel-group.tsd-index-group details {
-    background: var(--dmt-container-background);
-    border: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius);
-    box-shadow: var(--dmt-container-box-shadow);
-    padding: var(--dmt-container-padding);
+    margin: 0;
 
+    // Correct margin for default index.
     .tsd-index-heading {
       margin: 0 0 15px 0;
     }
@@ -399,6 +396,24 @@ a {
     .tsd-accordion-details section:not(:last-child) {
       margin-bottom: 15px;
     }
+  }
+
+  .tsd-panel-group.tsd-index-group, .tsd-panel-group.tsd-hierarchy {
+    .tsd-accordion-summary a {
+      width: unset;
+    }
+
+    details {
+      background: var(--dmt-container-background);
+      border: var(--dmt-container-border);
+      border-radius: var(--dmt-container-border-radius);
+      box-shadow: var(--dmt-container-box-shadow);
+      padding: var(--dmt-container-padding);
+    }
+  }
+
+  .tsd-panel-group.tsd-hierarchy .tsd-accordion-details {
+    padding-top: 0.75rem;
   }
 
   // Module Index Panels -----------------------------------
@@ -621,6 +636,10 @@ a {
       }
 
       summary {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+
         border-bottom: var(--dmt-container-border);
         border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
         background: linear-gradient(to right, var(--dmt-container-background), transparent);

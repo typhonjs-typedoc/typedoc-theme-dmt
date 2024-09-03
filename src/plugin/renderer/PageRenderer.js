@@ -1,5 +1,3 @@
-import fs                  from 'node:fs';
-
 import { load }            from 'cheerio';
 
 import {
@@ -68,6 +66,46 @@ export class PageRenderer
       // For no Javascript loading reverse the above style on load. The main Svelte component bundle will reverse this
       // style after all components have been loaded on a requestAnimationFrame callback.
       headEl.append('<noscript><style>body { visibility: visible; }</style></noscript>');
+   }
+
+   /**
+    * Modifications for class reflection. Wraps `.tsd-hierarchy` panel in a details element.
+    *
+    * @param {import('cheerio').Cheerio}  $ -
+    */
+   #augmentClass($)
+   {
+      const hierarchyPanelEl = $('.tsd-panel.tsd-hierarchy');
+
+      // Enclose class hierarchy in a details / summary element.
+      if (hierarchyPanelEl)
+      {
+         const hierarchyHeaderEl = hierarchyPanelEl.find('> h4');
+         const hierarchyContentEl = hierarchyPanelEl.find('> ul.tsd-hierarchy');
+
+         const detailsEl = $(
+          `<section class="tsd-panel-group tsd-hierarchy">
+            <details class="tsd-hierarchy tsd-accordion">
+              <summary class="tsd-accordion-summary" data-key="class-hierarchy">
+                 <h5>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg>
+                 </h5>
+              </summary>
+              <div class="tsd-accordion-details">
+              </div>
+           </details>
+         </section>`);
+
+         // Append content.
+         detailsEl.find('.tsd-accordion-details').append(hierarchyContentEl.clone());
+
+         const detailsH5El = detailsEl.find('h5');
+
+         // Append the HTML from old header.
+         detailsH5El.append(` ${hierarchyHeaderEl.html()}`);
+
+         hierarchyPanelEl.replaceWith(detailsEl);
+      }
    }
 
    /**
@@ -225,14 +263,11 @@ export class PageRenderer
    }
 
    /**
-    * Modifications for module reflection. Wraps `.tsd-index-panel` in a details element with the local storage key:
-    * `tsd-accordion-module-index`.
+    * Modifications for module reflection. Wraps `.tsd-index-panel` in a details element.
     *
     * @param {import('cheerio').Cheerio}  $ -
-    *
-    * @param {PageEvent}   page -
     */
-   #augmentModule($, page)
+   #augmentModule($)
    {
       const indexPanelEl = $('.tsd-panel.tsd-index-panel');
 
@@ -244,7 +279,7 @@ export class PageRenderer
          const childrenEl = indexPanelEl.children();
 
          const detailsEl = $(
-         `<details class="tsd-index-content tsd-accordion dmt-index-content">
+          `<details class="tsd-index-content tsd-accordion dmt-index-content">
             <summary class="tsd-accordion-summary tsd-index-summary" data-key="module-index">
                <h3 class="tsd-index-heading uppercase">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg> Index
@@ -259,26 +294,6 @@ export class PageRenderer
          childrenEl.remove();
 
          indexPanelEl.append(detailsEl);
-      }
-
-      // Detect if there is any associated README file to render for the module page based on the name and lookup in
-      // `dmtModuleReadme`.
-      const moduleName = page.model?.name;
-
-      if (typeof this.#options.moduleRemap.readme[moduleName] === 'string')
-      {
-         try
-         {
-            const md = fs.readFileSync(this.#options.moduleRemap.readme[moduleName], 'utf-8');
-            const mdHTML = this.#app.renderer.theme.markedPlugin.parseMarkdown(md, page);
-
-            if (typeof mdHTML === 'string') { $('.col-content').append(mdHTML); }
-         }
-         catch (err)
-         {
-            this.#app.logger.warn(
-             `[typedoc-theme-default-modern] Could not render additional 'README.md' for: '${moduleName}'`);
-         }
       }
    }
 
@@ -295,7 +310,16 @@ export class PageRenderer
       // Remove unused assets / scripts from TypeDoc default theme.
       this.#removeAssets($);
 
-      if (page.model.kind === ReflectionKind.Module) { this.#augmentModule($, page); }
+      switch (page.model.kind)
+      {
+         case ReflectionKind.Class:
+            this.#augmentClass($);
+            break;
+
+         case ReflectionKind.Module:
+            this.#augmentModule($);
+            break;
+      }
 
       // A few global modifications tweaks like the favicon and slight modifications to the layout to allow right
       // aligning of additional elements in flexbox layouts.
