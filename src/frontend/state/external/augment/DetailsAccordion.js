@@ -14,7 +14,7 @@ export class DetailsAccordion
     *
     * @type {import('svelte/action').ActionReturn[]}
     */
-   static #actionUpdateFn = [];
+   static #toggleDetailsActionReturns = [];
 
    /**
     * @type {TJSSessionStorage}
@@ -101,7 +101,7 @@ export class DetailsAccordion
          {
             // Otherwise hook up a "one off" details element.
             const store = this.detailsSessionStorage.getStore(key, detailEl.open);
-            this.#actionUpdateFn.push(toggleDetails(detailEl, { store }));
+            this.#toggleDetailsActionReturns.push(toggleDetails(detailEl, { store }));
          }
       }
 
@@ -126,7 +126,7 @@ export class DetailsAccordion
 
          for (const detailEl of detailElSet)
          {
-            this.#actionUpdateFn.push(toggleDetails(detailEl, { store }));
+            this.#toggleDetailsActionReturns.push(toggleDetails(detailEl, { store }));
          }
       }
 
@@ -149,6 +149,6 @@ export class DetailsAccordion
    static #setEnabled(animate)
    {
       // Update the toggleDetails actions.
-      for (const actionUpdate of this.#actionUpdateFn) { actionUpdate?.update({ animate }); }
+      for (const actionReturn of this.#toggleDetailsActionReturns) { actionReturn?.update({ animate }); }
    }
 }
