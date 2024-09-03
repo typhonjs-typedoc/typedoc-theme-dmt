@@ -186,6 +186,14 @@ header.tsd-page-toolbar {
     margin-bottom: 0;
   }
 
+  // Add padding and bottom border for `Hierarchy` and `Index` panel groups when open.
+  details[open].tsd-index-content, details[open].tsd-hierarchy {
+    > .tsd-accordion-summary {
+      padding-bottom: var(--dmt-container-padding);
+      border-bottom: var(--dmt-container-border);
+    }
+  }
+
   // Add background / border to all panel groups summary elements.
   details.tsd-panel-group summary {
     border-bottom: var(--dmt-container-border);
@@ -237,8 +245,8 @@ header.tsd-page-toolbar {
 
 /* Content style additions ------------------------------------------------------------------------------------------ */
 
-// The DMT adds a details element to the `module.html` index file. A CSS transform vs JS is used to rotate the SVG
-// chevron. See: `PageRenderer#augmentModule`.
+// All details elements are controlled by the DMT. A CSS transform vs JS is used to rotate the SVG
+// chevron. See: `DetailsAccordion`.
 details.tsd-accordion {
   &[open] svg {
     transform: rotate(0deg);
@@ -382,15 +390,13 @@ a {
   .tsd-panel-group.tsd-index-group details {
     margin: 0;
 
-    // Correct margin for default index.
-    .tsd-index-heading {
-      margin: 0 0 15px 0;
+    .tsd-accordion-summary .tsd-index-heading {
+      margin: 0;
     }
 
-    &:not([open]) {
-      .tsd-index-heading.uppercase {
-        margin: 0;
-      }
+    // Correct margin for default index.
+    .tsd-accordion-details .tsd-index-heading {
+      margin: 0 0 15px 0;
     }
 
     .tsd-accordion-details section:not(:last-child) {
