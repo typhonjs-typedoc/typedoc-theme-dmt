@@ -180,6 +180,19 @@ header.tsd-page-toolbar {
   margin-bottom: 1rem;
   margin-top: 0.75rem;
   max-width: 1300px;
+
+  // Reverse unnecessary margin.
+  .tsd-panel, .tsd-panel-group {
+    margin-bottom: 0;
+  }
+
+  // Add background / border to all panel groups summary elements.
+  details.tsd-panel-group summary {
+    border-bottom: var(--dmt-container-border);
+    border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
+    background: linear-gradient(to right, var(--dmt-container-background), var(--color-background));
+    padding: 0.25rem;
+  }
 }
 
 .site-menu {
@@ -578,16 +591,40 @@ a {
 
   // Styling for sidebar `On This Page` detail element open.
   details[open].tsd-accordion.tsd-page-navigation {
-    padding: var(--dmt-container-padding) 0 0 var(--dmt-container-padding);
+    padding: var(--dmt-container-padding) 0 var(--dmt-container-padding) var(--dmt-container-padding);
 
-    .tsd-accordion-summary {
+    // Only first summary.
+    > .tsd-accordion-summary {
       width: calc(100% - 1rem);
+    }
+
+    .tsd-accordion-details {
+      padding-top: 0.75rem;
     }
   }
 
-  // Both `Settings` and `On This Page`.
-  details[open] .tsd-accordion-summary {
-    padding-bottom: var(--dmt-container-padding);
-    border-bottom: var(--dmt-container-border);
+  // Both `Settings` and `On This Page`. Target first summary element.
+  .tsd-navigation.settings details[open], details[open].tsd-page-navigation {
+    > .tsd-accordion-summary {
+      padding-bottom: var(--dmt-container-padding);
+      border-bottom: var(--dmt-container-border);
+    }
+  }
+
+  // Style internal `On This Page` detail elements / sections.
+  .tsd-page-navigation {
+    details.tsd-page-navigation-section {
+      margin: 0 var(--dmt-container-padding) 0 0; // Reverse default theme style.
+
+      &:not(:last-child) {
+        margin-bottom: 0.25rem;
+      }
+
+      summary {
+        border-bottom: var(--dmt-container-border);
+        border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
+        background: linear-gradient(to right, var(--dmt-container-background), transparent);
+      }
+    }
   }
 }
