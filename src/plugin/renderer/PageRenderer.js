@@ -83,6 +83,30 @@ export class PageRenderer
          const hierarchyHeaderEl = hierarchyPanelEl.find('> h4');
          const hierarchyContentEl = hierarchyPanelEl.find('> ul.tsd-hierarchy');
 
+         // Process header removing `view full` link and placing it next to the class target. ------------------------
+
+         const headerTextNodes = hierarchyHeaderEl.contents().filter(function() { return this.type === 'text'; });
+
+         const firstTextNode = headerTextNodes.first();
+
+         // Replace the original text with the updated text removing spaces and parentheses.
+         firstTextNode.replaceWith(firstTextNode.text().replace(/[ ()]/g, ''));
+
+         // Remove last parentheses.
+         headerTextNodes.last()?.remove();
+
+         // Move link to `target` class span.
+         const viewFullLink = hierarchyHeaderEl.find('a');
+         const targetClassSpan = hierarchyContentEl.find('span.target');
+
+         targetClassSpan.append(' (');
+         targetClassSpan.append(viewFullLink.clone());
+         targetClassSpan.append(')');
+
+         viewFullLink.remove();
+
+         // Create details element wrapper and update content --------------------------------------------------------
+
          const detailsEl = $(
           `<section class="tsd-panel-group tsd-hierarchy">
             <details class="tsd-hierarchy tsd-accordion">
