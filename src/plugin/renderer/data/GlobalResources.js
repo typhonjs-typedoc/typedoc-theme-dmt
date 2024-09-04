@@ -57,7 +57,15 @@ export class GlobalResources
 
       if (fs.existsSync(path.join(event.outputDirectory, 'hierarchy.html'))) { pageIndex.hierarchy = 'hierarchy.html'; }
 
-      if (fs.existsSync(path.join(event.outputDirectory, 'modules.html'))) { pageIndex.modules = 'modules.html'; }
+      if (fs.existsSync(path.join(event.outputDirectory, 'modules.html')))
+      {
+         pageIndex.modules = 'modules.html';
+      }
+      // TypeDoc 0.26.6 - when markdown files are added a synthetic module is added and `modules.html` does not exist.
+      else if (fs.existsSync(path.join(event.outputDirectory, 'modules', 'index.html')))
+      {
+         pageIndex.modules = 'modules/index.html';
+      }
 
       // Combine 'sidebarLinks' and 'navigationLinks' ----------------------------------------------------------------
 
