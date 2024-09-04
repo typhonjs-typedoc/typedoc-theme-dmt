@@ -26,10 +26,17 @@ export type DMTComponentDataBCMP = {
       user: DMTIconLink[]
    };
 
-   /**
-    * The relative path to any module / modules index.
-    */
-   modulesIndex: string | undefined;
+   pageIndex: {
+      /**
+       * The relative path to any `hierarchy` index.
+       */
+      hierarchy: string | undefined;
+
+      /**
+       * The relative path to any `modules` index.
+       */
+      modules: string | undefined;
+   }
 
    /**
     * When true 'Module' in page titles is replaced with 'Package'.

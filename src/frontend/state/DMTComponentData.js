@@ -200,11 +200,11 @@ export class DMTComponentData
    }
 
    /**
-    * @returns {string | undefined} The relative path to any module / modules index.
+    * @returns {{hierarchy: string | undefined, modules: string | undefined}} Additional pages index.
     */
-   get modulesIndex()
+   get pageIndex()
    {
-      return this.#dmtComponentDataBCMP.modulesIndex;
+      return this.#dmtComponentDataBCMP.pageIndex ?? {};
    }
 
    /**

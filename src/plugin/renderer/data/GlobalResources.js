@@ -51,18 +51,13 @@ export class GlobalResources
    {
       app.logger.verbose(`[typedoc-theme-default-modern] Generating global component data.`);
 
-      // Determine if there is any module / modules index ------------------------------------------------------------
+      // Determine if there is any `hierarch` / `modules` index ------------------------------------------------------
 
-      let modulesIndex;
+      const pageIndex = {};
 
-      if (fs.existsSync(path.join(event.outputDirectory, 'modules.html')))
-      {
-         modulesIndex = 'modules.html';
-      }
-      else if (fs.existsSync(path.join(event.outputDirectory, 'modules', 'index.html')))
-      {
-         modulesIndex = 'modules/index.html';
-      }
+      if (fs.existsSync(path.join(event.outputDirectory, 'hierarchy.html'))) { pageIndex.hierarchy = 'hierarchy.html'; }
+
+      if (fs.existsSync(path.join(event.outputDirectory, 'modules.html'))) { pageIndex.modules = 'modules.html'; }
 
       // Combine 'sidebarLinks' and 'navigationLinks' ----------------------------------------------------------------
 
@@ -78,7 +73,7 @@ export class GlobalResources
             service: this.#processIconLinksService(event, options),
             user: this.#processIconLinksUser(event, options)
          },
-         modulesIndex,
+         pageIndex,
          moduleIsPackage: options.moduleRemap.isPackage,
          navigationIndex: NavigationIndex.data,
          ReflectionKind: this.#getReflectionKind(options),
