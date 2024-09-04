@@ -25,7 +25,7 @@
 </script>
 
 {#if navigation.treeState.markdown.hasData}
-   <section>
+   <section class=dmt-document-index>
       <TJSSvgFolder {folder} animate={$storeThemeAnimate}>
          <hr>
          <NavigationTree treeState={navigation.treeState.markdown} />
