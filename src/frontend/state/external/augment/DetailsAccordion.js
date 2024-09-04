@@ -19,7 +19,19 @@ export class DetailsAccordion
    /**
     * @type {TJSSessionStorage}
     */
-   static detailsSessionStorage = new TJSSessionStorage();
+   static #detailsSessionStorage = new TJSSessionStorage();
+
+   /**
+    * Stores the `On This Page` storage key.
+    *
+    * @type {string}
+    */
+   static #onThisPageKey;
+
+   /**
+    * @returns {TJSSessionStorage} The session storage manager for all details elements.
+    */
+   static get sessionStorage() { return this.#detailsSessionStorage; }
 
    /**
     * @param {DMTComponentData}  dmtComponentData - DMT component data.
@@ -39,9 +51,9 @@ export class DetailsAccordion
             {
                const methodsKey = `${dmtComponentData.storagePrepend}-accordion-section-otp-Methods`;
 
-               if (this.detailsSessionStorage.hasStore(methodsKey))
+               if (this.#detailsSessionStorage.hasStore(methodsKey))
                {
-                  this.detailsSessionStorage.getStore(methodsKey)?.set(true);
+                  this.#detailsSessionStorage.getStore(methodsKey)?.set(true);
                }
             });
          }
@@ -50,6 +62,35 @@ export class DetailsAccordion
          dmtComponentData.settingStores.themeAnimate.subscribe((enabled) => this.#setEnabled(enabled));
       });
    }
+
+   /**
+    * Opens `On This Page` and potentially focuses summary element.
+    *
+    * @param {object} [options] - Optional parameters.
+    *
+    * @param {boolean} [options.focus=true] - Focus first internal element.
+    */
+   static openOnThisPage({ focus = true } = {})
+   {
+      /** @type {HTMLDetailsElement} */
+      const detailsEl = globalThis.document.querySelector('details.tsd-page-navigation');
+      if (detailsEl)
+      {
+         const summaryEl = detailsEl.querySelector('summary');
+
+         if (summaryEl)
+         {
+            if (this.#detailsSessionStorage.hasStore(this.#onThisPageKey))
+            {
+               this.#detailsSessionStorage.getStore(this.#onThisPageKey).set(true);
+            }
+
+            if (focus) { setTimeout(() => summaryEl.focus({ focusVisible: true }), 0); }
+         }
+      }
+   }
+
+   // Internal implementation ----------------------------------------------------------------------------------------
 
    static #initializeDetails(storagePrepend)
    {
@@ -72,6 +113,8 @@ export class DetailsAccordion
                summaryEl.textContent?.trim?.()?.replace(/\s+/g, "-").toLowerCase()
             }`;
          }
+
+         if (key === `${storagePrepend}-accordion-on-this-page`) { this.#onThisPageKey = key; }
 
          if (typeof key === 'string' && key.length) { detailElMap.set(key, detailEl); }
       }
@@ -100,7 +143,7 @@ export class DetailsAccordion
          else
          {
             // Otherwise hook up a "one off" details element.
-            const store = this.detailsSessionStorage.getStore(key, detailEl.open);
+            const store = this.#detailsSessionStorage.getStore(key, detailEl.open);
             this.#toggleDetailsActionReturns.push(toggleDetails(detailEl, { store }));
          }
       }
@@ -110,7 +153,7 @@ export class DetailsAccordion
       // Hook up paired details elements with the same store / shared key.
       for (const [key, detailElSet] of pairMaps)
       {
-         const store = this.detailsSessionStorage.getStore(key, true);
+         const store = this.#detailsSessionStorage.getStore(key, true);
 
          // If there is a URL hash check if any child element of details element matches the hash and set the backing
          // session store open. This handles the case if the section is closed and the page is reloaded with a hash in
