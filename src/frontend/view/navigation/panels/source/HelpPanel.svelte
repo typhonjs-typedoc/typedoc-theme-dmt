@@ -3,14 +3,16 @@
 
    import { slideFade }    from '#runtime/svelte/transition';
 
-   export let modulesIndex = false;
+   const {
+      moduleIsPackage,
+      navigation,
+      pageIndex,
+      ReflectionKind,
+      settingStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
 
-   export let moduleIsPackage = false;
-
-   /** @type {boolean} */
-   export let hasFolders = false;
-
-   const { settingStores, ReflectionKind } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+   const hasAnyFolders = navigation.treeState.markdown.hasFolders || navigation.treeState.source.hasFolders;
+   const hasMarkdownFolders = navigation.treeState.markdown.hasFolders;
+   const hasSourceFolders = navigation.treeState.source.hasFolders;
 
    const storeThemeAnimate = settingStores.themeAnimate;
 
@@ -41,14 +43,16 @@
 
    <span class=title>Keyboard Shortcuts:</span>
    <span><i class=key>Alt + C</i>Focus main content</span>
-   {#if hasFolders}<span><i class=key>Alt + E</i>(Nav) open / close all</span>{/if}
+   {#if hasMarkdownFolders}<span><i class=key>Alt + D</i>Open / focus "Document Index"</span>{/if}
+   {#if hasSourceFolders}<span><i class=key>Alt + E</i>Source (Nav) open / close all</span>{/if}
    <span><i class=key>Alt + H</i>Open / close help</span>
    <span><i class=key>Alt + I</i>Go to home / index page</span>
-   <span><i class=key>Alt + N</i>(Nav) focus selected</span>
-   {#if modulesIndex}<span><i class=key>Alt + M</i>Go to {moduleIndexLabel} page</span>{/if}
-   <span><i class=key>Alt + O</i>Focus "On This Page"</span>
+   <span><i class=key>Alt + N</i>Source (Nav) focus selected</span>
+   {#if pageIndex.modules}<span><i class=key>Alt + M</i>Go to {moduleIndexLabel} page</span>{/if}
+   <span><i class=key>Alt + O</i>Open / focus "On This Page"</span>
    <span><i class=key>Alt + S</i>Activate search</span>
-   {#if hasFolders}<span><i class=key>Alt</i>Press when opening / closing folders to open / close all child folders.</span>{/if}
+   {#if pageIndex.hierarchy}<span><i class=key>Alt + Y</i>Go to class hierarchy page</span>{/if}
+   {#if hasAnyFolders}<span><i class=key>Alt</i>Press when opening / closing folders to open / close all child folders.</span>{/if}
 </div>
 
 <style>

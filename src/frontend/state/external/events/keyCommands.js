@@ -1,4 +1,6 @@
-import { A11yHelper }   from '#runtime/util/browser';
+import { A11yHelper }         from '#runtime/util/browser';
+
+import { DetailsAccordion }   from '../augment/DetailsAccordion.js';
 
 /**
  * Provides the following global keyboard commands:
@@ -15,7 +17,13 @@ import { A11yHelper }   from '#runtime/util/browser';
  */
 export function keyCommands(dmtComponentData)
 {
-   const { baseURL, modulesIndex, navigation, stateStores } = dmtComponentData;
+   const {
+      baseURL,
+      dmtSessionStorage,
+      pageIndex,
+      navigation,
+      stateStores,
+      storagePrepend } = dmtComponentData;
 
    // Direct focus target.
    globalThis.document.addEventListener('keydown', (event) =>
@@ -36,6 +44,32 @@ export function keyCommands(dmtComponentData)
             break;
          }
 
+         case 'KeyD':
+         {
+            // Open / focus document index.
+            const documentKey = `${storagePrepend}-document-index`;
+
+            if (dmtSessionStorage.hasStore(documentKey))
+            {
+               dmtSessionStorage.getStore(documentKey).set(true);
+
+               // Wait for content to display.
+               setTimeout(() =>
+               {
+                  /** @type {HTMLDetailsElement} */
+                  const sectionEl = globalThis.document.querySelector('section.dmt-document-index');
+                  if (sectionEl)
+                  {
+                     const anchorEl = sectionEl.querySelector('a');
+                     if (anchorEl) { anchorEl.focus({ focusVisible: true }); }
+                  }
+               }, 0);
+            }
+
+            event.preventDefault();
+            break;
+         }
+
          case 'KeyE':
             // Only open / close source folders in source navigation tree state.
             navigation.treeState.source.swapFoldersAllOpen();
@@ -49,14 +83,14 @@ export function keyCommands(dmtComponentData)
             break;
 
          case 'KeyI':
-            window.location.href = `${baseURL}index.html`;
+            globalThis.location.href = `${baseURL}index.html`;
             event.preventDefault();
             break;
 
          case 'KeyM':
-            if (typeof modulesIndex === 'string')
+            if (typeof pageIndex.modules === 'string')
             {
-               window.location.href = `${baseURL}${modulesIndex}`;
+               globalThis.location.href = `${baseURL}${pageIndex.modules}`;
             }
             event.preventDefault();
             break;
@@ -72,23 +106,21 @@ export function keyCommands(dmtComponentData)
 
          case 'KeyO':
          {
-            /** @type {HTMLDetailsElement} */
-            const detailsEl = globalThis.document.querySelector('details.tsd-page-navigation');
-            if (detailsEl)
-            {
-               const anchorEl = detailsEl.querySelector('a');
-               if (anchorEl)
-               {
-                  detailsEl.open = true;
-                  setTimeout(() => anchorEl.focus({ focusVisible: true }), 0);
-               }
-            }
+            DetailsAccordion.openOnThisPage();
             event.preventDefault();
             break;
          }
 
          case 'KeyS':
             stateStores.mainSearchVisible.set(true);
+            event.preventDefault();
+            break;
+
+         case 'KeyY':
+            if (typeof pageIndex.hierarchy === 'string')
+            {
+               globalThis.location.href = `${baseURL}${pageIndex.hierarchy}`;
+            }
             event.preventDefault();
             break;
       }
