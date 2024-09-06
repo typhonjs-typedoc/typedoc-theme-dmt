@@ -74,10 +74,50 @@ export type DMTComponentDataBCMP = {
    storagePrepend: string;
 }
 
+//    result.push({
+//       dmtPath: `icons/external/${entry.asset.filename}`,
+//       title: entry.title,
+//       url: entry.url
+//    });
+// }
+// else if (entry.asset.url)
+// {
+//    result.push({
+//       iconURL: entry.asset.url,
+//       title: entry.title,
+//       url: entry.url
+//    });
+// }
+
 /**
- * Defines a toolbar icon link.
+ * Defines a parsed toolbar icon link.
  */
 export type DMTIconLink = {
+   /**
+    * Local image resource path relative to base DMT URL.
+    */
+   dmtPath?: string;
+
+   /**
+    * External icon URL.
+    */
+   iconURL?: string;
+
+   /**
+    * Element title for hover / display.
+    */
+   title?: string;
+
+   /**
+    * Destination URL.
+    */
+   url: string;
+}
+
+/**
+ * Defines a toolbar icon link option.
+ */
+export type DMTIconLinkOption = {
    /**
     * Parsed local file or URL.
     */

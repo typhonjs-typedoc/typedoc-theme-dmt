@@ -232,7 +232,7 @@ export class GlobalResources
     *
     * @param {ThemeOptions} options -
     *
-    * @returns {DMTIconLink[]} List of DMTIconLinks.
+    * @returns {DMTIconLinkOption[]} List of DMTIconLinks.
     */
    static #processIconLinksUser(event, options)
    {
@@ -276,7 +276,7 @@ export class GlobalResources
     *
     * @param {ThemeOptions} options -
     *
-    * @returns {DMTIconLink[]} List of service DMTIconLinks.
+    * @returns {DMTIconLinkOption[]} List of service DMTIconLinks.
     */
    static #processIconLinksService(event, options)
    {

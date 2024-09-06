@@ -252,10 +252,10 @@ export class ThemeOptions
    /** @returns {FileOrURL | undefined} favicon option */
    get favicon() { return this.#options.favicon; }
 
-   /** @returns {DMTIconLink[]} linksIcon option */
+   /** @returns {DMTIconLinkOption[]} linksIcon option */
    get linksIcon() { return this.#options.linksIcon; }
 
-   /** @returns {DMTIconLink[]} linksService option */
+   /** @returns {DMTIconLinkOption[]} linksService option */
    get linksService() { return this.#options.linksService; }
 
    /** @returns {DMTModuleRemap} moduleRemap option */
@@ -478,9 +478,9 @@ const s_SERVICE_LINKS = new Map([
  *
  * @property {FileOrURL | undefined} [favicon] Parsed data about any defined favicon.
  *
- * @property {DMTIconLink[]} linksIcon Provided icon links placed in the toolbar links.
+ * @property {DMTIconLinkOption[]} linksIcon Provided icon links placed in the toolbar links.
  *
- * @property {DMTIconLink[]} linksService Built-in service icon links placed in the toolbar links.
+ * @property {DMTIconLinkOption[]} linksService Built-in service icon links placed in the toolbar links.
  *
  * @property {DMTModuleRemap} moduleRemap - Module remap options.
  *
