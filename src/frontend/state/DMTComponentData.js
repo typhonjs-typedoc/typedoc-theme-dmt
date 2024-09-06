@@ -1,14 +1,15 @@
-import { get, writable }      from 'svelte/store';
+import { get, writable }               from 'svelte/store';
 
 import {
    TJSLocalStorage,
-   TJSSessionStorage }        from '#runtime/svelte/store/web-storage';
+   TJSSessionStorage }                 from '#runtime/svelte/store/web-storage';
 
-import { A11yHelper }         from '#runtime/util/browser';
+import { A11yHelper }                  from '#runtime/util/browser';
 
-import { NavigationData }     from './navigation';
+import { NavigationData }              from './navigation';
+import { createStoreToolbarIconLinks } from './toolbar';
 
-import { localConstants }     from '#frontend/constants';
+import { localConstants }              from '#frontend/constants';
 
 // Loads compressed global component data into `globalThis.dmtComponentDataBCMP`.
 import '../dmt-component-data.js';
@@ -18,6 +19,13 @@ import '../dmt-component-data.js';
  */
 export class DMTComponentData
 {
+   /**
+    * Calculated stores for various components.
+    *
+    * @type {DMTComponentStores}
+    */
+   #componentStores;
+
    /**
     * The unpacked raw data bundle.
     *
@@ -102,6 +110,10 @@ export class DMTComponentData
 
       this.#navigationData = new NavigationData(this, this.#dmtComponentDataBCMP.navigationIndex);
 
+      this.#componentStores  = Object.freeze({
+         toolbarIconLinks: createStoreToolbarIconLinks(this, this.#dmtComponentDataBCMP)
+      });
+
       this.#settingStores = Object.freeze({
          // Ensure that the setting / animate local storage store is initialized with A11y motion preference.
          themeAnimate: this.#storage.local.getStore(localConstants.dmtThemeAnimate, !A11yHelper.prefersReducedMotion)
@@ -134,7 +146,15 @@ export class DMTComponentData
    }
 
    /**
-    * @returns {DMTLocalStorage} Local storage store manager.
+    * @returns {DMTComponentStores} Various pre-calculated stores for components.
+    */
+   get componentStores()
+   {
+      return this.#componentStores;
+   }
+
+   /**
+    * @returns {TJSLocalStorage} Local storage store manager.
     */
    get dmtLocalStorage()
    {
@@ -256,6 +276,13 @@ export class DMTComponentData
       return this.#dmtComponentDataBCMP.storagePrepend ?? 'docs-unnamed';
    }
 }
+
+/**
+ * @typedef {object} DMTComponentStores Various stores calculated for components.
+ *
+ * @property {import('svelte/store').Writable<import('#frontend/types').DMTToolbarIconLinks>} toolbarIconLinks Icon link
+ * data for `IconLinks.svelte`.
+ */
 
 /**
  * @typedef {object} DMTSettingStores Additional theme settings stored in local storage.
