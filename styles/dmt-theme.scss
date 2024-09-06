@@ -354,8 +354,19 @@ a {
 .tsd-page-toolbar {
   box-shadow: var(--dmt-header-box-shadow);
 
+  .tsd-toolbar-contents {
+    padding: 0 0.25rem 0 1rem;
+  }
+
   .tsd-toolbar-icon {
     padding: 12px 12px;
+
+    &.menu {
+      padding: 6px;
+      margin: 6px;
+      height: 30px;
+      width: 28px;
+    }
   }
 }
 
