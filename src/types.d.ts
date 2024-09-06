@@ -74,21 +74,6 @@ export type DMTComponentDataBCMP = {
    storagePrepend: string;
 }
 
-//    result.push({
-//       dmtPath: `icons/external/${entry.asset.filename}`,
-//       title: entry.title,
-//       url: entry.url
-//    });
-// }
-// else if (entry.asset.url)
-// {
-//    result.push({
-//       iconURL: entry.asset.url,
-//       title: entry.title,
-//       url: entry.url
-//    });
-// }
-
 /**
  * Defines a parsed toolbar icon link.
  */
