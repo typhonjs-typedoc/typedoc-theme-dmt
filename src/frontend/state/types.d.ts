@@ -40,8 +40,14 @@ type DMTToolbarIconLink = {
  * Defines the data for the `toolbarIconLinks` store for `IconLinks.svelte`.
  */
 type DMTToolbarIconLinks = {
+   /**
+    * All icon link data combined.
+    */
    icons: Iterable<DMTToolbarIconLink>;
 
+   /**
+    * Total icon width; used to calculate if hamburger menu is shown.
+    */
    totalWidth?: number;
 }
 

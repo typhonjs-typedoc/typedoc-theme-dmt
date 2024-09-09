@@ -74,6 +74,7 @@ export function createStoreToolbarIconLinks(dmtComponentData, dmtComponentDataBC
                      iconLinks.totalWidth += scaledWidth + 8;
                   }
 
+                  // Add the gap between icons. See: IconLinks.svelte `section` style.
                   iconLinks.totalWidth += StyleParse.remPixels(0.35) * (fulfilled.length - 1);
 
                   return iconLinks;
