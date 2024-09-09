@@ -21,19 +21,7 @@
 
    let menuEl;
 
-   onMount(async () =>
-   {
-      // Must wait for all images to load so that `menuEl` has the proper `offsetWidth`.
-      const promises = Array.from(menuEl.querySelectorAll('img')).map((img) => img.complete ? Promise.resolve() :
-       new Promise(resolve => img.onload = resolve));
-
-      await Promise.allSettled(promises);
-
-      // Set `menuEl` `right` style by the hard coded button width to center the menu.
-      menuEl.style.right = `${(menuEl.offsetWidth - 32) / 2}px`;
-
-      menuEl.focus();
-   });
+   onMount(() => menuEl.focus());
 
    /**
     * Handle `Shift-Tab` to focus cycle to last element.
@@ -110,11 +98,13 @@
          on:keyup={handleKeyup}
          role=menu
          tabindex=-1>
-   {#each $toolbarIconLinks.icons as entry (entry.url)}
-      <a href={entry.url} target="_blank" title={entry.title}>
-         <img src={entry.iconURL} alt={entry.title} />
-      </a>
-   {/each}
+   <div>
+      {#each $toolbarIconLinks.icons as entry (entry.url)}
+         <a href={entry.url} target="_blank" title={entry.title}>
+            <img src={entry.iconURL} alt={entry.title} />
+         </a>
+      {/each}
+   </div>
    <TJSFocusWrap elementRoot={menuEl} />
 </section>
 
@@ -124,22 +114,27 @@
       border-radius: var(--dmt-container-border-radius);
       border: var(--dmt-container-border);
 
-      position: fixed;
-      width: fit-content;
+      position: absolute;
+      width: max-content;
       height: max-content;
       overflow: hidden;
 
-      top: 45px;
+      top: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
 
+      box-shadow: 0 0 6px #000;
+      padding: 0.25rem;
+      z-index: 1;
+   }
+
+   div {
       display: flex;
       flex-direction: column;
       flex-wrap: nowrap;
 
-      box-shadow: 0 0 6px #000;
-
       align-items: center;
-
-      gap: 0.35rem;
+      gap: 0.5rem;
    }
 
    section:focus-visible {
@@ -150,7 +145,6 @@
       display: flex;
       align-items: center;
       flex-shrink: 0;
-      margin: 4px;
    }
 
    a:focus-visible img {
@@ -158,7 +152,7 @@
    }
 
    img {
-      height: 24px;
+      max-height: 24px;
       width: auto;
    }
 

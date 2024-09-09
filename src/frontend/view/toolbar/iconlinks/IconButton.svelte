@@ -46,6 +46,7 @@
       display: flex;
       margin-left: auto;
       min-width: fit-content;
+      position: relative;
    }
 
    svg {
