@@ -234,7 +234,7 @@ export class PageRenderer
       {
          const firstElement = $(breadcrumbArray[0]);
 
-         if (firstElement.text() === NavigationIndex.packageName)
+         if (firstElement.text() === NavigationIndex.projectName)
          {
             firstElement.remove();
             breadcrumbArray.shift();

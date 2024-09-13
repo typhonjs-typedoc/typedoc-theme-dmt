@@ -29,6 +29,13 @@ export class NavigationIndex
    static #packageName = '';
 
    /**
+    * Project name.
+    *
+    * @type {string}
+    */
+   static #projectName = '';
+
+   /**
     * @returns {DMTNavigationIndex} Processed navigation index.
     */
    static get data()
@@ -69,6 +76,14 @@ export class NavigationIndex
    }
 
    /**
+    * @returns {string} Returns the project name.
+    */
+   static get projectName()
+   {
+      return this.#projectName;
+   }
+
+   /**
     * @param {import('typedoc').Application} app -
     *
     * @param {import('typedoc').ProjectReflection} project -
@@ -86,6 +101,7 @@ export class NavigationIndex
       const index = app.renderer.theme?.getNavigation?.(project) ?? [];
 
       this.#packageName = project?.packageName;
+      this.#projectName = project?.name;
 
       const markdown = this.#parseMarkdownTree(app, index);
 
