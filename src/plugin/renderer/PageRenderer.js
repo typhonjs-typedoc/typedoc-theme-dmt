@@ -1,3 +1,5 @@
+import fs                  from 'node:fs';
+
 import { load }            from 'cheerio';
 
 import {
@@ -287,6 +289,35 @@ export class PageRenderer
    }
 
    /**
+    * Modifications for module reflection. Adds additional README that may be associated with a module / package
+    * particularly in a mono-repo use case facilitated by `typedoc-pkg`.
+    *
+    * @param {import('cheerio').Cheerio}  $ -
+    *
+    * @param {PageEvent}   page -
+    */
+   #augmentModule($, page)
+   {
+      const moduleName = page.model?.name;
+
+      if (typeof this.#options.moduleRemap.readme[moduleName] === 'string')
+      {
+         try
+         {
+            const md = fs.readFileSync(this.#options.moduleRemap.readme[moduleName], 'utf-8');
+            const mdHTML = this.#app.renderer.theme.markedPlugin.parseMarkdown(md, page);
+
+            if (typeof mdHTML === 'string') { $('.col-content').append(mdHTML); }
+         }
+         catch (err)
+         {
+            this.#app.logger.warn(
+             `[typedoc-theme-default-modern] Could not render additional 'README.md' for: '${moduleName}'`);
+         }
+      }
+   }
+
+   /**
     * Modifications for module and namespace reflections. Wraps `.tsd-index-panel` in a details element if missing.
     *
     * @param {import('cheerio').Cheerio}  $ -
@@ -342,6 +373,7 @@ export class PageRenderer
 
          case ReflectionKind.Module:
             this.#augmentWrapIndexDetails($);
+            this.#augmentModule($, page);
             break;
 
          case ReflectionKind.Namespace:
