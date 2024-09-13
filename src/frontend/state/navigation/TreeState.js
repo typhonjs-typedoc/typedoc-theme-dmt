@@ -1,8 +1,10 @@
 import {
    derived,
-   get }                      from 'svelte/store';
+   get }                         from 'svelte/store';
 
-import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
+import { TJSSessionStorage }     from '#runtime/svelte/store/web-storage';
+
+import { NavigationTreeSearch }  from '#shared/utils';
 
 /**
  * Provides the ability to control and retrieve data for a navigation tree. Each tree has an independent session
@@ -127,13 +129,17 @@ export class TreeState
     */
    ensureCurrentPath(pathURL, { setCurrent = true } = {})
    {
-      // Sets `opened` for all entry tree nodes from the path URL given.
-      const operation = (entry) =>
+      /**
+       * Sets `opened` for all entry tree nodes from the path URL given.
+       *
+       * @type {import('#shared/types').TreeOperation<import('#frontend/types').DMTNavigationElement>}
+       */
+      const operation = ({ entry }) =>
       {
          if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, true); }
       };
 
-      const result = this.#searchTree(pathURL, operation);
+      const result = NavigationTreeSearch.searchPath(this.elementIndex, pathURL, operation);
 
       if (result && setCurrent) { this.#setCurrentPathURL(pathURL, this.#treeName); }
 
@@ -150,12 +156,15 @@ export class TreeState
     */
    setChildFolderState(fromEntry, state)
    {
-      const operation = (entry) =>
+      /**
+       * @type {import('#shared/types').TreeOperation<import('#frontend/types').DMTNavigationElement>}
+       */
+      const operation = ({ entry }) =>
       {
          if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, state); }
       };
 
-      this.#walkTreeFrom(operation, fromEntry);
+      NavigationTreeSearch.walkFrom(fromEntry, operation);
    }
 
    /**
@@ -200,13 +209,17 @@ export class TreeState
     */
    #initializeCurrentPath(pathURL)
    {
-      // Sets entry session storage to true / opened for all entry tree nodes from the path URL given.
-      const operation = (entry) =>
+      /**
+       * Sets entry session storage to true / opened for all entry tree nodes from the path URL given.
+       *
+       * @type {import('#shared/types').TreeOperation<import('#frontend/types').DMTNavigationElement>}
+       */
+      const operation = ({ entry }) =>
       {
          if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, true); }
       };
 
-      return this.#searchTree(pathURL, operation);
+      return NavigationTreeSearch.searchPath(this.elementIndex, pathURL, operation);
    }
 
    /**
@@ -216,7 +229,10 @@ export class TreeState
    {
       let topLevelFolders = 0;
 
-      const operation = (entry, parentEntry) =>
+      /**
+       * @type {import('#shared/types').TreeOperation<import('#frontend/types').DMTNavigationElement>}
+       */
+      const operation = ({ entry, parentEntry }) =>
       {
          if (!parentEntry) { topLevelFolders++; }
 
@@ -228,77 +244,9 @@ export class TreeState
          this.#sessionStorage.getStore(entry.storageKey, false);
       };
 
-      this.#walkTree(operation);
+      NavigationTreeSearch.walk(this.#elementIndex, operation);
 
       this.#hasFolders = topLevelFolders > 0;
-   }
-
-   /**
-    * Helper function to recursively search for the path and perform the operation given for each tree node.
-    *
-    * @param {import('#frontend/types').DMTNavigationElement} entry - Current NavigationElement.
-    *
-    * @param {string}   pathURL - The path URL to locate.
-    *
-    * @param {TreeOperation} operation - Tree entry operation to apply.
-    *
-    * @returns {boolean} Whether the path URL matched an entry in this branch.
-    */
-   #searchPath(entry, pathURL, operation)
-   {
-      // If the path matches, return true to indicate the path has been found.
-      if (entry.path === pathURL) { return true; }
-
-      // If the entry has children, continue the search recursively.
-      if (Array.isArray(entry.children))
-      {
-         for (const child of entry.children)
-         {
-            const found = this.#searchPath(child, pathURL, operation);
-            if (found)
-            {
-               operation(entry);
-               return true;
-            }
-         }
-      }
-
-      // If the path has not been found in this branch, return false.
-      return false;
-   }
-
-   /**
-    * Searches the navigation index for the given path URL and performs the given operation on each tree node from the
-    * path if found.
-    *
-    * @param {string}   pathURL - The path URL to locate.
-    *
-    * @param {TreeOperation} operation - Tree entry operation to apply.
-    *
-    * @returns {boolean} If the path is found and operation is applied.
-    */
-   #searchTree(pathURL, operation)
-   {
-      if (!this.#elementIndex?.length) { return false; }
-
-      // Scan all top level entries first.
-      for (const entry of this.#elementIndex)
-      {
-         if (Array.isArray(entry.children)) { continue; }
-
-         // If the path is found at the top level do nothing and return early.
-         if (entry?.path === pathURL) { return true; }
-      }
-
-      // Depth first search for path setting a new variable `opened` for all leaves up to path entry.
-      for (const entry of this.#elementIndex)
-      {
-         if (!Array.isArray(entry.children)) { continue; }
-
-         if (this.#searchPath(entry, pathURL, operation)) { return true; }
-      }
-
-      return false;
    }
 
    /**
@@ -332,65 +280,4 @@ export class TreeState
          }
       }
    }
-
-   /**
-    * Walks the navigation index / tree for each path recursively.
-    *
-    * @param {import('#frontend/types').DMTNavigationElement} entry - The current entry.
-    *
-    * @param {import('#frontend/types').DMTNavigationElement} parentEntry - The parent entry.
-    *
-    * @param {TreeOperation}  operation - Tree entry operation to apply.
-    */
-   #walkPath(entry, parentEntry, operation)
-   {
-      // If the entry has children, continue the search recursively.
-      if (Array.isArray(entry.children))
-      {
-         for (const child of entry.children)
-         {
-            if (!Array.isArray(child.children)) { continue; }
-
-            this.#walkPath(child, entry, operation);
-         }
-      }
-
-      operation(entry, parentEntry);
-   }
-
-   /**
-    * Recursively walks the navigation index / tree for just tree nodes invoking the given operation.
-    *
-    * @param {TreeOperation}  operation - Tree entry operation to apply.
-    */
-   #walkTree(operation)
-   {
-      // Depth first search for path setting a new variable `opened` for all leaves up to path entry.
-      for (const entry of this.#elementIndex)
-      {
-         if (!Array.isArray(entry.children)) { continue; }
-
-         this.#walkPath(entry, void 0, operation);
-      }
-   }
-
-   /**
-    * Recursively walks the navigation index / tree for just tree nodes invoking the given operation from the given
-    * `entry`.
-    *
-    * @param {TreeOperation}  operation - Tree entry operation to apply.
-    *
-    * @param {import('#frontend/types').DMTNavigationElement} entry - The current entry.
-    */
-   #walkTreeFrom(operation, entry)
-   {
-      this.#walkPath(entry, void 0, operation);
-   }
 }
-
-/**
- * @typedef {((
- *    entry: import('#frontend/types').DMTNavigationElement,
- *    parentEntry?: import('#frontend/types').DMTNavigationElement) => void
- * )} TreeOperation A function to invoke for tree nodes when walking the tree.
- */
