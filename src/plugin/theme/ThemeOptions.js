@@ -211,7 +211,7 @@ export class ThemeOptions
          if (!includeFolders)
          {
             const dmtNavigation = app.options.getValue('dmtNavigation');
-            dmtNavigation.flat = true;
+            if (typeof dmtNavigation.style === 'string') { dmtNavigation.style = 'flat'; }
             app.options.setValue('dmtNavigation', dmtNavigation);
          }
 
