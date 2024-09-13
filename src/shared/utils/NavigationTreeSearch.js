@@ -4,13 +4,49 @@
 export class NavigationTreeSearch
 {
    /**
+    * Searches the navigation index for the given path URL and performs the given operation on each tree node from the
+    * path if found.
+    *
+    * @param {import('typedoc').NavigationElement[] } tree - The root tree node to walk.
+    *
+    * @param {string}   pathURL - The path URL to locate.
+    *
+    * @param {import('./types').TreeOperation} operation - Tree entry operation to apply.
+    *
+    * @returns {boolean} If the path is found and operation is applied.
+    */
+   static searchPath(tree, pathURL, operation)
+   {
+      if (!tree?.length) { return false; }
+
+      // Scan all top level entries first.
+      for (const entry of tree)
+      {
+         if (Array.isArray(entry.children)) { continue; }
+
+         // If the path is found at the top level do nothing and return early.
+         if (entry?.path === pathURL) { return true; }
+      }
+
+      // Depth first search for path executing `operation` if found.
+      for (const entry of tree)
+      {
+         if (!Array.isArray(entry.children)) { continue; }
+
+         if (this.#searchPath(entry, pathURL, operation)) { return true; }
+      }
+
+      return false;
+   }
+
+   /**
     * Recursively walks the navigation index / tree for just tree nodes invoking the given operation.
     *
     * @param {import('typedoc').NavigationElement[] } tree - The root tree node to walk.
     *
-    * @param {TreeOperation}  operation - Tree entry operation to apply.
+    * @param {import('./types').TreeOperation}  operation - Tree entry operation to apply.
     */
-   static walkTree(tree, operation)
+   static walk(tree, operation)
    {
       // Depth first search for path setting a new variable `opened` for all leaves up to path entry.
       for (const entry of tree)
@@ -27,9 +63,9 @@ export class NavigationTreeSearch
     *
     * @param {import('typedoc').NavigationElement} entry - The current entry.
     *
-    * @param {TreeOperation}  operation - Tree entry operation to apply.
+    * @param {import('./types').TreeOperation}  operation - Tree entry operation to apply.
     */
-   static walkTreeFrom(entry, operation)
+   static walkFrom(entry, operation)
    {
       this.#walkPath(entry, void 0, operation);
    }
@@ -37,13 +73,47 @@ export class NavigationTreeSearch
    // Internal implementation ----------------------------------------------------------------------------------------
 
    /**
+    * Helper function to recursively search for the path and perform the operation given for each tree node.
+    *
+    * @param {import('typedoc').NavigationElement} entry - Current NavigationElement.
+    *
+    * @param {string}   pathURL - The path URL to locate.
+    *
+    * @param {import('./types').TreeOperation} operation - Tree entry operation to apply.
+    *
+    * @returns {boolean} Whether the path URL matched an entry in this branch.
+    */
+   static #searchPath(entry, pathURL, operation)
+   {
+      // If the path matches, return true to indicate the path has been found.
+      if (entry.path === pathURL) { return true; }
+
+      // If the entry has children, continue the search recursively.
+      if (Array.isArray(entry.children))
+      {
+         for (const child of entry.children)
+         {
+            const found = this.#searchPath(child, pathURL, operation);
+            if (found)
+            {
+               operation({ entry });
+               return true;
+            }
+         }
+      }
+
+      // If the path has not been found in this branch, return false.
+      return false;
+   }
+
+   /**
     * Walks the navigation index / tree for each path recursively.
     *
-    * @param {import('#frontend/types').DMTNavigationElement} entry - The current entry.
+    * @param {import('typedoc').NavigationElement} entry - The current entry.
     *
-    * @param {import('#frontend/types').DMTNavigationElement} parentEntry - The parent entry.
+    * @param {import('typedoc').NavigationElement} parentEntry - The parent entry.
     *
-    * @param {TreeOperation}  operation - Tree entry operation to apply.
+    * @param {import('./types').TreeOperation}  operation - Tree entry operation to apply.
     */
    static #walkPath(entry, parentEntry, operation)
    {
@@ -58,13 +128,6 @@ export class NavigationTreeSearch
          }
       }
 
-      operation(entry, parentEntry);
+      operation({ entry, parentEntry });
    }
 }
-
-/**
- * @typedef {((
- *    entry: import('typedoc').NavigationElement,
- *    parentEntry?: import('typedoc').NavigationElement) => void
- * )} TreeOperation A function to invoke for tree nodes when walking the tree.
- */
