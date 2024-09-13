@@ -1,5 +1,7 @@
 import { ReflectionKind }  from 'typedoc';
 
+import { NavigationTree }  from '#shared/utils';
+
 import { ModuleTreeMap }   from './ModuleTreeMap.js';
 
 /**
@@ -85,7 +87,7 @@ export class NavigationIndex
 
       this.#packageName = project?.packageName;
 
-      const markdown = this.#parseMarkdownTree(index);
+      const markdown = this.#parseMarkdownTree(app, index);
 
       // No processing necessary so directly return the index.
       const tree = options.navigation.style === 'flat' ? index : this.#parseModuleTree(index, options,
@@ -99,17 +101,96 @@ export class NavigationIndex
       return this.#data;
    }
 
+   // Internal Implementation ----------------------------------------------------------------------------------------
+
    /**
-    * Parses and separates top level Markdown documents from the main navigation index.
+    * @param {import('typedoc').NavigationElement} node - Node to query.
+    *
+    * @returns {boolean} True if the Node is a folder only node with children.
+    */
+   static #isFolder(node)
+   {
+      return typeof node.text === 'string' && Array.isArray(node.children) && node.kind === void 0;
+   }
+
+   /**
+    * @param {import('typedoc').NavigationElement} node -
+    *
+    * @param {import('typedoc').ReflectionKind} kind -
+    *
+    * @returns {boolean} Returns true if `node` is a folder and contains only children that match the reflection kind.
+    */
+   static #isFolderAllOfKind(node, kind)
+   {
+      if (!this.#isFolder(node)) { return false; }
+
+      let allOfKind = true;
+
+      /**
+       * @type {import('#shared/types').TreeOperation}
+       */
+      const operation = ({ entry }) =>
+      {
+         if (entry.kind === void 0) { return; }
+         if (entry.kind !== kind) { allOfKind = false; }
+      };
+
+      NavigationTree.walkFrom(node, operation);
+
+      return allOfKind;
+   }
+
+   /**
+    * Parses and separates top level Markdown documents from the main navigation index. Due to the various default
+    * options there are various parsing options to handle.
+    *
+    * @param {import('typedoc').Application} app -
     *
     * @param {import('typedoc').NavigationElement[]} index - The original navigation index.
     *
     * @returns {import('typedoc').NavigationElement[]} Separated Markdown navigation index.
     */
-   static #parseMarkdownTree(index)
+   static #parseMarkdownTree(app, index)
    {
       const markdownIndex = [];
 
+      const navigation = app.options.getValue('navigation');
+      const categorizeByGroup = app.options.getValue('categorizeByGroup');
+
+      if (navigation?.includeGroups && navigation?.includeCategories && categorizeByGroup)
+      {
+         this.#parseMarkdownTreeWithGroups(index, markdownIndex);
+      }
+      else if (navigation?.includeCategories)
+      {
+         if (categorizeByGroup)
+         {
+            this.#parseMarkdownTreeNoCategoriesGroups(index, markdownIndex);
+         }
+         else
+         {
+            this.#parseMarkdownTreeWithCategories(index, markdownIndex);
+         }
+      }
+      else if (navigation?.includeGroups)
+      {
+         this.#parseMarkdownTreeWithGroups(index, markdownIndex);
+      }
+      else if (!navigation?.includeGroups)
+      {
+         this.#parseMarkdownTreeNoCategoriesGroups(index, markdownIndex);
+      }
+
+      return markdownIndex;
+   }
+
+   /**
+    * @param {import('typedoc').NavigationElement[]} index - The original navigation index.
+    *
+    * @param {import('typedoc').NavigationElement[]} markdownIndex - The target tree to separate into.
+    */
+   static #parseMarkdownTreeNoCategoriesGroups(index, markdownIndex)
+   {
       // Determine if there is a top level "Modules" group node. This is the case when Typedoc option
       // `navigation: { includeGroups: true }` is set.
       for (let i = index.length; --i >= 0;)
@@ -118,7 +199,6 @@ export class NavigationIndex
          if (node?.kind === ReflectionKind.Document)
          {
             markdownIndex.unshift(node);
-
             index.splice(i, 1);
          }
       }
@@ -128,14 +208,140 @@ export class NavigationIndex
       {
          const children = index[0]?.children ?? [];
 
-         const markdownIndex = index.pop();
+         const markdownIndexNode = index.pop();
 
-         this.#markdownIndexName = markdownIndex.text;
+         this.#markdownIndexName = markdownIndexNode.text;
 
          index.push(...children);
       }
+   }
 
-      return markdownIndex;
+   /**
+    * @param {import('typedoc').NavigationElement[]} index - The original navigation index.
+    *
+    * @param {import('typedoc').NavigationElement[]} markdownIndex - The target tree to separate into.
+    */
+   static #parseMarkdownTreeWithCategories(index, markdownIndex)
+   {
+      // Parse top level nodes.
+      for (let i = index.length; --i >= 0;)
+      {
+         const node = index[i];
+
+         // If all children entries are documents then splice entire folder.
+         if (this.#isFolderAllOfKind(node, ReflectionKind.Document))
+         {
+            markdownIndex.unshift(node);
+            index.splice(i, 1);
+            continue;
+         }
+
+         // Otherwise separate out Markdown documents from any folder children.
+         if (this.#isFolder(node))
+         {
+            const children = node.children ?? [];
+
+            const childrenDocuments = [];
+
+            for (let j = children.length; --j >= 0;)
+            {
+               const childNode = children[j];
+               if (childNode.kind === ReflectionKind.Document)
+               {
+                  childrenDocuments.unshift(childNode);
+                  children.splice(j, 1);
+               }
+            }
+
+            if (childrenDocuments.length)
+            {
+               markdownIndex.unshift(Object.assign({}, node, { children: childrenDocuments }));
+            }
+         }
+      }
+
+      // Remove remaining `Other` category folder if it only contains modules or if this is a fabricated `index`
+      // module.
+      if (index.length === 1 && this.#isFolder(index[0]))
+      {
+         const children = index[0]?.children ?? [];
+
+         let allModules = true;
+
+         for (const node of children)
+         {
+            if (node.kind !== ReflectionKind.Module) { allModules = false; }
+         }
+
+         if (allModules)
+         {
+            // Remove all nodes.
+            index.length = 0;
+
+            // There is a single child matching the fabricated `index` module when markdown files are present.
+            if (markdownIndex.length && children.length === 1 && children[0]?.kind === ReflectionKind.Module &&
+             children[0]?.text === 'index')
+            {
+               index.push(...children[0]?.children ?? []);
+            }
+            else
+            {
+               // Add all children modules to top level.
+               index.push(...children);
+            }
+         }
+      }
+   }
+
+   /**
+    * @param {import('typedoc').NavigationElement[]} index - The original navigation index.
+    *
+    * @param {import('typedoc').NavigationElement[]} markdownIndex - The target tree to separate into.
+    */
+   static #parseMarkdownTreeWithGroups(index, markdownIndex)
+   {
+      // Parse top level nodes.
+      for (let i = index.length; --i >= 0;)
+      {
+         const node = index[i];
+
+         // If all children entries are documents then splice entire folder.
+         if (this.#isFolderAllOfKind(node, ReflectionKind.Document))
+         {
+            markdownIndex.unshift(node);
+            index.splice(i, 1);
+         }
+      }
+
+      // Remove TypeDoc fabricated root module when there are markdown files present in the index.
+      if (index.length === 1 && this.#isFolder(index[0]))
+      {
+         const children = index[0]?.children ?? [];
+
+         let allModules = true;
+
+         for (const node of children)
+         {
+            if (node.kind !== ReflectionKind.Module) { allModules = false; }
+         }
+
+         if (allModules)
+         {
+            index.length = 0;
+
+            // There are Markdown documents and there is a single child matching the fabricated `index` module when
+            // markdown files are present.
+            if (markdownIndex.length && children.length === 1 &&
+             children[0]?.kind === ReflectionKind.Module && children[0]?.text === 'index')
+            {
+               index.push(...children[0]?.children ?? []);
+            }
+            else
+            {
+               index.push(...children);
+            }
+         }
+      }
    }
 
    /**
