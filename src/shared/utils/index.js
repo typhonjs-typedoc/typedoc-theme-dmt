@@ -1,1 +1,1 @@
-export * from './NavigationTreeSearch.js';
+export * from './NavigationTree.js';
