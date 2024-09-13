@@ -287,11 +287,11 @@ export class PageRenderer
    }
 
    /**
-    * Modifications for module reflection. Wraps `.tsd-index-panel` in a details element.
+    * Modifications for module and namespace reflections. Wraps `.tsd-index-panel` in a details element if missing.
     *
     * @param {import('cheerio').Cheerio}  $ -
     */
-   #augmentModule($)
+   #augmentWrapIndexDetails($)
    {
       const indexPanelEl = $('.tsd-panel.tsd-index-panel');
 
@@ -341,7 +341,11 @@ export class PageRenderer
             break;
 
          case ReflectionKind.Module:
-            this.#augmentModule($);
+            this.#augmentWrapIndexDetails($);
+            break;
+
+         case ReflectionKind.Namespace:
+            this.#augmentWrapIndexDetails($);
             break;
       }
 
