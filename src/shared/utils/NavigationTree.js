@@ -1,7 +1,7 @@
 /**
  * Provides a basic mechanism to walk and query the TypeDoc `NavigationElement` tree structure.
  */
-export class NavigationTreeSearch
+export class NavigationTree
 {
    /**
     * Searches the navigation index for the given path URL and performs the given operation on each tree node from the
@@ -120,12 +120,7 @@ export class NavigationTreeSearch
       // If the entry has children, continue the search recursively.
       if (Array.isArray(entry.children))
       {
-         for (const child of entry.children)
-         {
-            if (!Array.isArray(child.children)) { continue; }
-
-            this.#walkPath(child, entry, operation);
-         }
+         for (const child of entry.children) { this.#walkPath(child, entry, operation); }
       }
 
       operation({ entry, parentEntry });

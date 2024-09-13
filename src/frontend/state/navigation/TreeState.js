@@ -1,10 +1,10 @@
 import {
    derived,
-   get }                         from 'svelte/store';
+   get }                      from 'svelte/store';
 
-import { TJSSessionStorage }     from '#runtime/svelte/store/web-storage';
+import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
-import { NavigationTreeSearch }  from '#shared/utils';
+import { NavigationTree }     from '#shared/utils';
 
 /**
  * Provides the ability to control and retrieve data for a navigation tree. Each tree has an independent session
@@ -139,7 +139,7 @@ export class TreeState
          if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, true); }
       };
 
-      const result = NavigationTreeSearch.searchPath(this.elementIndex, pathURL, operation);
+      const result = NavigationTree.searchPath(this.elementIndex, pathURL, operation);
 
       if (result && setCurrent) { this.#setCurrentPathURL(pathURL, this.#treeName); }
 
@@ -164,7 +164,7 @@ export class TreeState
          if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, state); }
       };
 
-      NavigationTreeSearch.walkFrom(fromEntry, operation);
+      NavigationTree.walkFrom(fromEntry, operation);
    }
 
    /**
@@ -219,7 +219,7 @@ export class TreeState
          if (entry.storageKey) { this.#sessionStorage.setItem(entry.storageKey, true); }
       };
 
-      return NavigationTreeSearch.searchPath(this.elementIndex, pathURL, operation);
+      return NavigationTree.searchPath(this.elementIndex, pathURL, operation);
    }
 
    /**
@@ -244,7 +244,7 @@ export class TreeState
          this.#sessionStorage.getStore(entry.storageKey, false);
       };
 
-      NavigationTreeSearch.walk(this.#elementIndex, operation);
+      NavigationTree.walk(this.#elementIndex, operation);
 
       this.#hasFolders = topLevelFolders > 0;
    }
