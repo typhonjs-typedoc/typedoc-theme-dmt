@@ -1,19 +1,19 @@
 import {
    inflateAndUnpack,
-   inflateAndUnpackB64 }         from '#runtime/data/format/msgpack/compress';
+   inflateAndUnpackB64 }   from '#runtime/data/format/msgpack/compress';
 
 import {
    keyCommands,
    loadMainSearchData,
    scrollActivation,
    DetailsAccordion,
-   DMTComponentData }            from '#frontend/state';
+   DMTComponentData }      from '#frontend/state';
 
 import {
    DMTSettings,
    Navigation,
    SearchMain,
-   Toolbar }                     from './view';
+   Toolbar }               from './view';
 
 // Expose the compression / MessagePack handling functions into the global scope. This reduces any duplication across
 // plugins that might work with compressed data.
