@@ -71,70 +71,6 @@ export class PageRenderer
    }
 
    /**
-    * Modifications for class reflection. Wraps `.tsd-hierarchy` panel in a details element.
-    *
-    * @param {import('cheerio').Cheerio}  $ -
-    */
-   #augmentClass($)
-   {
-      const hierarchyPanelEl = $('.tsd-panel.tsd-hierarchy');
-
-      // Enclose class hierarchy in a details / summary element.
-      if (hierarchyPanelEl)
-      {
-         const hierarchyHeaderEl = hierarchyPanelEl.find('> h4');
-         const hierarchyContentEl = hierarchyPanelEl.find('> ul.tsd-hierarchy');
-
-         // Process header removing `view full` link and placing it next to the class target. ------------------------
-
-         const headerTextNodes = hierarchyHeaderEl.contents().filter(function() { return this.type === 'text'; });
-
-         const firstTextNode = headerTextNodes.first();
-
-         // Replace the original text with the updated text removing spaces and parentheses.
-         firstTextNode.replaceWith(firstTextNode.text().replace(/[ ()]/g, ''));
-
-         // Remove last parentheses.
-         headerTextNodes.last()?.remove();
-
-         // Move link to `target` class span.
-         const viewFullLink = hierarchyHeaderEl.find('a');
-         const targetClassSpan = hierarchyContentEl.find('span.target');
-
-         targetClassSpan.append(' (');
-         targetClassSpan.append(viewFullLink.clone());
-         targetClassSpan.append(')');
-
-         viewFullLink.remove();
-
-         // Create details element wrapper and update content --------------------------------------------------------
-
-         const detailsEl = $(
-          `<section class="tsd-panel-group tsd-hierarchy">
-            <details class="tsd-hierarchy tsd-accordion">
-              <summary class="tsd-accordion-summary" data-key="class-hierarchy">
-                 <h5>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg>
-                 </h5>
-              </summary>
-              <div class="tsd-accordion-details">
-              </div>
-           </details>
-         </section>`);
-
-         // Append content.
-         detailsEl.find('.tsd-accordion-details').append(hierarchyContentEl.clone());
-
-         const detailsH5El = detailsEl.find('h5');
-
-         // Append the HTML from old header.
-         detailsH5El.append(` ${hierarchyHeaderEl.html()}`);
-
-         hierarchyPanelEl.replaceWith(detailsEl);
-      }
-   }
-
-   /**
     * Modifications for every page.
     *
     * @param {import('cheerio').Cheerio}  $ -
@@ -318,6 +254,126 @@ export class PageRenderer
    }
 
    /**
+    * Modifications for class and interface reflections. Wraps `implements` and `hierarchy` panels in a details element.
+    *
+    * @param {import('cheerio').Cheerio}  $ -
+    */
+   #augmentWrapClassInterface($)
+   {
+      // Retrieve both section panels to potentially be modified -----------------------------------------------------
+
+      // To find any class hierarchy panel to modify alas it doesn't have a specific CSS class / identifier so we must
+      // do a text comparison searching for `h4` with text that starts with `Hierarchy`.
+      // TODO: Note that this may not work with any other language translations which is new to TypeDoc (0.26.x+).
+      const hierarchyPanelEl = $('section.tsd-panel').filter(function()
+      {
+         return $(this).find('h4').text().trim().startsWith('Hierarchy');
+      });
+
+      // To find any class implements panel to modify alas it doesn't have a specific CSS class / identifier so we must
+      // do a text comparison searching for `h4` with text that starts with `Implement`. This will find `Implements` on
+      // class pages and `Implemented by` on interface pages.
+      // TODO: Note that this may not work with any other language translations which is new to TypeDoc (0.26.x+).
+      const implementsPanelEl = $('section.tsd-panel').filter(function()
+      {
+         return $(this).find('h4').text().trim().startsWith('Implement');
+      });
+
+      // Enclose any class implements panel in a details / summary element. ------------------------------------------
+      if (implementsPanelEl.length > 0)
+      {
+         const implementsHeaderEl = implementsPanelEl.find('h4');
+         const implementsText = implementsHeaderEl.text();
+         implementsHeaderEl.remove();
+
+         const childrenEl = implementsPanelEl.children();
+
+         const detailsEl = $(
+          `<section class="tsd-panel-group tsd-hierarchy">
+           <details class="tsd-hierarchy tsd-accordion">
+           <summary class="tsd-accordion-summary" data-key="reflection-implements">
+              <h5>
+                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg> ${implementsText}
+              </h5>
+           </summary>
+           <div class="tsd-accordion-details">
+           </div>
+           </details>
+           </section>`);
+
+         detailsEl.find('.tsd-accordion-details').append(childrenEl.clone());
+
+         childrenEl.remove();
+
+         if (hierarchyPanelEl.length > 0)
+         {
+            // In the case that there is a hierarchy panel insert the implements panel before it.
+            detailsEl.insertBefore(hierarchyPanelEl);
+            implementsPanelEl.remove();
+         }
+         else
+         {
+            // Otherwise just replace the original implements panel.
+            implementsPanelEl.replaceWith(detailsEl);
+         }
+      }
+
+      // Enclose any class hierarchy panel in a details / summary element. -------------------------------------------
+      if (hierarchyPanelEl.length > 0)
+      {
+         const hierarchyHeaderEl = hierarchyPanelEl.find('> h4');
+         const hierarchyContentEl = hierarchyPanelEl.find('> ul.tsd-hierarchy');
+
+         // Process header removing `view full` link and placing it next to the class target. ------------------------
+
+         const headerTextNodes = hierarchyHeaderEl.contents().filter(function() { return this.type === 'text'; });
+
+         const firstTextNode = headerTextNodes.first();
+
+         // Replace the original text with the updated text removing spaces and parentheses.
+         firstTextNode.replaceWith(firstTextNode.text().replace(/[ ()]/g, ''));
+
+         // Remove last parentheses.
+         headerTextNodes.last()?.remove();
+
+         // Move link to `target` class span.
+         const viewFullLink = hierarchyHeaderEl.find('a');
+         const targetClassSpan = hierarchyContentEl.find('span.target');
+
+         targetClassSpan.append(' (');
+         targetClassSpan.append(viewFullLink.clone());
+         targetClassSpan.append(')');
+
+         viewFullLink.remove();
+
+         // Create details element wrapper and update content --------------------------------------------------------
+
+         const detailsEl = $(
+          `<section class="tsd-panel-group tsd-hierarchy">
+            <details class="tsd-hierarchy tsd-accordion">
+              <summary class="tsd-accordion-summary" data-key="inheritance-hierarchy">
+                 <h5>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg>
+                 </h5>
+              </summary>
+              <div class="tsd-accordion-details">
+              </div>
+           </details>
+         </section>`);
+
+         // Append content.
+         detailsEl.find('.tsd-accordion-details').append(hierarchyContentEl.clone());
+
+         const detailsH5El = detailsEl.find('h5');
+
+         // Append the HTML from old header.
+         detailsH5El.append(` ${hierarchyHeaderEl.html()}`);
+
+         hierarchyPanelEl.replaceWith(detailsEl);
+      }
+   }
+
+   /**
     * Modifications for module and namespace reflections. Wraps `.tsd-index-panel` in a details element if missing.
     *
     * @param {import('cheerio').Cheerio}  $ -
@@ -335,7 +391,7 @@ export class PageRenderer
 
          const detailsEl = $(
           `<details class="tsd-index-content tsd-accordion dmt-index-content">
-            <summary class="tsd-accordion-summary tsd-index-summary" data-key="module-index">
+            <summary class="tsd-accordion-summary tsd-index-summary" data-key="index">
                <h3 class="tsd-index-heading uppercase">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-chevronSmall"></use></svg> Index
                </h3>
@@ -368,7 +424,11 @@ export class PageRenderer
       switch (page.model.kind)
       {
          case ReflectionKind.Class:
-            this.#augmentClass($);
+            this.#augmentWrapClassInterface($);
+            break;
+
+         case ReflectionKind.Interface:
+            this.#augmentWrapClassInterface($);
             break;
 
          case ReflectionKind.Module:
