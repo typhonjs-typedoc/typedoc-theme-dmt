@@ -12,7 +12,7 @@
 
    const storeThemeAnimate = settingStores.themeAnimate;
 
-   const store = dmtSessionStorage.getStore(`${storagePrepend}-document-index`, false);
+   const store = dmtSessionStorage.getStore(`${storagePrepend}-document-index`, true);
 
    // If the active tree is the markdown tree then ensure that the document index is open.
    if (navigation.treeState.activeTreeName === 'markdown') { $store = true; }
@@ -51,5 +51,6 @@
       border-radius: var(--dmt-container-border-radius);
       box-shadow: var(--dmt-container-box-shadow);
       margin: 0 1rem 0 0;
+      padding-bottom: 0.25rem;
    }
 </style>
