@@ -11,8 +11,15 @@
 
    import TJSFocusWrap     from '../../external/TJSFocusWrap.svelte';
 
-   const { componentStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+   const {
+      componentStores,
+      settingStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
+
    const { toolbarIconLinks } = componentStores;
+   const { themeAnimate } = settingStores;
+
+   // Choose `slideFade` if animation is enabled otherwise no-op transition function.
+   const transitionFn = $themeAnimate ? slideFade : () => void 0;
 
    // Provides options to `A11yHelper.getFocusableElements` to ignore TJSFocusWrap by CSS class.
    const s_IGNORE_CLASSES = { ignoreClasses: ['tjs-focus-wrap'] };
@@ -93,7 +100,7 @@
 <svelte:window on:pointerdown={handlePointerdown} />
 
 <section bind:this={menuEl}
-         transition:slideFade|global={{ duration: 250, easing: quintIn }}
+         transition:transitionFn|global={{ duration: 250, easing: quintIn }}
          on:keydown={handleKeydown}
          on:keyup={handleKeyup}
          role=menu
