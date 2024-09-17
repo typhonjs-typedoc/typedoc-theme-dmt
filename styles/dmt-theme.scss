@@ -248,11 +248,11 @@ header.tsd-page-toolbar {
 // All details elements are controlled by the DMT. A CSS transform vs JS is used to rotate the SVG
 // chevron. See: `DetailsAccordion`.
 details.tsd-accordion {
-  &[open] svg {
+  &[open]:not(details[data-closing='true']) > summary svg {
     transform: rotate(0deg);
   }
 
-  &:not([open]) svg {
+  &:not([open]) > summary svg {
     transform: rotate(-90deg);
   }
 }
