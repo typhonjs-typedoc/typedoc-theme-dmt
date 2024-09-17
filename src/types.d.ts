@@ -59,6 +59,11 @@ export type DMTComponentDataBCMP = {
    searchOptions: DMTSearchOptions;
 
    /**
+    * The `dmtSettings` option; controls certain frontend theme / setting options availability.
+    */
+   settingOptions: DMTSettingOptions;
+
+   /**
     * When true SVG icons for all module reflections are displayed.
     */
    showModuleIcon: boolean;
@@ -176,6 +181,16 @@ export type DMTSearchOptions = false | {
     * Limit on search results to return.
     */
    limit: number;
+};
+
+/**
+ * Defines the DMT setting options potentially completely disabling certain frontend setting options for performance.
+ */
+export type DMTSettingOptions = {
+   /**
+    * Disables theme animation entirely when false.
+    */
+   animation: boolean;
 };
 
 export type FileOrURL = {

@@ -86,6 +86,7 @@ export class GlobalResources
          navigationIndex: NavigationIndex.data,
          ReflectionKind: this.#getReflectionKind(options),
          searchOptions: options.search,
+         settingOptions: options.settings,
          showModuleIcon: options.navigation.moduleIcon,
          sidebarLinks,
          storagePrepend

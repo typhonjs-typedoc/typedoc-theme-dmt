@@ -1,4 +1,7 @@
-import { get, writable }               from 'svelte/store';
+import {
+   get,
+   readable,
+   writable }                          from 'svelte/store';
 
 import {
    TJSLocalStorage,
@@ -114,9 +117,14 @@ export class DMTComponentData
          toolbarIconLinks: createStoreToolbarIconLinks(this, this.#dmtComponentDataBCMP)
       });
 
+      const animationEnabled = typeof this.#dmtComponentDataBCMP?.settingOptions?.animation === 'boolean' ?
+       this.#dmtComponentDataBCMP?.settingOptions?.animation : true;
+
       this.#settingStores = Object.freeze({
-         // Ensure that the setting / animate local storage store is initialized with A11y motion preference.
-         themeAnimate: this.#storage.local.getStore(localConstants.dmtThemeAnimate, !A11yHelper.prefersReducedMotion)
+         // If animation setting is disabled create a Readable store that is always false.
+         // Otherwise, ensure that the setting / animate local storage store is initialized with A11y motion preference.
+         themeAnimate: !animationEnabled ? readable(false) :
+          this.#storage.local.getStore(localConstants.dmtThemeAnimate, !A11yHelper.prefersReducedMotion)
       });
 
       this.#stateStores = Object.freeze({
@@ -287,7 +295,10 @@ export class DMTComponentData
 /**
  * @typedef {object} DMTSettingStores Additional theme settings stored in local storage.
  *
- * @property {import('svelte/store').Writable<boolean>} themeAnimate Enables / disables theme animation.
+ * @property {(
+ *    import('svelte/store').Readble<boolean> |
+ *    import('svelte/store').Writable<boolean>
+ * )} themeAnimate Enables / disables theme animation. When a readable store theme animation is completely disabled.
  */
 
 /**

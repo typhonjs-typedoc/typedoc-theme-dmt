@@ -32,6 +32,9 @@ export class ThemeOptions
       search: {
          fullName: false,
          limit: 10
+      },
+      settings: {
+         animation: true
       }
    };
 
@@ -188,6 +191,37 @@ export class ThemeOptions
             }
          }
       });
+
+      app.options.addDeclaration({
+         name: 'dmtSettings',
+         help: 'Controls availability of certain frontend features.',
+         type: ParameterType.Mixed,
+         defaultValue: {
+            animation: true
+         },
+         validate(value)
+         {
+            const knownKeys = new Map([
+               ['animation', 'boolean']
+            ]);
+
+            if (!isObject(value)) { throw new Error(`'dmtSettings' must be an object.`); }
+
+            for (const [key, val] of Object.entries(value))
+            {
+               if (!knownKeys.has(key))
+               {
+                  throw new Error(
+                   `'dmtSettings' can only include the following keys: ${Array.from(knownKeys.keys()).join(', ')}`);
+               }
+
+               if (typeof val !== knownKeys.get(key))
+               {
+                  throw new Error(`'dmtSettings.${key}' must be a '${knownKeys.get(key)}'.`);
+               }
+            }
+         }
+      });
    }
 
    /**
@@ -267,6 +301,9 @@ export class ThemeOptions
    /** @returns {DMTSearchOptions} search option */
    get search() { return this.#options.search; }
 
+   /** @returns {DMTSettingOptions} search option */
+   get settings() { return this.#options.settings; }
+
    /**
     * Parses DMT options.
     *
@@ -276,6 +313,7 @@ export class ThemeOptions
    {
       this.#options.moduleRemap = Object.assign(this.#options.moduleRemap, app.options.getValue('dmtModuleRemap'));
       this.#options.navigation = Object.assign(this.#options.navigation, app.options.getValue('dmtNavigation'));
+      this.#options.settings = Object.assign(this.#options.settings, app.options.getValue('dmtSettings'));
 
       const dmtSearch = app.options.getValue('dmtSearch');
 
@@ -487,4 +525,6 @@ const s_SERVICE_LINKS = new Map([
  * @property {DMTNavigation} navigation - Navigation options.
  *
  * @property {DMTSearchOptions} search Search options.
+ *
+ * @property {DMTSettingOptions} settings Setting options.
  */

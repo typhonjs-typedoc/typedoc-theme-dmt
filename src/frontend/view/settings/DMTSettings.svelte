@@ -1,16 +1,18 @@
 <script>
    import { getContext }      from 'svelte';
 
+   import { isWritableStore } from '#runtime/util/store';
+
    import LabeledCheckbox     from './LabeledCheckbox.svelte';
 
    const { settingStores } = /** @type {DMTComponentData} */ getContext('#dmtComponentData');
-
-   const storeThemeAnimate = settingStores.themeAnimate;
 </script>
 
-<section>
-   <LabeledCheckbox store={storeThemeAnimate} label={'Animation'} />
-</section>
+{#if isWritableStore(settingStores.themeAnimate)}
+   <section>
+      <LabeledCheckbox store={settingStores.themeAnimate} label={'Animation'} />
+   </section>
+{/if}
 
 <style>
    section {
