@@ -43,21 +43,6 @@ export class DetailsAccordion
          // Initialize detail element control / handling.
          this.#initializeDetails(dmtComponentData.storagePrepend);
 
-         // For any of the setting filter inputs options for source code visibility. When state changes always open
-         // the `methods` details element.
-         for (const filterInput of document.querySelectorAll('.tsd-filter-input input'))
-         {
-            filterInput.addEventListener('change', () =>
-            {
-               const methodsKey = `${dmtComponentData.storagePrepend}-accordion-section-otp-Methods`;
-
-               if (this.#detailsSessionStorage.hasStore(methodsKey))
-               {
-                  this.#detailsSessionStorage.getStore(methodsKey)?.set(true);
-               }
-            });
-         }
-
          // Subscribe to the DMT theme animation setting changing the enabled state for all details elements.
          dmtComponentData.settingStores.themeAnimate.subscribe((enabled) => this.#setEnabled(enabled));
       });
