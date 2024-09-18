@@ -17,7 +17,7 @@ enhanced usability, features, and polish. A large benefit to this approach is th
 ```json
 {
    "devDependencies": {
-      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.2.0-next.1",
+      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.2.0",
       "typedoc": "^0.26.6"
    }
 }
