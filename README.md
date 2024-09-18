@@ -18,7 +18,7 @@ enhanced usability, features, and polish. A large benefit to this approach is th
 {
    "devDependencies": {
       "@typhonjs-typedoc/typedoc-theme-dmt": "^0.2.0-next.1",
-      "typedoc": "^0.25.10"
+      "typedoc": "^0.26.6"
    }
 }
 ```
@@ -29,15 +29,6 @@ The Default Modern Theme (DMT) achieves enhanced usability through replacing sev
 with Svelte powered implementations. This includes the navigation index and search capabilities. Other changes from
 the default theme include enhanced styles and usage of modern CSS features like `container queries` to provide
 better font size changes for different screen orientations.
-
-## Optimization:
-
-At this point the DMT and the core default theme is trading features as features originally in the DMT make way to
-the core default theme of Typedoc. The primary goal of the DMT is to make the actual majority developer experience the
-best for those viewing documentation on a desktop computer w/ a good internet connection. This is opposed to the core
-default theme that tries to make a compromise between the worst / 99th percentile user say on a "2G" connection better
-at the expense of the actual bulk of users using Typedoc. There are various tweaks in the DMT over the core default
-theme to make the mainline use case better.
 
 ## Accessibility:
 
@@ -112,6 +103,14 @@ children folders underneath.
 
     // A positive integer greater than 0 providing a limit on main search query results.
     "limit": 10
+  },
+
+  // Control additional theme settings that the DMT offers. Theme animation for accordion / details elements works great
+  // for small to larger documentation efforts. However, for very large projects it may be useful to completely disable
+  // theme animation due to the amount of DOM elements displayed. Theme animation uses WAAPI to animate the `height` of
+  // details elements and this causes layout reflows. You may opt in this case to turn off theme animation completely.
+  "dmtSettings": {
+    "animation": true // When true theme animation is enabled.
   }
 }
 ```
