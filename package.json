@@ -1,6 +1,6 @@
 {
   "name": "@typhonjs-typedoc/typedoc-theme-dmt",
-  "version": "0.2.0-next.14",
+  "version": "0.2.0-next.15",
   "description": "Provides a modern and customizable UX augmentation to the default TypeDoc theme bringing enhanced features and usability.",
   "license": "MPL-2.0",
   "type": "module",
@@ -14,7 +14,9 @@
     "#frontend/constants": "./src/frontend/state/constants.js",
     "#frontend/state": "./src/frontend/state/index.js",
     "#frontend/types": "./src/frontend/state/types.d.ts",
-    "#plugin/utils": "./src/plugin/utils.js"
+    "#plugin/utils": "./src/plugin/utils.js",
+    "#shared/utils": "./src/shared/utils/index.js",
+    "#shared/types": "./src/shared/utils/types.d.ts"
   },
   "exports": {
     ".": {
@@ -47,8 +49,7 @@
     "rollup-plugin-svelte": "^7.2.2",
     "sass": "^1.77.8",
     "svelte": "^4.2.18",
-    "svelte-preprocess" : "^6.0.2",
-    "typedoc": "0.26.6"
+    "svelte-preprocess" : "^6.0.2"
   },
   "peerDependencies" : {
     "typedoc": ">=0.26.6"
