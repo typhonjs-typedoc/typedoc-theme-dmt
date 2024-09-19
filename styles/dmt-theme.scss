@@ -175,6 +175,7 @@ header.tsd-page-toolbar {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  contain: layout style paint;
 
   height: fit-content;
   margin-bottom: 1rem;
@@ -204,6 +205,8 @@ header.tsd-page-toolbar {
 }
 
 .site-menu {
+  contain: layout style paint;
+
   // Overrides TypeDoc styles.
   margin-top: 0;
   max-height: unset;
@@ -223,6 +226,7 @@ header.tsd-page-toolbar {
 }
 
 .page-menu {
+  contain: layout style paint;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -248,6 +252,8 @@ header.tsd-page-toolbar {
 // All details elements are controlled by the DMT. A CSS transform vs JS is used to rotate the SVG
 // chevron. See: `DetailsAccordion`.
 details.tsd-accordion {
+  will-change: height;
+
   &[open]:not(details[data-closing='true']) > summary svg {
     transform: rotate(0deg);
   }
