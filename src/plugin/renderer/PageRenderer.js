@@ -340,11 +340,14 @@ export class PageRenderer
          const viewFullLink = hierarchyHeaderEl.find('a');
          const targetClassSpan = hierarchyContentEl.find('span.target');
 
-         targetClassSpan.append(' (');
-         targetClassSpan.append(viewFullLink.clone());
-         targetClassSpan.append(')');
+         if (viewFullLink.length)
+         {
+            targetClassSpan.append(' (');
+            targetClassSpan.append(viewFullLink.clone());
+            targetClassSpan.append(')');
 
-         viewFullLink.remove();
+            viewFullLink.remove();
+         }
 
          // Create details element wrapper and update content --------------------------------------------------------
 
