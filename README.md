@@ -47,6 +47,12 @@ There are additional keyboard hotkeys available (for macOS "Alt" is the "Option 
 When using the navigation index you may press `<Alt>` when opening / closing a folder and it will open or close all
 children folders underneath.
 
+## Deployment Requirements
+
+The DMT uses `ES Module` loading for the dynamic functionality on the frontend in browser. This requires at minimum
+a way to serve / host the docs. You will see a CORS error when loading `file://` URLs locally. Several easy options are
+available for hosting the generated docs. Please see the wiki article: [Webserver Required To Serve Generated Docs](https://github.com/typhonjs-typedoc/typedoc-theme-dmt/wiki/Webserver-Required-To-Serve-Generated-Docs).
+
 ## Configuration:
 
 `typedoc.json` / includes all extra DMT options with comments (JSON5):
