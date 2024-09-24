@@ -166,7 +166,7 @@ export class PageRenderer
       const breadcrumbListElements = $('.tsd-breadcrumb li');
       const breadcrumbArray = breadcrumbListElements.toArray();
 
-      if (breadcrumbArray.length > 0)
+      if (breadcrumbArray.length)
       {
          const firstElement = $(breadcrumbArray[0]);
 
@@ -177,7 +177,7 @@ export class PageRenderer
          }
       }
 
-      if (breadcrumbArray.length > 0 && NavigationIndex.hasMarkdown)
+      if (breadcrumbArray.length && NavigationIndex.hasMarkdown)
       {
          const firstElement = $(breadcrumbArray[0]);
 
@@ -280,7 +280,7 @@ export class PageRenderer
       });
 
       // Enclose any class implements panel in a details / summary element. ------------------------------------------
-      if (implementsPanelEl.length > 0)
+      if (implementsPanelEl.length)
       {
          const implementsHeaderEl = implementsPanelEl.find('h4');
          const implementsText = implementsHeaderEl.text();
@@ -305,7 +305,7 @@ export class PageRenderer
 
          childrenEl.remove();
 
-         if (hierarchyPanelEl.length > 0)
+         if (hierarchyPanelEl.length)
          {
             // In the case that there is a hierarchy panel insert the implements panel before it.
             detailsEl.insertBefore(hierarchyPanelEl);
@@ -319,7 +319,7 @@ export class PageRenderer
       }
 
       // Enclose any class hierarchy panel in a details / summary element. -------------------------------------------
-      if (hierarchyPanelEl.length > 0)
+      if (hierarchyPanelEl.length)
       {
          const hierarchyHeaderEl = hierarchyPanelEl.find('> h4');
          const hierarchyContentEl = hierarchyPanelEl.find('> ul.tsd-hierarchy');
