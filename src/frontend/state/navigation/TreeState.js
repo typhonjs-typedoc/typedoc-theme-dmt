@@ -237,7 +237,7 @@ export class TreeState
          if (!parentEntry) { topLevelFolders++; }
 
          // Ignore any non-folder node without children.
-         if (!entry?.children?.length) { return; }
+         if (!Array.isArray(entry?.children)) { return; }
 
          // Set storage key to DMTNavigationEntry.
          const parentPath = parentEntry ? parentEntry.path ?? parentEntry.text : '';
