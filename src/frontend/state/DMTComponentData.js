@@ -7,7 +7,7 @@ import {
    TJSLocalStorage,
    TJSSessionStorage }                 from '#runtime/svelte/store/web-storage';
 
-import { A11yHelper }                  from '#runtime/util/browser';
+import { A11yHelper }                  from '#runtime/util/a11y';
 
 import { NavigationData }              from './navigation';
 import { createStoreToolbarIconLinks } from './toolbar';

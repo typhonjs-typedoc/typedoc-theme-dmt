@@ -7,9 +7,9 @@
 
    import { slideFade }    from '#runtime/svelte/transition';
 
-   import { A11yHelper }   from '#runtime/util/browser';
+   import { A11yHelper }   from '#runtime/util/a11y';
 
-   import TJSFocusWrap     from '../../external/TJSFocusWrap.svelte';
+   import { TJSFocusWrap } from '#standard/component/dom';
 
    const {
       componentStores,

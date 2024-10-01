@@ -8,8 +8,9 @@
 
    import { getContext }   from 'svelte';
 
+   import { TJSSvgFolder } from '#standard/component/folder';
+
    import Entry            from './Entry.svelte';
-   import TJSSvgFolder     from '../../external/TJSSvgFolder.svelte';
 
    /** @type {import('#frontend/types').DMTNavigationElement} */
    export let entry;

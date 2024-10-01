@@ -1,8 +1,9 @@
 <script>
    import { getContext }   from 'svelte';
 
+   import { TJSSvgFolder } from '#standard/component/folder';
+
    import NavigationTree   from '../tree/NavigationTree.svelte';
-   import TJSSvgFolder     from '../../external/TJSSvgFolder.svelte';
 
    const {
       dmtSessionStorage,

@@ -1,8 +1,7 @@
-import { writable }  from 'svelte/store';
+import { writable }     from 'svelte/store';
 
-import {
-   ImageData,
-   StyleParse }      from '#runtime/util/browser';
+import { ImageData }    from '#runtime/util/browser';
+import { StyleParse }   from '#runtime/util/dom/style';
 
 /**
  * Creates the DMTToolbarIconLinks store for `IconLinks.svelte`. To facilitate the dynamic toolbar icon links the
