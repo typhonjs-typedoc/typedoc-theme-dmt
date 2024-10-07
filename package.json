@@ -11,6 +11,7 @@
   "sideEffects": false,
   "imports": {
     "#runtime/*": "@typhonjs-svelte/runtime-base/*",
+    "#standard/*": "@typhonjs-svelte/standard-base/*",
     "#frontend/constants": "./src/frontend/state/constants.js",
     "#frontend/state": "./src/frontend/state/index.js",
     "#frontend/types": "./src/frontend/state/types.d.ts",
@@ -37,6 +38,7 @@
     "@typhonjs-config/eslint-config" : "^0.6.3",
     "@typhonjs-build-test/rollup-plugin-pkg-imports": "^0.5.0",
     "@typhonjs-svelte/runtime-base": "github:typhonjs-svelte/runtime-base",
+    "@typhonjs-svelte/standard-base": "github:typhonjs-svelte/standard-base",
     "autoprefixer": "^10.4.20",
     "cssnano": "^7.0.0",
     "eslint" : "^8.57.0",

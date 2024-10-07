@@ -1,13 +1,13 @@
-import commonjs            from '@rollup/plugin-commonjs';
-import resolve             from '@rollup/plugin-node-resolve';
-import terser              from '@rollup/plugin-terser';
-import { importsResolve }  from '@typhonjs-build-test/rollup-plugin-pkg-imports';
-import autoprefixer        from 'autoprefixer';
-import cssnano             from 'cssnano';
-import postcssPresetEnv    from 'postcss-preset-env';
-import postcss             from 'rollup-plugin-postcss';
-import svelte              from 'rollup-plugin-svelte';
-import preprocess          from 'svelte-preprocess';
+import commonjs               from '@rollup/plugin-commonjs';
+import resolve                from '@rollup/plugin-node-resolve';
+import terser                 from '@rollup/plugin-terser';
+import { importsResolve }     from '@typhonjs-build-test/rollup-plugin-pkg-imports';
+import autoprefixer           from 'autoprefixer';
+import cssnano                from 'cssnano';
+import postcssPresetEnv       from 'postcss-preset-env';
+import postcss                from 'rollup-plugin-postcss';
+import svelte                 from 'rollup-plugin-svelte';
+import { sveltePreprocess }   from 'svelte-preprocess';
 
 const banner = `/**
  * @module @typhonjs-typedoc/typedoc-theme-dmt
@@ -23,16 +23,11 @@ export default [
    {
       input: 'src/plugin/index.js',
       external: [
-         '@rollup/plugin-node-resolve',
-         '@rollup/plugin-terser',
-         '@rollup/plugin-virtual',
          'cheerio',
          'lunr',
          'node:fs',
          'node:path',
          'node:url',
-         'rollup',
-         'svelte/compiler',
          'typedoc'
       ],
       output: {
@@ -62,7 +57,7 @@ export default [
       },
       plugins: [
          svelte({
-            preprocess: preprocess()
+            preprocess: sveltePreprocess()
          }),
 
          postcss(postcssConfig({
