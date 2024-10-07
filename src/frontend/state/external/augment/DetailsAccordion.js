@@ -1,6 +1,6 @@
-import { toggleDetails }   from '#runtime/svelte/action/animate';
+import { toggleDetails }      from '#runtime/svelte/action/dom/properties';
 
-import { TJSSessionStorage } from '#runtime/svelte/store/web-storage';
+import { TJSSessionStorage }  from '#runtime/svelte/store/web-storage';
 
 /**
  * Provides reactive management of the default theme details elements for session storage and animation controlled by

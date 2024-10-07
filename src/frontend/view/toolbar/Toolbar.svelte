@@ -8,9 +8,9 @@
    import { setContext }      from 'svelte';
    import { writable }        from 'svelte/store';
 
-   import { resizeObserver }  from '#runtime/svelte/action/dom';
+   import { resizeObserver }  from '#runtime/svelte/action/dom/observer';
 
-   import IconLinks from './iconlinks/IconLinks.svelte';
+   import IconLinks           from './iconlinks/IconLinks.svelte';
 
    const toolbarOffsetWidth = writable(0);
 
