@@ -1,7 +1,7 @@
 <script>
    import { getContext }      from 'svelte';
 
-   import { isWritableStore } from '#runtime/util/store';
+   import { isWritableStore } from '#runtime/svelte/store/util';
 
    import LabeledCheckbox     from './LabeledCheckbox.svelte';
 
