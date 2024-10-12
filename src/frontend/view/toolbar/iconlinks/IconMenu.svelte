@@ -9,7 +9,7 @@
 
    import { A11yHelper }   from '#runtime/util/a11y';
 
-   import { TJSFocusWrap } from '#standard/component/dom';
+   import { TJSFocusWrap } from '#standard/component/dom/focus';
 
    const {
       componentStores,
