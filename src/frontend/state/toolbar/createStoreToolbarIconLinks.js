@@ -1,6 +1,6 @@
 import { writable }     from 'svelte/store';
 
-import { ImageData }    from '#runtime/util/browser';
+import { ImageData }    from '#runtime/util/async';
 import { StyleParse }   from '#runtime/util/dom/style';
 
 /**
