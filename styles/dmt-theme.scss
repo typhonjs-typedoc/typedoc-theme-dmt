@@ -427,6 +427,11 @@ a {
       width: unset;
     }
 
+    // On narrow screen widths allow the index list to be scrollable.
+    .tsd-index-list {
+      overflow: auto;
+    }
+
     details {
       background: var(--dmt-container-background);
       border: var(--dmt-container-border);
