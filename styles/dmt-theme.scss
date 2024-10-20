@@ -427,8 +427,9 @@ a {
       width: unset;
     }
 
-    // On narrow screen widths allow the index list to be scrollable.
+    // On narrow screen widths allow the index list to be scrollable and reduce from 3 columns in default theme to 1.
     .tsd-index-list {
+      grid-template-columns: repeat(1, 1fr);
       overflow: auto;
     }
 
