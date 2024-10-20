@@ -422,15 +422,22 @@ a {
     }
   }
 
-  .tsd-panel-group.tsd-index-group, .tsd-panel-group.tsd-hierarchy {
-    .tsd-accordion-summary a {
-      width: unset;
+  .tsd-panel-group.tsd-index-group {
+    // Remove display of unnecessary additional header.
+    .tsd-index-panel > .tsd-index-heading.uppercase {
+      display: none;
     }
 
     // On narrow screen widths allow the index list to be scrollable and reduce from 3 columns in default theme to 1.
     .tsd-index-list {
       grid-template-columns: repeat(1, 1fr);
       overflow: auto;
+    }
+  }
+
+  .tsd-panel-group.tsd-index-group, .tsd-panel-group.tsd-hierarchy {
+    .tsd-accordion-summary a {
+      width: unset;
     }
 
     details {
