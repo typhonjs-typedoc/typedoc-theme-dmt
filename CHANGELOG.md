@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.3 release (minor)
+- Better project reflection / `modules.html` modifications.
+
 ## 0.2.2 release (minor)
 - Fix: Large navigation tree performance when animation is turned off.
 - DMT option `dmtModuleRemap.isPackage` will modify content on main project reflection / `modules.html` page.
