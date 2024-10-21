@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.2 release (minor)
+- Fix: Large navigation tree performance when animation is turned off.
+- DMT option `dmtModuleRemap.isPackage` will modify content on main project reflection / `modules.html` page.
+
 ## 0.2.1 release (minor)
 - Fix: frontend tree state - only creating session storage stores for folders.
 - Fix: backend augmentation - "hierarchy" lists without a `view full` link will omit extra `()`.
