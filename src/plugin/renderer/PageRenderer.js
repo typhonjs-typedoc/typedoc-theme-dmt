@@ -225,6 +225,26 @@ export class PageRenderer
    }
 
    /**
+    * Modifications for project modules reflection.
+    *
+    * @param {import('cheerio').Cheerio}  $ -
+    */
+   #augmentProjectModules($)
+   {
+      if (this.#options.moduleRemap.isPackage)
+      {
+         const titleEl = $('.tsd-index-section .tsd-index-heading');
+         const titleText = titleEl.text();
+         if (typeof titleText === 'string') { titleEl.text('Packages'); }
+      }
+
+      if (!this.#options.navigation.moduleIcon)
+      {
+         $('.tsd-index-list svg').remove();
+      }
+   }
+
+   /**
     * Modifications for module reflection. Adds additional README that may be associated with a module / package
     * particularly in a mono-repo use case facilitated by `typedoc-pkg`.
     *
@@ -235,6 +255,13 @@ export class PageRenderer
    #augmentModule($, page)
    {
       const moduleName = page.model?.name;
+
+      if (this.#options.moduleRemap.isPackage)
+      {
+         const titleEl = $('.tsd-page-title h1');
+         const titleText = titleEl.text();
+         if (typeof titleText === 'string') { titleEl.text(titleText.replace(/^Module (.*)/, 'Package $1')); }
+      }
 
       if (typeof this.#options.moduleRemap.readme[moduleName] === 'string')
       {
@@ -441,6 +468,10 @@ export class PageRenderer
 
          case ReflectionKind.Namespace:
             this.#augmentWrapIndexDetails($);
+            break;
+
+         case ReflectionKind.Project:
+            if (page.url.endsWith('modules.html')) { this.#augmentProjectModules($); }
             break;
       }
 
