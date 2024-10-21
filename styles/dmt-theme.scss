@@ -2,7 +2,7 @@
   --dmt-box-shadow-color: rgba(0, 0, 0, 0.5);
   --dmt-container-border-radius: 0.5rem;
   --dmt-container-box-shadow: 0 0 0.15rem var(--dmt-box-shadow-color);
-  --dmt-container-box-shadow-floating: 0 0 0.75rem var(--dmt-box-shadow-color);
+  --dmt-container-box-shadow-floating: 0 0 0.5rem var(--dmt-box-shadow-color);
   --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
   --dmt-container-padding: 1rem;
 
@@ -233,8 +233,7 @@ header.tsd-page-toolbar {
 
   max-height: var(--dmt-page-menu-max-height);
   overflow: revert;
-  padding-left: 0.25rem;
-  padding-top: 0.75rem;
+  padding: 0.75rem 0.5rem 0.5rem 0.5rem;
   top: 0;
   position: sticky;
 }
