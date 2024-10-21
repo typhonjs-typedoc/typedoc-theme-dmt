@@ -196,20 +196,9 @@ export class PageRenderer
     * Modifications for every page based on DMT options.
     *
     * @param {import('cheerio').Cheerio}  $ -
-    *
-    * @param {PageEvent}   page -
     */
-   #augmentGlobalOptions($, page)
+   #augmentGlobalOptions($)
    {
-      // Potentially replace module page titles with `Package`. ------------------------------------------------------
-
-      if (this.#options.moduleRemap.isPackage && page?.model?.kind === ReflectionKind.Module)
-      {
-         const titleEl = $('.tsd-page-title h1');
-         const titleText = titleEl.text();
-         if (typeof titleText === 'string') { titleEl.text(titleText.replace(/^Module (.*)/, 'Package $1')); }
-      }
-
       // Remove default theme navigation index content that isn't a module reflection. -------------------------------
 
       // This is what is displayed when Javascript is disabled. Presently the default theme will render the first
@@ -225,22 +214,32 @@ export class PageRenderer
    }
 
    /**
-    * Modifications for project modules reflection.
+    * Modifications for project reflection / `modules.html`.
     *
     * @param {import('cheerio').Cheerio}  $ -
     */
    #augmentProjectModules($)
    {
-      if (this.#options.moduleRemap.isPackage)
+      // Find and replace all headers with text 'Modules'
+      $('.tsd-index-section').each((_, element) =>
       {
-         const titleEl = $('.tsd-index-section .tsd-index-heading');
-         const titleText = titleEl.text();
-         if (typeof titleText === 'string') { titleEl.text('Packages'); }
-      }
+         const sectionEl = $(element);
+         const headerEl = sectionEl?.find('h3.tsd-index-heading');
 
+         if (headerEl?.text() === 'Modules')
+         {
+            // Optionally replace `Modules` for `Packages` in header.
+            if (this.#options.moduleRemap.isPackage) { headerEl.text('Packages'); }
+
+            // Find index list for modules and add CSS class for one column grid.
+            sectionEl.find('.tsd-index-list')?.addClass('col1-grid');
+         }
+      });
+
+      // Optionally remove module SVG.
       if (!this.#options.navigation.moduleIcon)
       {
-         $('.tsd-index-list svg').remove();
+         $('svg').has('use[href$="#icon-2"]').remove();
       }
    }
 
@@ -471,7 +470,11 @@ export class PageRenderer
             break;
 
          case ReflectionKind.Project:
-            if (page.url.endsWith('modules.html')) { this.#augmentProjectModules($); }
+            if (page.url.endsWith('modules.html'))
+            {
+               this.#augmentWrapIndexDetails($);
+               this.#augmentProjectModules($);
+            }
             break;
       }
 
@@ -480,7 +483,7 @@ export class PageRenderer
       this.#augmentGlobal($);
 
       // Further global modifications based on DMT options.
-      this.#augmentGlobalOptions($, page);
+      this.#augmentGlobalOptions($);
 
       page.contents = $.html();
    }

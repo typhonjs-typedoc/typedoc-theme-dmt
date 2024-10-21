@@ -423,14 +423,18 @@ a {
 
   .tsd-panel-group.tsd-index-group {
     // Remove display of unnecessary additional header.
-    .tsd-index-panel > .tsd-index-heading.uppercase {
-      display: none;
-    }
+    //.tsd-index-panel > .tsd-index-heading.uppercase {
+    //  display: none;
+    //}
 
-    // On narrow screen widths allow the index list to be scrollable and reduce from 3 columns in default theme to 1.
+    // On narrow screen widths allow the index list to be scrollable.
     .tsd-index-list {
-      grid-template-columns: repeat(1, 1fr);
       overflow: auto;
+
+      // For some sections like `Modules` reduce to 1 column grid as module / package names can be long.
+      &.col1-grid {
+        grid-template-columns: repeat(1, 1fr);
+      }
     }
   }
 
