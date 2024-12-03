@@ -82,6 +82,7 @@ export class DetailsAccordion
       const detailElList = /** @type {NodeListOf<HTMLDetailsElement>} */ document.querySelectorAll(
        'details.tsd-accordion');
 
+      /** @type {Map<string, Set<HTMLDetailsElement>>} */
       const detailElMap = new Map();
 
       // Add the toggleDetails actions to all default theme detail elements storing the update action.
@@ -101,45 +102,25 @@ export class DetailsAccordion
 
          if (key === `${storagePrepend}-accordion-on-this-page`) { this.#onThisPageKey = key; }
 
-         if (typeof key === 'string' && key.length) { detailElMap.set(key, detailEl); }
-      }
-
-      // Find matching accordion pairs between `main section` and `On This Page`.
-      const regex = new RegExp(`${storagePrepend}-accordion-(?<type>section-|tsd-otp-)(?<key>.*)`);
-
-      /**
-       * @type {Map<string, Set<HTMLDetailsElement>>}
-       */
-      const pairMaps = new Map();
-
-      for (const [key, detailEl] of detailElMap)
-      {
-         const match = regex.exec(key);
-
-         if (match)
+         if (typeof key === 'string' && key.length)
          {
-            // Found a paired detail element. Create unique shared key and store the element.
-            const pairKey = `${storagePrepend}-accordion-section-otp-${match.groups.key}`;
-            const pairSet = pairMaps.get(pairKey) ?? new Set();
+            const detailElSet = detailElMap.get(key);
 
-            pairSet.add(detailEl);
-            pairMaps.set(pairKey, pairSet);
-         }
-         else
-         {
-            // Otherwise hook up a "one off" details element.
-            const store = this.#detailsSessionStorage.getStore(key, detailEl.open);
-            this.#toggleDetailsActionReturns.push(toggleDetails(detailEl, { store }));
-
-            // Ensure that when TypeDoc modifies the open state to update store.
-            detailEl.addEventListener('toggle', (event) => store.set(event.target.open));
+            if (detailElSet)
+            {
+               detailElSet.add(detailEl);
+            }
+            else
+            {
+               detailElMap.set(key, new Set([detailEl]));
+            }
          }
       }
 
       const urlHash = globalThis.location.hash;
 
       // Hook up paired details elements with the same store / shared key.
-      for (const [key, detailElSet] of pairMaps)
+      for (const [key, detailElSet] of detailElMap)
       {
          const store = this.#detailsSessionStorage.getStore(key, true);
 
@@ -167,10 +148,13 @@ export class DetailsAccordion
       // Add class to provide transition for svg chevron. This is manually added to avoid transform on page load.
       setTimeout(() =>
       {
-         for (const detailEl of detailElMap.values())
+         for (const detailElSet of detailElMap.values())
          {
-            const svgEl = detailEl.querySelector('summary svg');
-            if (svgEl) { svgEl.classList.add('dmt-summary-svg'); }
+            for (const detailEl of detailElSet)
+            {
+               const svgEl = detailEl.querySelector('summary svg');
+               if (svgEl) { svgEl.classList.add('dmt-summary-svg'); }
+            }
          }
       }, 500);
    }
