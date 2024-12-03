@@ -364,7 +364,7 @@ export class PageRenderer
 
          // Move link to `target` class span.
          const viewFullLink = hierarchyHeaderEl.find('a');
-         const targetClassSpan = hierarchyContentEl.find('span.target');
+         const targetClassSpan = hierarchyContentEl.find('span.tsd-hierarchy-target');
 
          if (viewFullLink.length)
          {
