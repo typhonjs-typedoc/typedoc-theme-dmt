@@ -430,11 +430,6 @@ a {
     // On narrow screen widths allow the index list to be scrollable.
     .tsd-index-list {
       overflow: auto;
-
-      // For some sections like `Modules` reduce to 1 column grid as module / package names can be long.
-      &.col1-grid {
-        grid-template-columns: repeat(1, 1fr);
-      }
     }
   }
 
