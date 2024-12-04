@@ -221,18 +221,26 @@ export class PageRenderer
    #augmentProjectModules($)
    {
       // Find and replace all headers with text 'Modules'
-      $('.tsd-index-section').each((_, element) =>
+      $('summary.tsd-accordion-summary').each((_, element) =>
       {
-         const sectionEl = $(element);
-         const headerEl = sectionEl?.find('h3.tsd-index-heading');
+         const summaryEl = $(element);
 
-         if (headerEl?.text() === 'Modules')
+         const h2El = summaryEl.find('h2');
+
+         // Optionally replace `Modules` for `Packages` in header.
+         if (this.#options.moduleRemap.isPackage)
          {
-            // Optionally replace `Modules` for `Packages` in header.
-            if (this.#options.moduleRemap.isPackage) { headerEl.text('Packages'); }
+            // Replace the text node in the `On This Page` details / summary element.
+            summaryEl.contents().each((_, el) =>
+            {
+               if (el.type === 'text' && $(el).text().trim() === 'Modules') { $(el).replaceWith('Packages'); }
+            });
 
-            // Find index list for modules and add CSS class for one column grid.
-            sectionEl.find('.tsd-index-list')?.addClass('col1-grid');
+            // Replace the text node in main details accordion inside `h2`.
+            h2El.contents().each((_, el) =>
+            {
+               if (el.type === 'text' && $(el).text().trim() === 'Modules') { $(el).replaceWith('Packages'); }
+            });
          }
       });
 
@@ -472,7 +480,6 @@ export class PageRenderer
          case ReflectionKind.Project:
             if (page.url.endsWith('modules.html'))
             {
-               this.#augmentWrapIndexDetails($);
                this.#augmentProjectModules($);
             }
             break;
