@@ -1,4 +1,9 @@
 # Changelog
+## 0.3.0 release (major)
+- Support for TypeDoc `0.27.3+`.
+- Various fixes for TypeDoc 0.27.x layout changes.
+- Fixes details element (On This Page) scrolling due to new Chromium implementation in Chrome 131+.
+
 ## 0.2.3 release (minor)
 - Better project reflection / `modules.html` modifications.
 
