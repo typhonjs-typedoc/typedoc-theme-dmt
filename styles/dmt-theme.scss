@@ -634,7 +634,8 @@ a {
 
     // Make the details content overflow / scrollbars.
     .tsd-accordion-details {
-      overflow: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
       height: calc(100% - var(--dmt-header-height)); // Take into consideration header height and sticky position.
 
       ul {
@@ -645,6 +646,14 @@ a {
 
   // Styling for sidebar `On This Page` detail element open.
   details[open].tsd-accordion.tsd-page-navigation {
+
+    // Fixes issue in Chromium browsers that occurred with Chromium 131+ (11/2024).
+    // Ensures scrollbars and proper sizing of the content div.
+    // https://issues.chromium.org/issues/379214835#comment6
+    &::details-content {
+      display: contents
+    }
+
     padding: var(--dmt-container-padding) 0 var(--dmt-container-padding) var(--dmt-container-padding);
 
     // Only first summary.
@@ -671,7 +680,7 @@ a {
       margin: 0 var(--dmt-container-padding) 0 0; // Reverse default theme style.
 
       &:not(:last-child) {
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
       }
 
       summary {
@@ -682,6 +691,13 @@ a {
         border-bottom: var(--dmt-container-border);
         border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
         background: linear-gradient(to right, var(--dmt-container-background), transparent);
+      }
+
+      > div {
+        margin-left: 8px; // Reduce default theme margin from 20px.
+
+        overflow-wrap: anywhere;
+        width: calc(100% + 10px); // Slightly extend width beyond parent.
       }
     }
   }
