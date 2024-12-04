@@ -11,14 +11,16 @@ taken is not to provide a theme replacement, but an augmentation of the output f
 enhanced usability, features, and polish. A large benefit to this approach is that it allows the Default Modern Theme
 (DMT) to keep up with new releases and features of TypeDoc.
 
+The DMT is slated for future mainlining into the TypeDoc default theme.
+
 ## Installation:
 
 `package.json`:
 ```json
 {
    "devDependencies": {
-      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.2.0",
-      "typedoc": "^0.26.6"
+      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.3.0",
+      "typedoc": "^0.27.3"
    }
 }
 ```
