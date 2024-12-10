@@ -186,8 +186,8 @@ header.tsd-page-toolbar {
   contain: layout style paint;
 
   height: fit-content;
-  margin-bottom: 1rem;
-  margin-top: 0.75rem;
+  padding-bottom: 1rem;
+  padding-top: 0.75rem;
   max-width: 1300px;
 
   // Reverse unnecessary margin.
@@ -705,7 +705,7 @@ a {
         margin-left: 8px; // Reduce default theme margin from 20px.
 
         overflow-wrap: anywhere;
-        width: calc(100% + 10px); // Slightly extend width beyond parent.
+        width: calc(100% + 8px); // Slightly extend width beyond parent.
       }
     }
   }
