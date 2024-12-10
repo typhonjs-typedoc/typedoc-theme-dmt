@@ -33,7 +33,8 @@
    }
 </script>
 
-<section>
+<section class=dmt-navigation-bar
+         tabindex=-1>
    {#if hasSourceFolders > 0}
       <svg style="display: none;">
          <symbol id=dmt-double-icon-arrow viewBox="0 0 1024 1024">
@@ -128,7 +129,7 @@
    {/if}
 </section>
 
-<style>
+<style lang=scss>
    button {
       width: 2rem;
       height: 2rem;
@@ -152,6 +153,10 @@
       width: inherit;
       background: var(--color-background);
       border-bottom: var(--dmt-container-border);
+
+      &:focus-visible {
+         outline: transparent;
+      }
    }
 
    svg {

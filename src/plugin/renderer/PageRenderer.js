@@ -161,6 +161,12 @@ export class PageRenderer
       // On This Page / Inner Element
       $('details.tsd-page-navigation .tsd-accordion-details').attr('tabindex', -1);
 
+      // Sidebar container (used when in mobile mode)
+      $('div.col-sidebar').attr('tabindex', -1);
+
+      // Sidebar site menu container.
+      $('div.site-menu').attr('tabindex', -1);
+
       // Breadcrumb modifications ------------------------------------------------------------------------------------
 
       const breadcrumbListElements = $('.tsd-breadcrumb li');

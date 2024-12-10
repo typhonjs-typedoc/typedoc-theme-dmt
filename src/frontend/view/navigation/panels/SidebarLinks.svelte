@@ -7,14 +7,15 @@
 </script>
 
 {#if hasLinks}
-   <section>
+   <section class=dmt-sidebar-links
+            tabindex=-1>
       {#each Object.keys(sidebarLinks) as key (sidebarLinks[key])}
          <a href={`${sidebarLinks[key]}`} target=_blank><span>{key}</span></a>
       {/each}
    </section>
 {/if}
 
-<style>
+<style lang=scss>
    a {
       display: block;
       overflow: var(--dmt-sidebarlinks-overflow, unset);
@@ -22,7 +23,7 @@
       white-space: var(--dmt-sidebarlinks-white-space, normal);
    }
 
-   section {
+   section.dmt-sidebar-links {
       display: flex;
       flex-direction: column;
       gap: 0.25em;
@@ -33,5 +34,9 @@
       box-shadow: var(--dmt-container-box-shadow);
       margin: 0 1rem 0 0;
       padding: 0.25rem;
+
+      &:focus-visible {
+         outline: transparent;
+      }
    }
 </style>

@@ -20,10 +20,24 @@
 export function scrollActivation()
 {
    // Direct focus target.
-   const navContainerEl = globalThis.document.querySelector('div.dmt-navigation-content');
+   const navigationBarEl = globalThis.document.querySelector('section.dmt-navigation-bar');
+
+   // Direct focus target / all navigation trees.
+   const navigationTrees = [...globalThis.document.querySelectorAll('div.dmt-navigation-tree')];
 
    // Direct focus target / will be null when not on page.
    const onThisPageInnerEl = globalThis.document.querySelector('details.tsd-page-navigation .tsd-accordion-details');
+
+   // Direct focus target for root column sidebar.
+   const rootColSidebarEl = globalThis.document.querySelector('div.col-sidebar');
+
+   // Direct focus target / will be null when not on page.
+   const sidebarLinksEl = globalThis.document.querySelector('section.dmt-sidebar-links');
+
+   // Direct focus target.
+   const siteMenuEl = globalThis.document.querySelector('div.site-menu');
+
+   // -------
 
    // Ambient focus target for colContentEl.
    const mainContainerEl = globalThis.document.querySelector('div.container.container-main');
@@ -37,60 +51,62 @@ export function scrollActivation()
     *
     * @type {Set<Element|null>}
     */
-   const focusContainers = new Set([mainContainerEl, navContainerEl, onThisPageInnerEl, null]);
+   const focusContainers = new Set([
+      mainContainerEl,
+      navigationBarEl,
+      ...navigationTrees,
+      onThisPageInnerEl,
+      rootColSidebarEl,
+      sidebarLinksEl,
+      siteMenuEl,
+      null
+   ]);
+
+   /**
+    * @param {HTMLElement} el - Element to add `pointerenter` handling.
+    *
+    * @param {HTMLElement} [focusEl] - Optional focus target.
+    */
+   function focusOnPointerenter(el, focusEl)
+   {
+      focusEl = focusEl ?? el;
+
+      el.addEventListener('pointerenter', (event) =>
+      {
+         event.preventDefault();
+         event.stopImmediatePropagation();
+
+         const explicitlyFocusedEl = globalThis.document.querySelector(':focus-visible');
+
+         // Abort if the explicitly focused element is not on of the target elements tracked.
+         if (globalThis.document.activeElement !== focusEl && focusContainers.has(explicitlyFocusedEl))
+         {
+            globalThis.requestAnimationFrame(() => focusEl.focus({ preventScroll: true }));
+         }
+      });
+   }
 
    // Direct focus targets -------------------------------------------------------------------------------------------
 
-   if (navContainerEl)
+   if (navigationBarEl) { focusOnPointerenter(navigationBarEl); }
+
+   if (navigationTrees.length)
    {
-      navContainerEl.addEventListener('pointerenter', (event) =>
-      {
-         event.preventDefault();
-         event.stopImmediatePropagation();
-
-         const explicitlyFocusedEl = globalThis.document.querySelector(':focus-visible');
-
-         // Abort if the explicitly focused element is not on of the target elements tracked.
-         if (globalThis.document.activeElement !== navContainerEl && focusContainers.has(explicitlyFocusedEl))
-         {
-            globalThis.requestAnimationFrame(() => navContainerEl.focus({ preventScroll: true }));
-         }
-      });
+      for (const navTreeEl of navigationTrees) { focusOnPointerenter(navTreeEl); }
    }
 
    // Will be null when not on page.
-   if (onThisPageInnerEl)
-   {
-      onThisPageInnerEl.addEventListener('pointerenter', (event) =>
-      {
-         event.preventDefault();
-         event.stopImmediatePropagation();
+   if (onThisPageInnerEl) { focusOnPointerenter(onThisPageInnerEl); }
 
-         const explicitlyFocusedEl = globalThis.document.querySelector(':focus-visible');
+   if (rootColSidebarEl) { focusOnPointerenter(rootColSidebarEl); }
 
-         // Abort if the explicitly focused element is not on of the target elements tracked.
-         if (globalThis.document.activeElement !== onThisPageInnerEl && focusContainers.has(explicitlyFocusedEl))
-         {
-            globalThis.requestAnimationFrame(() => onThisPageInnerEl.focus({ preventScroll: true }));
-         }
-      });
-   }
+   // Will be null when not on page.
+   if (sidebarLinksEl) { focusOnPointerenter(sidebarLinksEl); }
+
+   // Will be null when not on page.
+   if (siteMenuEl) { focusOnPointerenter(siteMenuEl); }
 
    // Indirect focus targets / activates mainContainerEl ---------------------------------------------------------------
 
-   if (colContentEl)
-   {
-      colContentEl.addEventListener('pointerenter', (event) =>
-      {
-         event.preventDefault();
-         event.stopImmediatePropagation();
-
-         const explicitlyFocusedEl = globalThis.document.querySelector(':focus-visible');
-
-         if (globalThis.document.activeElement !== mainContainerEl && focusContainers.has(explicitlyFocusedEl))
-         {
-            globalThis.requestAnimationFrame(() => mainContainerEl.focus({ preventScroll: true }));
-         }
-      });
-   }
+   if (colContentEl) { focusOnPointerenter(colContentEl, mainContainerEl); }
 }

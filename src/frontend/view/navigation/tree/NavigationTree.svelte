@@ -47,7 +47,7 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div bind:this={navigationEl}
-     class=dmt-navigation-content
+     class=dmt-navigation-tree
      on:keydown|capture={onKeydown}
      tabindex=-1>
    {#each treeState.elementIndex as entry (entry.path)}
@@ -60,8 +60,8 @@
    {/each}
 </div>
 
-<style>
-   .dmt-navigation-content {
+<style lang=scss>
+   .dmt-navigation-tree {
       display: flex;
       flex-direction: column;
 
@@ -75,15 +75,18 @@
       --tjs-folder-contents-border-left: var(--dmt-nav-folder-contents-border-left, 2px solid var(--dmt-nav-folder-contents-border-color, rgba(0, 0, 0, 0.2)));
       --tjs-folder-contents-padding: var(--dmt-nav-folder-contents-padding, 0 0 0 9px);
 
-      outline: transparent;
       overflow-x: auto;
       padding-top: var(--dmt-nav-tree-padding-top, 0.25rem);
       padding-left: var(--dmt-nav-tree-padding-left, 3px); /* space for chevron focus-visible outline */
       touch-action: pan-x pan-y;
+
+      &:focus-visible {
+         outline: transparent;
+      }
    }
 
    /* Adjust `--dmt-nav-tree-bottom-margin` accordingly for any bottom margin after last child. */
-   .dmt-navigation-content > :global(:last-child) {
+   .dmt-navigation-tree > :global(:last-child) {
       margin-bottom: var(--dmt-nav-tree-bottom-margin, 0.25rem);
    }
 </style>

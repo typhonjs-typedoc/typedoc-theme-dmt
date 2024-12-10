@@ -136,16 +136,24 @@ summary.tsd-accordion-summary:focus-visible {
 
 // The following `:focus-visible` rules cover the programmatic focusing of scroll containers. Please see documentation
 // in `./src/web-components/scrollActivation.js`.
+.col-content:focus-visible {
+  outline: transparent;
+}
+
+.col-sidebar:focus-visible {
+  outline: transparent;
+}
+
 .site-menu:focus-visible {
-  outline: solid 2px transparent;
+  outline: transparent;
 }
 
 details.tsd-page-navigation .tsd-accordion-details:focus-visible {
-  outline: solid 2px transparent;
+  outline: transparent;
 }
 
-div.container.container-main {
-  outline: solid 2px transparent;
+div.container.container-main:focus-visible {
+  outline: transparent;
 }
 
 /* Layout Tweaks ---------------------------------------------------------------------------------------------------- */
