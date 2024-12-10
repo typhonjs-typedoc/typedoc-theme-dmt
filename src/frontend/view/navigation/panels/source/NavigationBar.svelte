@@ -25,7 +25,7 @@
     */
    function onKeydownRepeat(event)
    {
-      if (event.repeat)
+      if (event.code !== 'Tab' && event.repeat)
       {
          event.stopPropagation();
          event.preventDefault();
