@@ -98,6 +98,9 @@ export class TreeStateControl
       this.#hashAnchorLinks();
 
       globalThis.addEventListener('hashchange', this.#onHashchange.bind(this));
+
+      // Ensure that the initial navigation tree link is scrolled into view.
+      this.ensureCurrentPath();
    }
 
    /**
@@ -157,10 +160,19 @@ export class TreeStateControl
       result |= this.#treeSource.ensureCurrentPath(pathURL);
 
       // Wait for the next animation frame as this will ensure multiple levels of tree nodes opening.
-      if (result && focus)
+      if (result)
       {
-         nextAnimationFrame().then(() => document.querySelector('nav.tsd-navigation')?.querySelector(
-          `a[href*="${pathURL}"]`)?.focus({ focusVisible: true }));
+         nextAnimationFrame().then(() =>
+         {
+            const linkEl = document.querySelector('nav.tsd-navigation')?.querySelector(`a[href*="${pathURL}"]`);
+
+            if (linkEl)
+            {
+               linkEl.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'nearest' });
+
+               if (focus) { linkEl.focus({ focusVisible: true }); }
+            }
+         });
       }
    }
 
