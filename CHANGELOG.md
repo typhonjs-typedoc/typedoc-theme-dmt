@@ -1,4 +1,8 @@
 # Changelog
+## 0.3.1 release (minor)
+- Fixes [issue #5](https://github.com/typhonjs-typedoc/typedoc-theme-dmt/issues/5) for correct scrolling to current doc
+  reflection in the navigation panel.
+
 ## 0.3.0 release (major)
 - Support for TypeDoc `0.27.3+`.
 - Various fixes for TypeDoc 0.27.x layout changes.
