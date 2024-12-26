@@ -1,6 +1,6 @@
 {
   "name": "@typhonjs-typedoc/typedoc-theme-dmt",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Provides a modern and customizable UX augmentation to the default TypeDoc theme bringing enhanced features and usability.",
   "license": "MPL-2.0",
   "type": "module",
