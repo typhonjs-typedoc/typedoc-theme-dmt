@@ -1,55 +1,37 @@
-:root {
-  --dmt-box-shadow-color: rgba(0, 0, 0, 0.5);
-  --dmt-container-border-radius: 0.5rem;
-  --dmt-container-box-shadow: 0 0 0.15rem var(--dmt-box-shadow-color);
-  --dmt-container-box-shadow-floating: 0 0 0.5rem var(--dmt-box-shadow-color);
-  --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
-  --dmt-container-padding: 1rem;
-
-  // For member / variable / function sections.  Alas there are element margins to further manipulate.
-  --dmt-container-padding-member: 0.5rem;
-
-  --dmt-header-height: 42px;
-  --dmt-overlay-panel-background: rgb(39, 41, 46);
-
-  --dmt-menu-item-background-hover: var(--color-accent);
-  --dmt-menu-item-background-selected: var(--color-accent);
-
-  // Defines the color of the navigation folder guide border.
-  --dmt-nav-folder-contents-border-color: var(--color-active-menu-item);
-
-  // Additional 1.5 rem to take into account padding at top and to give the appearance of padding at the bottom for
-  // `On This Page`. Also note: `--dmt-footer-height` is set dynamically in Javascript.
-  --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - var(--dmt-footer-height, 0px) - 1.5rem);
-
-  // Focus visible control
-  --dmt-focus-visible-color: orange;
-  --dmt-outline-focus-visible: 3px solid var(--dmt-focus-visible-color);
-  --tjs-folder-summary-chevron-border-radius: 0.25rem;
-  --tjs-default-outline-focus-visible: var(--dmt-outline-focus-visible); // TJSSvgFolder component
-}
-
-
-:root[data-theme="dark"] {
-  --dmt-box-shadow-color: rgba(0, 0, 0, 0.6);
-  --dmt-container-background: rgba(0, 0, 0, 0.1);
-  --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
-  --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
-  --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
-  --dmt-overlay-panel-background: rgb(39, 41, 46);
-}
-
-:root[data-theme="light"] {
-  --dmt-box-shadow-color: rgba(0, 0, 0, 0.3);
-  --dmt-container-background: rgba(0, 0, 0, 0.05);
-  --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
-  --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
-  --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
-  --dmt-overlay-panel-background: rgb(230, 232, 235);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer theme-dmt {
   :root {
+    --dmt-box-shadow-color: rgba(0, 0, 0, 0.5);
+    --dmt-container-border-radius: 0.5rem;
+    --dmt-container-box-shadow: 0 0 0.15rem var(--dmt-box-shadow-color);
+    --dmt-container-box-shadow-floating: 0 0 0.5rem var(--dmt-box-shadow-color);
+    --dmt-container-max-height: calc(100vh - var(--dmt-header-height));
+    --dmt-container-padding: 1rem;
+
+    // For member / variable / function sections.  Alas there are element margins to further manipulate.
+    --dmt-container-padding-member: 0.5rem;
+
+    --dmt-header-height: 42px;
+    --dmt-overlay-panel-background: rgb(39, 41, 46);
+
+    --dmt-menu-item-background-hover: var(--color-accent);
+    --dmt-menu-item-background-selected: var(--color-accent);
+
+    // Defines the color of the navigation folder guide border.
+    --dmt-nav-folder-contents-border-color: var(--color-active-menu-item);
+
+    // Additional 1.5 rem to take into account padding at top and to give the appearance of padding at the bottom for
+    // `On This Page`. Also note: `--dmt-footer-height` is set dynamically in Javascript.
+    --dmt-page-menu-max-height: calc(100vh - var(--dmt-header-height) - var(--dmt-footer-height, 0px) - 1.5rem);
+
+    // Focus visible control
+    --dmt-focus-visible-color: orange;
+    --dmt-outline-focus-visible: 3px solid var(--dmt-focus-visible-color);
+    --tjs-folder-summary-chevron-border-radius: 0.25rem;
+    --tjs-default-outline-focus-visible: var(--dmt-outline-focus-visible); // TJSSvgFolder component
+  }
+
+
+  :root[data-theme="dark"] {
     --dmt-box-shadow-color: rgba(0, 0, 0, 0.6);
     --dmt-container-background: rgba(0, 0, 0, 0.1);
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
@@ -57,10 +39,8 @@
     --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
     --dmt-overlay-panel-background: rgb(39, 41, 46);
   }
-}
 
-@media (prefers-color-scheme: light) {
-  :root {
+  :root[data-theme="light"] {
     --dmt-box-shadow-color: rgba(0, 0, 0, 0.3);
     --dmt-container-background: rgba(0, 0, 0, 0.05);
     --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
@@ -68,644 +48,660 @@
     --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
     --dmt-overlay-panel-background: rgb(230, 232, 235);
   }
-}
 
-/* Container Queries ------------------------------------------------------------------------------------------------ */
-
-#dmt-toolbar {
-  container: dmt-toolbar / inline-size;
-}
-
-.col-content {
-  container: col-content / inline-size;
-}
-
-.site-menu {
-  container: site-menu / inline-size;
-}
-
-/* Layout additions ------------------------------------------------------------------------------------------------- */
-
-body {
-  main {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --dmt-box-shadow-color: rgba(0, 0, 0, 0.6);
+      --dmt-container-background: rgba(0, 0, 0, 0.1);
+      --dmt-container-border: 2px solid rgba(0, 0, 0, 0.2);
+      --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.6);
+      --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.8);
+      --dmt-overlay-panel-background: rgb(39, 41, 46);
+    }
   }
 
-  footer {
-    flex-shrink: 0;
-    height: fit-content;
-    width: 100%;
+  @media (prefers-color-scheme: light) {
+    :root {
+      --dmt-box-shadow-color: rgba(0, 0, 0, 0.3);
+      --dmt-container-background: rgba(0, 0, 0, 0.05);
+      --dmt-container-border: 2px solid rgba(0, 0, 0, 0.1);
+      --dmt-container-floating-border: 2px solid rgba(0, 0, 0, 0.3);
+      --dmt-container-separator-border: 1px solid rgba(0, 0, 0, 0.4);
+      --dmt-overlay-panel-background: rgb(230, 232, 235);
+    }
   }
-}
 
-// Default theme only defines width for vertical scroll bars and not height for horizontal scrollbars.
-*::-webkit-scrollbar {
-  height: 0.75rem;
-}
+  /* Container Queries ------------------------------------------------------------------------------------------------ */
 
-// .tsd-page-title h1 is wrapped with this div. Allowing additional elements to be added right aligned.
-.dmt-title-header-flex {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
+  #dmt-toolbar {
+    container: dmt-toolbar / inline-size;
+  }
 
-  h1 {
+  .col-content {
+    container: col-content / inline-size;
+  }
+
+  .site-menu {
+    container: site-menu / inline-size;
+  }
+
+  /* Layout additions ------------------------------------------------------------------------------------------------- */
+
+  body {
+    main {
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    footer {
+      flex-shrink: 0;
+      height: fit-content;
+      width: 100%;
+    }
+  }
+
+  // Default theme only defines width for vertical scroll bars and not height for horizontal scrollbars.
+  *::-webkit-scrollbar {
+    height: 0.75rem;
+  }
+
+  // Make sure anchor links are visible when keyboard focused.
+  a.tsd-anchor-icon:focus-visible > svg {
+    visibility: visible;
+  }
+
+  // Make accordion summaries outlined when keyboard focused.
+  summary.tsd-accordion-summary:focus-visible {
+    outline: revert;
+  }
+
+  // This expands the space of the anchor icon allowing additional elements to be added right aligned.
+  .tsd-panel.tsd-member .tsd-anchor-link .tsd-anchor-icon {
     margin-right: auto;
   }
-}
 
-// Make sure anchor links are visible when keyboard focused.
-a.tsd-anchor-icon:focus-visible > svg {
-  visibility: visible;
-}
-
-// Make accordion summaries outlined when keyboard focused.
-summary.tsd-accordion-summary:focus-visible {
-  outline: revert;
-}
-
-// This expands the space of the anchor icon allowing additional elements to be added right aligned.
-.tsd-panel.tsd-member .tsd-anchor-link .tsd-anchor-icon {
-  margin-right: auto;
-}
-
-// The following `:focus-visible` rules cover the programmatic focusing of scroll containers. Please see documentation
-// in `./src/web-components/scrollActivation.js`.
-.col-content:focus-visible {
-  outline: transparent;
-}
-
-.col-sidebar:focus-visible {
-  outline: transparent;
-}
-
-.site-menu:focus-visible {
-  outline: transparent;
-}
-
-details.tsd-page-navigation .tsd-accordion-details:focus-visible {
-  outline: transparent;
-}
-
-div.container.container-main:focus-visible {
-  outline: transparent;
-}
-
-/* Layout Tweaks ---------------------------------------------------------------------------------------------------- */
-
-header.tsd-page-toolbar {
-  height: var(--dmt-header-height);
-  flex-shrink: 0;
-
-  position: unset;
-  top: unset;
-  left: unset;
-}
-
-// Unset default theme max-width allowing full expansion. Add max-width to .col-content instead and
-.container {
-  max-width: unset;
-}
-
-.container.container-main {
-  flex-grow: 1;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.col-content {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  contain: layout style paint;
-
-  height: fit-content;
-  padding-bottom: 1rem;
-  padding-top: 0.75rem;
-  max-width: 1300px;
-
-  // Reverse unnecessary margin.
-  .tsd-panel, .tsd-panel-group {
-    margin-bottom: 0;
+  // The following `:focus-visible` rules cover the programmatic focusing of scroll containers. Please see documentation
+  // in `./src/web-components/scrollActivation.js`.
+  .col-content:focus-visible {
+    outline: transparent;
   }
 
-  // Add padding and bottom border for `Hierarchy` and `Index` panel groups when open.
-  details[open].tsd-index-content, details[open].tsd-hierarchy {
-    > .tsd-accordion-summary {
-      padding-bottom: var(--dmt-container-padding);
+  .col-sidebar:focus-visible {
+    outline: transparent;
+  }
+
+  .site-menu:focus-visible {
+    outline: transparent;
+  }
+
+  details.tsd-page-navigation .tsd-accordion-details:focus-visible {
+    outline: transparent;
+  }
+
+  div.container.container-main:focus-visible {
+    outline: transparent;
+  }
+
+  /* Layout Tweaks ---------------------------------------------------------------------------------------------------- */
+
+  header.tsd-page-toolbar {
+    height: var(--dmt-header-height);
+    flex-shrink: 0;
+
+    position: unset;
+    top: unset;
+    left: unset;
+  }
+
+  // Unset default theme max-width allowing full expansion. Add max-width to .col-content instead and
+  .container {
+    max-width: unset;
+  }
+
+  .container.container-main {
+    flex-grow: 1;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .col-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    contain: layout style paint;
+
+    height: fit-content;
+    padding-bottom: 1rem;
+    padding-top: 0.75rem;
+    max-width: 1300px;
+
+    // Reverse unnecessary margin.
+    .tsd-panel, .tsd-panel-group {
+      margin-bottom: 0;
+    }
+
+    // Add padding and bottom border for `Hierarchy` and `Index` panel groups when open.
+    details[open].tsd-index-content, details[open].tsd-hierarchy {
+      > .tsd-accordion-summary {
+        padding-bottom: var(--dmt-container-padding);
+        border-bottom: var(--dmt-container-border);
+      }
+    }
+
+    // Add background / border to all panel groups summary elements.
+    details.tsd-panel-group summary {
       border-bottom: var(--dmt-container-border);
+      border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
+      background: linear-gradient(to right, var(--dmt-container-background), var(--color-background));
+      padding: 0.25rem;
     }
   }
 
-  // Add background / border to all panel groups summary elements.
-  details.tsd-panel-group summary {
-    border-bottom: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
-    background: linear-gradient(to right, var(--dmt-container-background), var(--color-background));
+  .site-menu {
+    contain: layout style paint;
+
+    // Overrides TypeDoc styles.
+    margin-top: 0;
+    max-height: unset;
+
+    padding-left: 0.1rem; // For outline
+    top: 0;
+
+    // Just the accordion summary elements in the nav sidebar.
+    .tsd-accordion-summary {
+      display: flex;
+      align-items: center;
+    }
+
+    .tsd-nested-navigation {
+      margin-left: 2.5rem;
+    }
+  }
+
+  .page-menu {
+    contain: layout style paint;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    max-height: var(--dmt-page-menu-max-height);
+    overflow: revert;
+    padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+    top: 0;
+    position: sticky;
+  }
+
+  @media (min-width: 770px) and (max-width: 1399px) {
+    .col-sidebar {
+      max-height: unset;
+      padding-top: 0;
+      top: 0;
+    }
+  }
+
+  // For outline alignment to show border for keyboard traversal.
+  #tsd-toolbar-menu-trigger {
+    line-height: 2.25;
+    height: 32px;
+  }
+
+  /* Content style additions ------------------------------------------------------------------------------------------ */
+
+  // All details elements are controlled by the DMT. A CSS transform vs JS is used to rotate the SVG
+  // chevron. See: `DetailsAccordion`.
+  details.tsd-accordion {
+    will-change: height;
+
+    &[open]:not(details[data-closing='true']) > summary svg {
+      transform: rotate(0deg);
+    }
+
+    &:not([open]) > summary svg {
+      transform: rotate(-90deg);
+    }
+  }
+
+  // All default theme detail -> summary -> svg elements are marked with this class; add transition.
+  // Note: adding this class programmatically prevents initial transition animation.
+  // See: `DetailsAnimation.js`
+  .dmt-summary-svg {
+    transition: transform 0.1s;
+  }
+
+  /* Content style tweaks --------------------------------------------------------------------------------------------- */
+
+  // Required when toggling fullscreen.
+  .container-main {
+    background: var(--color-background);
+  }
+
+  *:focus-visible {
+    outline: var(--dmt-outline-focus-visible);
+  }
+
+  details .tsd-accordion-summary {
+    // Special handling of focus-visible state.
+    &:focus-visible {
+      outline: none; // No outline of summary element
+
+      // Outline SVG instead.
+      svg {
+        outline: var(--dmt-outline-focus-visible);
+        border-radius: 0.25rem;
+      }
+    }
+
+    // Align SVG
+    h3, h5 {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  }
+
+  nav.tsd-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    > section:first-child {
+      margin-top: 0.75rem;
+
+      // The source index / navigation tree has no margin top when first child.
+      &.source-index {
+        margin-top: 0;
+      }
+    }
+  }
+
+  // Ensure padding of navigation links; matches default theme; no changes as the nav folder layout depends on this.
+  .tsd-navigation a, .tsd-navigation summary > span, .tsd-page-navigation a {
     padding: 0.25rem;
   }
-}
 
-.site-menu {
-  contain: layout style paint;
+  // All links have a border radius.
+  a {
+    border-radius: 0.25rem;
+  }
 
-  // Overrides TypeDoc styles.
-  margin-top: 0;
-  max-height: unset;
+  /* CQ Content ------------------------------------------------------------------------------------------------------- */
 
-  padding-left: 0.1rem; // For outline
-  top: 0;
+  @container dmt-toolbar (min-width: 0) {
+    .title {
+      font-size: clamp(0.75rem, 2.5cqi, 1rem);
+    }
+  }
 
-  // Just the accordion summary elements in the nav sidebar.
-  .tsd-accordion-summary {
+  @container col-content (min-width: 0) {
+    .tsd-page-title h1 {
+      font-size: clamp(1rem, 3.5cqi, 2rem);
+    }
+
+    .tsd-kind-icon ~ span {
+      font-size: clamp(0.8rem, 2.5cqi, 1rem);
+    }
+
+    h5 {
+      font-size: clamp(0.8rem, 2.5cqi, 1rem);
+    }
+  }
+
+  @container site-menu (min-width: 0) {
+    .tsd-navigation span {
+      font-size: clamp(0.8rem, 5cqi, 1rem);
+    }
+  }
+
+  /* Header ----------------------------------------------------------------------------------------------------------- */
+
+  // Adjust padding for icon buttons to be centered
+  .tsd-page-toolbar {
+    box-shadow: var(--dmt-header-box-shadow);
+
+    .tsd-toolbar-contents {
+      padding: 0 1rem 0 1rem;
+    }
+
+    .tsd-toolbar-icon {
+      padding: 12px 12px;
+
+      &.menu {
+        padding: 6px;
+        margin: 6px;
+        height: 30px;
+        width: 28px;
+      }
+    }
+  }
+
+  #dmt-toolbar {
     display: flex;
     align-items: center;
-  }
+    gap: 0.5rem;
 
-  .tsd-nested-navigation {
-    margin-left: 2.5rem;
-  }
-}
-
-.page-menu {
-  contain: layout style paint;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  max-height: var(--dmt-page-menu-max-height);
-  overflow: revert;
-  padding: 0.75rem 0.5rem 0.5rem 0.5rem;
-  top: 0;
-  position: sticky;
-}
-
-@media (min-width: 770px) and (max-width: 1399px) {
-  .col-sidebar {
-    max-height: unset;
-    padding-top: 0;
-    top: 0;
-  }
-}
-
-/* Content style additions ------------------------------------------------------------------------------------------ */
-
-// All details elements are controlled by the DMT. A CSS transform vs JS is used to rotate the SVG
-// chevron. See: `DetailsAccordion`.
-details.tsd-accordion {
-  will-change: height;
-
-  &[open]:not(details[data-closing='true']) > summary svg {
-    transform: rotate(0deg);
-  }
-
-  &:not([open]) > summary svg {
-    transform: rotate(-90deg);
-  }
-}
-
-// All default theme detail -> summary -> svg elements are marked with this class; add transition.
-// Note: adding this class programmatically prevents initial transition animation.
-// See: `DetailsAnimation.js`
-.dmt-summary-svg {
-  transition: transform 0.1s;
-}
-
-/* Content style tweaks --------------------------------------------------------------------------------------------- */
-
-// Required when toggling fullscreen.
-.container-main {
-  background: var(--color-background);
-}
-
-*:focus-visible {
-  outline: var(--dmt-outline-focus-visible);
-}
-
-details .tsd-accordion-summary {
-  // Special handling of focus-visible state.
-  &:focus-visible {
-    outline: none; // No outline of summary element
-
-    // Outline SVG instead.
-    svg {
-      outline: var(--dmt-outline-focus-visible);
-      border-radius: 0.25rem;
+    a.title {
+      white-space: nowrap;
     }
   }
 
-  // Align SVG
-  h3, h5 {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-}
+  /* Main Container --------------------------------------------------------------------------------------------------- */
 
-nav.tsd-navigation {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  .container {
+    padding: 0 1rem;
+    margin: 0 auto;
 
-  > section:first-child {
-    margin-top: 0.75rem;
-
-    // The source index / navigation tree has no margin top when first child.
-    &.source-index {
-      margin-top: 0;
+    // Add border radius to signature blocks.
+    .tsd-signature {
+      border-radius: 0.5rem;
     }
-  }
-}
 
-// Ensure padding of navigation links; matches default theme; no changes as the nav folder layout depends on this.
-.tsd-navigation a, .tsd-navigation summary > span, .tsd-page-navigation a {
-  padding: 0.25rem;
-}
-
-// All links have a border radius.
-a {
-  border-radius: 0.25rem;
-}
-
-/* CQ Content ------------------------------------------------------------------------------------------------------- */
-
-@container dmt-toolbar (min-width: 0) {
-  .title {
-    font-size: clamp(0.75rem, 2.5cqi, 1rem);
-  }
-}
-
-@container col-content (min-width: 0) {
-  .tsd-page-title h1 {
-    font-size: clamp(1rem, 3.5cqi, 2rem);
-  }
-
-  .tsd-kind-icon ~ span {
-    font-size: clamp(0.8rem, 2.5cqi, 1rem);
-  }
-
-  h5 {
-    font-size: clamp(0.8rem, 2.5cqi, 1rem);
-  }
-}
-
-@container site-menu (min-width: 0) {
-  .tsd-navigation span {
-    font-size: clamp(0.8rem, 5cqi, 1rem);
-  }
-}
-
-/* Header ----------------------------------------------------------------------------------------------------------- */
-
-// Adjust padding for icon buttons to be centered
-.tsd-page-toolbar {
-  box-shadow: var(--dmt-header-box-shadow);
-
-  .tsd-toolbar-contents {
-    padding: 0 0.25rem 0 1rem;
-  }
-
-  .tsd-toolbar-icon {
-    padding: 12px 12px;
-
-    &.menu {
-      padding: 6px;
-      margin: 6px;
-      height: 30px;
-      width: 28px;
+    // Except inside `.tsd-signatures`.
+    .tsd-signatures .tsd-signature {
+      border-radius: 0;
     }
-  }
-}
 
-#dmt-toolbar {
-  display: flex;
-  align-items: center;
+    // `Index` / `Hierarchy` details element -------------------------------
 
-  a.title {
-    height: 32px;
-    line-height:32px;
-    padding-right: 0.5rem;
-  }
-}
-
-/* Main Container --------------------------------------------------------------------------------------------------- */
-
-.container {
-  padding: 0 1rem;
-  margin: 0 auto;
-
-  // Add border radius to signature blocks.
-  .tsd-signature {
-    border-radius: 0.5rem;
-  }
-
-  // Except inside `.tsd-signatures`.
-  .tsd-signatures .tsd-signature {
-    border-radius: 0;
-  }
-
-  // `Index` / `Hierarchy` details element -------------------------------
-
-  .tsd-panel-group.tsd-index-group details {
-    margin: 0;
-
-    .tsd-accordion-summary .tsd-index-heading {
+    .tsd-panel-group.tsd-index-group details {
       margin: 0;
+
+      .tsd-accordion-summary .tsd-index-heading {
+        margin: 0;
+      }
+
+      // Correct margin for default index.
+      .tsd-accordion-details .tsd-index-heading {
+        margin: 0 0 15px 0;
+      }
+
+      .tsd-accordion-details section:not(:last-child) {
+        margin-bottom: 15px;
+      }
     }
 
-    // Correct margin for default index.
-    .tsd-accordion-details .tsd-index-heading {
-      margin: 0 0 15px 0;
+    .tsd-panel-group.tsd-index-group {
+      // Remove display of unnecessary additional header.
+      //.tsd-index-panel > .tsd-index-heading.uppercase {
+      //  display: none;
+      //}
+
+      // On narrow screen widths allow the index list to be scrollable.
+      .tsd-index-list {
+        overflow: auto;
+      }
     }
 
-    .tsd-accordion-details section:not(:last-child) {
-      margin-bottom: 15px;
-    }
-  }
+    .tsd-panel-group.tsd-index-group, .tsd-panel-group.tsd-hierarchy {
+      .tsd-accordion-summary a {
+        width: unset;
+      }
 
-  .tsd-panel-group.tsd-index-group {
-    // Remove display of unnecessary additional header.
-    //.tsd-index-panel > .tsd-index-heading.uppercase {
-    //  display: none;
-    //}
-
-    // On narrow screen widths allow the index list to be scrollable.
-    .tsd-index-list {
-      overflow: auto;
-    }
-  }
-
-  .tsd-panel-group.tsd-index-group, .tsd-panel-group.tsd-hierarchy {
-    .tsd-accordion-summary a {
-      width: unset;
+      details {
+        background: var(--dmt-container-background);
+        border: var(--dmt-container-border);
+        border-radius: var(--dmt-container-border-radius);
+        box-shadow: var(--dmt-container-box-shadow);
+        padding: var(--dmt-container-padding);
+      }
     }
 
-    details {
+    .tsd-panel-group.tsd-hierarchy .tsd-accordion-details {
+      padding-top: 0.75rem;
+
+      ul.tsd-hierarchy {
+        padding-left: 1.25rem;
+      }
+    }
+
+    // Module Index Panels -----------------------------------
+
+    section.tsd-index-section .tsd-index-list {
       background: var(--dmt-container-background);
       border: var(--dmt-container-border);
       border-radius: var(--dmt-container-border-radius);
       box-shadow: var(--dmt-container-box-shadow);
       padding: var(--dmt-container-padding);
     }
-  }
 
-  .tsd-panel-group.tsd-hierarchy .tsd-accordion-details {
-    padding-top: 0.75rem;
+    // Member Panels -----------------------------------------
 
-    ul.tsd-hierarchy {
-      padding-left: 1.25rem;
-    }
-  }
+    section.tsd-panel.tsd-member {
+      background: var(--dmt-container-background);
+      border: var(--dmt-container-border);
+      border-radius: var(--dmt-container-border-radius);
+      box-shadow: var(--dmt-container-box-shadow);
+      padding: var(--dmt-container-padding-member);
 
-  // Module Index Panels -----------------------------------
-
-  section.tsd-index-section .tsd-index-list {
-    background: var(--dmt-container-background);
-    border: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius);
-    box-shadow: var(--dmt-container-box-shadow);
-    padding: var(--dmt-container-padding);
-  }
-
-  // Member Panels -----------------------------------------
-
-  section.tsd-panel.tsd-member {
-    background: var(--dmt-container-background);
-    border: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius);
-    box-shadow: var(--dmt-container-box-shadow);
-    padding: var(--dmt-container-padding-member);
-
-    // Override default theme margin.
-    margin-bottom: 2rem;
-  }
-
-  li.tsd-description, ul.tsd-signatures, .tsd-returns-title p {
-    margin-bottom: 0;
-  }
-
-  // Function parameters -----------------------------------
-
-  ul.tsd-parameter-list {
-    background: var(--dmt-container-background);
-    border: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius);
-    box-shadow: var(--dmt-container-box-shadow);
-    padding: var(--dmt-container-padding-member);
-    padding-left: 1.5rem;
-
-    h5:first-child {
-      margin-top: 0;
+      // Override default theme margin.
+      margin-bottom: 2rem;
     }
 
-    h5:last-child {
-      margin-top: 0;
+    li.tsd-description, ul.tsd-signatures, .tsd-returns-title p {
+      margin-bottom: 0;
     }
 
-    // Remove background / border / box-shadow from embedded parameters.
+    // Function parameters -----------------------------------
+
+    ul.tsd-parameter-list {
+      background: var(--dmt-container-background);
+      border: var(--dmt-container-border);
+      border-radius: var(--dmt-container-border-radius);
+      box-shadow: var(--dmt-container-box-shadow);
+      padding: var(--dmt-container-padding-member);
+      padding-left: 1.5rem;
+
+      h5:first-child {
+        margin-top: 0;
+      }
+
+      h5:last-child {
+        margin-top: 0;
+      }
+
+      // Remove background / border / box-shadow from embedded parameters.
+      ul.tsd-parameters {
+        background: unset;
+        border: unset;
+        border-radius: unset;
+        box-shadow: unset;
+      }
+    }
+
+    // Various internal parameter lists ----------------------
     ul.tsd-parameters {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--dmt-container-background);
+      border: var(--dmt-container-border);
+      border-radius: var(--dmt-container-border-radius);
+      box-shadow: var(--dmt-container-box-shadow);
+      padding: var(--dmt-container-padding-member);
+      padding-left: 1.5rem;
+      margin-bottom: 0;
+
+      h5:first-child {
+        margin-top: 0;
+      }
+
+      h5:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    // Remove styling from empty parameter lists that are marked with `.no-children` from PageRenderer.
+    ul.tsd-parameters.no-children {
       background: unset;
       border: unset;
       border-radius: unset;
       box-shadow: unset;
+      margin: 0;
+      padding: 0;
+    }
+
+    // Breadcrumb --------------------------------------------
+
+    // Remove trailing `/`
+    .tsd-breadcrumb li:last-child:after {
+      content: "";
     }
   }
 
-  // Various internal parameter lists ----------------------
-  ul.tsd-parameters {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background: var(--dmt-container-background);
-    border: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius);
-    box-shadow: var(--dmt-container-box-shadow);
-    padding: var(--dmt-container-padding-member);
-    padding-left: 1.5rem;
-    margin-bottom: 0;
-
-    h5:first-child {
-      margin-top: 0;
+  // For 4k / large screen sizes. Cap grid columns then expand left margin and right padding to center content while
+  // keeping the main container scrollbar pinned to the far right side of the screen.
+  @media (min-width: 2190px) {
+    .page-menu {
+      max-width: 350px;
     }
 
-    h5:last-child {
-      margin-bottom: 0;
+    .container-main {
+      grid-template-columns: minmax(0, 520px) minmax(0, 1300px) 1fr;
+      padding-left: calc((100% - 2190px) / 2);
     }
   }
 
-  // Remove styling from empty parameter lists that are marked with `.no-children` from PageRenderer.
-  ul.tsd-parameters.no-children {
-    background: unset;
-    border: unset;
-    border-radius: unset;
-    box-shadow: unset;
-    margin: 0;
-    padding: 0;
+  /* Sidebar ---------------------------------------------------------------------------------------------------------- */
+
+  // Hide `On This Page` when col-sidebar becomes activated and moves content to the left.
+  @media (width < 1200px) {
+    .tsd-accordion.tsd-page-navigation {
+      display: none;
+    }
+
+    // When displayed on the left
+    .page-menu {
+      margin-bottom: 0.75rem;
+      padding-right: 1rem;
+      position: static;     // Must remove sticky!
+    }
+
+    .site-menu {
+      max-height: unset;    // This is tricky, but col-sidebar becomes the parent, so unset max-height.
+    }
   }
 
-  // Breadcrumb --------------------------------------------
+  // Correct default theme styles to have same layout when mobile menu is transitioning.
+  @media (max-width: 769px) {
+    .from-has-menu .col-sidebar {
+      padding: 0 0 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
-  // Remove trailing `/`
-  .tsd-breadcrumb li:last-child:after {
-    content: "";
+    .has-menu .col-sidebar {
+      padding: 0 0 0 1rem;
+      gap: 0.5rem;
+    }
   }
-}
 
-// For 4k / large screen sizes. Cap grid columns then expand left margin and right padding to center content while
-// keeping the main container scrollbar pinned to the far right side of the screen.
-@media (min-width: 2190px) {
   .page-menu {
-    max-width: 350px;
-  }
+    // Styling for sidebar `Settings`
+    .tsd-navigation.settings {
+      background: var(--dmt-container-background);
+      border: var(--dmt-container-border);
+      border-radius: var(--dmt-container-border-radius);
+      box-shadow: var(--dmt-container-box-shadow-floating);
+      padding: var(--dmt-container-padding);
 
-  .container-main {
-    grid-template-columns: minmax(0, 520px) minmax(0, 1300px) 1fr;
-    padding-left: calc((100% - 2190px) / 2);
-  }
-}
+      margin: 0;
 
-/* Sidebar ---------------------------------------------------------------------------------------------------------- */
-
-// Hide `On This Page` when col-sidebar becomes activated and moves content to the left.
-@media (width < 1200px) {
-  .tsd-accordion.tsd-page-navigation {
-    display: none;
-  }
-
-  // When displayed on the left
-  .page-menu {
-    margin-bottom: 0.75rem;
-    padding-right: 1rem;
-    position: static;     // Must remove sticky!
-  }
-
-  .site-menu {
-    max-height: unset;    // This is tricky, but col-sidebar becomes the parent, so unset max-height.
-  }
-}
-
-// Correct default theme styles to have same layout when mobile menu is transitioning.
-@media (max-width: 769px) {
-  .from-has-menu .col-sidebar {
-    padding: 0 0 0 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .has-menu .col-sidebar {
-    padding: 0 0 0 1rem;
-    gap: 0.5rem;
-  }
-}
-
-.page-menu {
-  // Styling for sidebar `Settings`
-  .tsd-navigation.settings {
-    background: var(--dmt-container-background);
-    border: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius);
-    box-shadow: var(--dmt-container-box-shadow-floating);
-    padding: var(--dmt-container-padding);
-
-    margin: 0;
-
-    // Remove bad default theme style.
-    .tsd-accordion-summary {
-      width: inherit;
-    }
-
-    .tsd-filter-visibility h4 {
-      padding-top: 0.25rem;
-    }
-
-    // Style all following svg elements from the checkbox input having focus-visible.
-    input[type=checkbox]:focus-visible + svg {
-      outline: var(--dmt-outline-focus-visible);
-    }
-  }
-
-  // Styling for sidebar `On This Page`
-  details.tsd-accordion.tsd-page-navigation {
-    background: var(--dmt-container-background);
-    border: var(--dmt-container-border);
-    border-radius: var(--dmt-container-border-radius);
-    box-shadow: var(--dmt-container-box-shadow-floating);
-    overflow: hidden;
-    padding: var(--dmt-container-padding);
-
-    // Make the details content overflow / scrollbars.
-    .tsd-accordion-details {
-      overflow-x: hidden;
-      overflow-y: auto;
-      height: calc(100% - var(--dmt-header-height)); // Take into consideration header height and sticky position.
-
-      ul {
-        padding: 0.25rem 0 0.25rem 0.5rem;
-      }
-    }
-  }
-
-  // Styling for sidebar `On This Page` detail element open.
-  details[open].tsd-accordion.tsd-page-navigation {
-
-    // Fixes issue in Chromium browsers that occurred with Chromium 131+ (11/2024).
-    // Ensures scrollbars and proper sizing of the content div.
-    // https://issues.chromium.org/issues/379214835#comment6
-    &::details-content {
-      display: contents
-    }
-
-    padding: var(--dmt-container-padding) 0 var(--dmt-container-padding) var(--dmt-container-padding);
-
-    // Only first summary.
-    > .tsd-accordion-summary {
-      width: calc(100% - 1rem);
-    }
-
-    .tsd-accordion-details {
-      padding-top: 0.75rem;
-    }
-  }
-
-  // Both `Settings` and `On This Page`. Target first summary element.
-  .tsd-navigation.settings details[open], details[open].tsd-page-navigation {
-    > .tsd-accordion-summary {
-      padding-bottom: var(--dmt-container-padding);
-      border-bottom: var(--dmt-container-border);
-    }
-  }
-
-  // Style internal `On This Page` detail elements / sections.
-  .tsd-page-navigation {
-    details.tsd-page-navigation-section {
-      margin: 0 var(--dmt-container-padding) 0 0; // Reverse default theme style.
-
-      &:not(:last-child) {
-        margin-bottom: 0.5rem;
+      // Remove bad default theme style.
+      .tsd-accordion-summary {
+        width: inherit;
       }
 
-      summary {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
+      .tsd-filter-visibility h4 {
+        padding-top: 0.25rem;
+      }
 
+      // Style all following svg elements from the checkbox input having focus-visible.
+      input[type=checkbox]:focus-visible + svg {
+        outline: var(--dmt-outline-focus-visible);
+      }
+    }
+
+    // Styling for sidebar `On This Page`
+    details.tsd-accordion.tsd-page-navigation {
+      background: var(--dmt-container-background);
+      border: var(--dmt-container-border);
+      border-radius: var(--dmt-container-border-radius);
+      box-shadow: var(--dmt-container-box-shadow-floating);
+      overflow: hidden;
+      padding: var(--dmt-container-padding);
+
+      // Make the details content overflow / scrollbars.
+      .tsd-accordion-details {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: calc(100% - var(--dmt-header-height)); // Take into consideration header height and sticky position.
+
+        ul {
+          padding: 0.25rem 0 0.25rem 0.5rem;
+        }
+      }
+    }
+
+    // Styling for sidebar `On This Page` detail element open.
+    details[open].tsd-accordion.tsd-page-navigation {
+
+      // Fixes issue in Chromium browsers that occurred with Chromium 131+ (11/2024).
+      // Ensures scrollbars and proper sizing of the content div.
+      // https://issues.chromium.org/issues/379214835#comment6
+      &::details-content {
+        display: contents
+      }
+
+      padding: var(--dmt-container-padding) 0 var(--dmt-container-padding) var(--dmt-container-padding);
+
+      // Only first summary.
+      > .tsd-accordion-summary {
+        width: calc(100% - 1rem);
+      }
+
+      .tsd-accordion-details {
+        padding-top: 0.75rem;
+      }
+    }
+
+    // Both `Settings` and `On This Page`. Target first summary element.
+    .tsd-navigation.settings details[open], details[open].tsd-page-navigation {
+      > .tsd-accordion-summary {
+        padding-bottom: var(--dmt-container-padding);
         border-bottom: var(--dmt-container-border);
-        border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
-        background: linear-gradient(to right, var(--dmt-container-background), transparent);
       }
+    }
 
-      > div {
-        margin-left: 8px; // Reduce default theme margin from 20px.
+    // Style internal `On This Page` detail elements / sections.
+    .tsd-page-navigation {
+      details.tsd-page-navigation-section {
+        margin: 0 var(--dmt-container-padding) 0 0; // Reverse default theme style.
 
-        overflow-wrap: anywhere;
-        width: calc(100% + 8px); // Slightly extend width beyond parent.
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+
+        summary {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+
+          border-bottom: var(--dmt-container-border);
+          border-radius: var(--dmt-container-border-radius) 0 0 var(--dmt-container-border-radius);
+          background: linear-gradient(to right, var(--dmt-container-background), transparent);
+        }
+
+        > div {
+          margin-left: 8px; // Reduce default theme margin from 20px.
+
+          overflow-wrap: anywhere;
+          width: calc(100% + 8px); // Slightly extend width beyond parent.
+        }
       }
     }
   }
