@@ -105,21 +105,15 @@
          case 'ArrowDown':
             if (results.length === 0) { return; }
 
-            if (currentIndex < results.length - 1)
-            {
-               storeCurrentId.set(results[++currentIndex].id);
-               event.preventDefault();
-            }
+            if (currentIndex < results.length - 1) { storeCurrentId.set(results[++currentIndex].id); }
+            event.preventDefault();
             break;
 
          case 'ArrowUp':
             if (results.length === 0) { return; }
 
-            if (currentIndex > 0)
-            {
-               storeCurrentId.set(results[--currentIndex].id);
-               event.preventDefault();
-            }
+            if (currentIndex > 0) { storeCurrentId.set(results[--currentIndex].id); }
+            event.preventDefault();
             break;
 
          case 'Enter':
