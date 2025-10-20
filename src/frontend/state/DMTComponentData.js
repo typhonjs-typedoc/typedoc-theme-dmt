@@ -220,6 +220,14 @@ export class DMTComponentData
    // Data forwarded on from BCMP data -------------------------------------------------------------------------------
 
    /**
+    * @returns {Record<string, string>} i18n data.
+    */
+   get i18n()
+   {
+      return this.#dmtComponentDataBCMP.i18n ?? {};
+   }
+
+   /**
     * @returns {{service: DMTIconLink[], user: DMTIconLink[]}} icon links for `IconLinks` component.
     */
    get iconLinks()

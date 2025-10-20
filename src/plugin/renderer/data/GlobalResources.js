@@ -5,7 +5,9 @@ import { fileURLToPath }      from 'node:url';
 import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
 import { isObject }           from '#runtime/util/object';
 
-import { ReflectionKind }     from 'typedoc';
+import {
+   i18n,
+   ReflectionKind }           from 'typedoc';
 
 import { NavigationIndex }    from './navigation/NavigationIndex.js';
 
@@ -88,6 +90,7 @@ export class GlobalResources
 
       /** @type {DMTComponentDataBCMP} */
       const data = {
+         i18n: this.#copyI18nData(),
          iconLinks: {
             service: this.#processIconLinksService(event, options),
             user: this.#processIconLinksUser(event, options)
@@ -105,6 +108,31 @@ export class GlobalResources
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),
        `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
+   }
+
+   /**
+    * @returns {Record<string, string>} Copy front-end i18n strings.
+    */
+   static #copyI18nData()
+   {
+      return {
+         // aria-label
+         theme_search: i18n.theme_search() ?? 'Search',
+         theme_menu: i18n.theme_menu() ?? 'Menu',
+         theme_permalink: i18n.theme_permalink() ?? 'Permalink',
+         theme_folder: i18n.theme_folder() ?? 'Folder',
+
+         // Used by the frontend JS
+         theme_copy: i18n.theme_copy() ?? 'Copy',
+         theme_copied: i18n.theme_copied() ?? 'Copied!',
+         theme_normally_hidden: i18n.theme_normally_hidden() ??
+          'This member is normally hidden due to your filter settings.',
+         theme_hierarchy_expand: i18n.theme_hierarchy_expand() ?? 'Expand',
+         theme_hierarchy_collapse: i18n.theme_hierarchy_collapse() ?? 'Collapse',
+         theme_search_index_not_available: i18n.theme_search_index_not_available() ??
+          'The search index is not available',
+         theme_search_placeholder: i18n.theme_search_placeholder() ?? 'Search the docs',
+      };
    }
 
    /**

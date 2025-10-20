@@ -24,6 +24,7 @@
 
    const {
       basePath,
+      i18n,
       showModuleIcon,
       searchOptions,
       settingStores,
@@ -169,7 +170,8 @@
           style:color={invalidQuery ? 'red' : null}
           style:border-color={invalidQuery ? 'red' : null}
           type=search
-          aria-label=Search
+          placeholder={i18n.theme_search_placeholder}
+          aria-label={i18n.theme_search}
           on:keydown={handleKeydown}
           autocomplete=off />
 

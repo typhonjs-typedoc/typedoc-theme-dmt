@@ -19,6 +19,11 @@ import type {
 
 export type DMTComponentDataBCMP = {
    /**
+    * I18N string data.
+    */
+   i18n: Record<string, string>;
+
+   /**
     * The combined user icon / service header links.
     */
    iconLinks: {
