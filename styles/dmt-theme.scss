@@ -576,6 +576,7 @@
     // When displayed on the left
     .page-menu {
       margin-bottom: 0.75rem;
+      padding-left: 0;
       padding-right: 1rem;
       position: static;     // Must remove sticky!
     }
