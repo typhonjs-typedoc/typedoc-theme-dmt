@@ -55,12 +55,23 @@ export class GlobalResources
 
       const pageIndex = {};
 
-      if (fs.existsSync(path.join(event.outputDirectory, 'hierarchy.html'))) { pageIndex.hierarchy = 'hierarchy.html'; }
+      // As of TypeDoc 0.28.x the hierarchy page is always generated, so check if there are any implemented /
+      // extended interfaces or classes.
+
+      /** @type {import('typedoc').DeclarationReflection[]} */
+      const allClasses = event.project.getReflectionsByKind(ReflectionKind.ClassOrInterface);
+      const hasHierarchy = allClasses.some((refl) => refl.implementedBy || refl.extendedBy);
+
+      if (hasHierarchy && fs.existsSync(path.join(event.outputDirectory, 'hierarchy.html')))
+      {
+         pageIndex.hierarchy = 'hierarchy.html';
+      }
 
       if (fs.existsSync(path.join(event.outputDirectory, 'modules.html')))
       {
          pageIndex.modules = 'modules.html';
       }
+
       // TypeDoc 0.26.6 - when markdown files are added a synthetic module is added and `modules.html` does not exist.
       else if (fs.existsSync(path.join(event.outputDirectory, 'modules', 'index.html')))
       {
