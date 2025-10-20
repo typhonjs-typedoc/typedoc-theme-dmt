@@ -9,9 +9,9 @@ import {
    IndexEvent,
    RendererEvent,
    DeclarationReflection,
-   DocumentReflection,
    ProjectReflection,
-   ReflectionKind }        from 'typedoc';
+   ReflectionKind,
+   Reflection }            from 'typedoc';
 
 /**
  * A plugin that exports an index of the project to a MessagePack file.
@@ -58,12 +58,19 @@ export class SearchIndexPackr
       /** @type {SearchDocument[]} */
       const rows = [];
 
-      /** @type {(DeclarationReflection | DocumentReflection)[]} */
-      const initialSearchResults = Object.values(event.project.reflections).filter((refl) =>
-      {
-         return (refl instanceof DeclarationReflection || refl instanceof DocumentReflection) && refl.url &&
-          refl.name && !refl.flags.isExternal;
-      });
+      /**
+       * @type {DefaultTheme}
+       */
+      const theme = this.#app.renderer.theme;
+
+      /** @type {(DeclarationReflection | import('typedoc').DocumentReflection)[]} */
+      const initialSearchResults = this.#app.renderer.router.getLinkTargets().filter(
+       (refl) =>
+        refl instanceof Reflection &&
+        (refl.isDeclaration() || refl.isDocument()) &&
+        refl.name &&
+        !refl.flags.isExternal,
+      );
 
       const indexEvent = new IndexEvent(initialSearchResults);
       this.#app.renderer.trigger(IndexEvent.PREPARE_INDEX, indexEvent);
@@ -106,7 +113,9 @@ export class SearchIndexPackr
 
       for (const reflection of indexEvent.searchResults)
       {
-         if (!reflection.url) { continue; }
+         const url = theme.router.getFullUrl(reflection);
+
+         if (!url) { continue; }
 
          // Filter out intermediary or anonymous reflections from search index ---------------------------------------
          // See: TypeDoc `lib/converter/types.ts`.
@@ -137,8 +146,8 @@ export class SearchIndexPackr
          const row = {
             k: reflection.kind,
             n: reflection.name,
-            u: reflection.url,
-            c: this.#app.renderer.theme.getReflectionClasses(reflection),
+            u: url,
+            c: theme.getReflectionClasses(reflection),
          };
 
          if (parent)
