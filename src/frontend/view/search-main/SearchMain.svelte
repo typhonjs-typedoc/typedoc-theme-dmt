@@ -9,30 +9,25 @@
    const storeSearchVisible = stateStores.mainSearchVisible;
 </script>
 
-{#if $storeSearchVisible}
-   <SearchField />
-{/if}
-<div class="dmt-widget dmt-toolbar-icon search no-caption">
+<div class="dmt-widget dmt-toolbar-icon">
+   {#if $storeSearchVisible}
+      <SearchField />
+   {/if}
+
    <SearchButton />
 </div>
 
 <style>
    div {
-      position: absolute;
-      right: -40px;
+      position: relative;
 
       box-sizing: border-box;
       line-height: 0;
       padding: 4px 0;
-      width: 40px;
    }
 
    .dmt-widget {
-      display: inline-block;
-      overflow: hidden;
-      opacity: 0.8;
       height: 40px;
       transition: opacity 0.1s, background-color 0.2s;
-      vertical-align: bottom;
    }
 </style>

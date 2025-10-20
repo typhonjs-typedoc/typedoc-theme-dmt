@@ -17,7 +17,7 @@
    setContext('toolbarOffsetWidth', toolbarOffsetWidth);
 </script>
 
-<section use:resizeObserver={(offsetWidth) => $toolbarOffsetWidth = offsetWidth}>
+<section id=dmt-toolbar-links use:resizeObserver={(offsetWidth) => $toolbarOffsetWidth = offsetWidth}>
    <IconLinks />
 </section>
 
@@ -25,9 +25,7 @@
    section {
       display: flex;
       flex-wrap: nowrap;
-
       align-items: center;
-      margin-right: 0.5rem;
 
       height: 100%;
       width: 100%;

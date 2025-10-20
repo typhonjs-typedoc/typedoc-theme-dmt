@@ -171,7 +171,8 @@
        id=dmt-search-field
        aria-label=Search
        on:keydown={handleKeydown}
-       transition:animateTransition={{ duration: 200 }} />
+       transition:animateTransition={{ axis: 'x', duration: 150 }}
+       autocomplete=off />
 
 {#if results.length}
    <SearchResults {results} bind:resultsEl />
@@ -179,11 +180,17 @@
 
 <style lang=scss>
    /* Provide a global override for non-specific default theme CSS. */
-   #dmt-search-field, :global(#tsd-search .field input) {
-      position: relative;
+   #dmt-search-field {
+      // Offset for absolute positioning of search input element for search button.
+      --dmt-search-offset: 50px;
+
+      position: absolute;
       z-index: 10;
-      width: 100%;
+
       height: 35px;
+
+      width: calc(100vw - 1rem - var(--dmt-search-offset));
+      padding-left: 0.5rem;
 
       border: 1px solid var(--color-accent);
       border-radius: 0.5em;
@@ -191,12 +198,14 @@
       color: var(--color-text);
       font-size: 16px; /* For Safari / iOS to prevent zooming into input */
       outline: 2px solid transparent;
-      right: 4px;
+      right: 40px;
+      top: 3px;
+   }
 
-      /* revert unused */
-      top: 0;
-      padding: revert;
-      opacity: 1;
-      background: revert;
+   @media (max-width: 769px) {
+      #dmt-search-field {
+         // Offset for absolute positioning of search input element for search button + mobile overflow button.
+         --dmt-search-offset: 80px;
+      }
    }
 </style>
