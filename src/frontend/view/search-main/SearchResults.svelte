@@ -74,12 +74,11 @@
    }
 
    ul {
-      position: absolute;
-      top: calc(var(--dmt-header-height) - 2px);
-      width: calc(100% - 4px);
-      margin: 0 0 0 -4px;
+      width: calc(100% - 12px);
+      margin: 0 0 0 4px;
       padding: 0;
       list-style: none;
+      line-height: 30px;
       box-shadow: var(--dmt-container-floating-box-shadow);
       border: var(--dmt-container-floating-border);
       border-bottom-left-radius: 0.5rem;

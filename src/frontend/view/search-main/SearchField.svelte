@@ -47,9 +47,23 @@
 
    const animateTransition = $storeThemeAnimate ? slideFade : () => void 0;
 
+   // When the query string has some input, but results are empty use `invalidQuery` to apply an inline color of red.
+   let invalidQuery = false;
+
    // Debounce queries by 250ms.
-   const debouncedSearchQuery = Timing.debounce(
-    (query, options) => results = processMainSearchQuery(query, options), 250);
+   const debouncedSearchQuery = Timing.debounce((query, options) =>
+   {
+      results = processMainSearchQuery(query, options);
+
+      invalidQuery = query.length && !results?.length;
+
+      // When results change reset current index / ID.
+      if (results?.length)
+      {
+         currentIndex = -1;
+         storeCurrentId.set(void 0);
+      }
+   }, 250);
 
    const queryOptions = {
       basePath,
@@ -78,15 +92,6 @@
 
    // Runs a 250ms debounced query updating `results`.
    $: debouncedSearchQuery($storeQuery, { ...queryOptions });
-
-   // When results change reset current index / ID.
-   $: if (results?.length) {
-      currentIndex = -1;
-      storeCurrentId.set(void 0);
-   }
-
-   // When the query string has some input, but results are empty use `invalidQuery` to apply an inline color of red.
-   $: invalidQuery = $storeQuery.length && !results?.length;
 
    /**
     * Detects navigation input modifying current selected ID.
@@ -161,22 +166,24 @@
    }
 </script>
 
-<svelte:window on:pointerdown={handlePointerdown} />
+<svelte:window on:pointerdown={handlePointerdown} on:blur={() => $storeSearchVisible = false} />
 
-<input bind:this={inputEl}
-       bind:value={$storeQuery}
-       style:color={invalidQuery ? 'red' : null}
-       style:border-color={invalidQuery ? 'red' : null}
-       type=search
-       id=dmt-search-field
-       aria-label=Search
-       on:keydown={handleKeydown}
-       transition:animateTransition={{ axis: 'x', duration: 150 }}
-       autocomplete=off />
+<div id=dmt-search-field
+     transition:animateTransition={{ axis: 'x', duration: 120 }}>
+   <input bind:this={inputEl}
+          bind:value={$storeQuery}
+          style:color={invalidQuery ? 'red' : null}
+          style:border-color={invalidQuery ? 'red' : null}
+          type=search
+          aria-label=Search
+          on:keydown={handleKeydown}
+          autocomplete=off />
 
-{#if results.length}
-   <SearchResults {results} bind:resultsEl />
-{/if}
+   {#if results.length}
+      <SearchResults {results} bind:resultsEl />
+   {/if}
+</div>
+
 
 <style lang=scss>
    /* Provide a global override for non-specific default theme CSS. */
@@ -185,12 +192,22 @@
       --dmt-search-offset: 50px;
 
       position: absolute;
+      display: flex;
+      flex-direction: column;
       z-index: 10;
 
-      height: 35px;
+      right: 40px;
+      top: 3px;
 
       width: calc(100vw - 1rem - var(--dmt-search-offset));
+      box-sizing: border-box;
+   }
+
+   /* Provide a global override for non-specific default theme CSS. */
+   input {
+      height: 35px;
       padding-left: 0.5rem;
+      width: 100%;
 
       border: 1px solid var(--color-accent);
       border-radius: 0.5em;
@@ -198,8 +215,6 @@
       color: var(--color-text);
       font-size: 16px; /* For Safari / iOS to prevent zooming into input */
       outline: 2px solid transparent;
-      right: 40px;
-      top: 3px;
    }
 
    @media (max-width: 769px) {
