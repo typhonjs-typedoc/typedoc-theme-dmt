@@ -581,6 +581,7 @@
     }
 
     .site-menu {
+      contain: layout style;
       max-height: unset;    // This is tricky, but col-sidebar becomes the parent, so unset max-height.
     }
   }
