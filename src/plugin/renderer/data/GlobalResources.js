@@ -202,7 +202,7 @@ export class GlobalResources
          else
          {
             alteredData = false;
-            app.logger.error(
+            app.logger.warn(
              `[typedoc-theme-default-modern] Failed to remove default theme search and navigation initialization in 'main.js' asset.`);
          }
 
@@ -215,7 +215,7 @@ export class GlobalResources
          else
          {
             alteredData2 = false;
-            app.logger.error(
+            app.logger.warn(
              `[typedoc-theme-default-modern] Failed to remove default theme Accordion component registration in 'main.js' asset.`);
          }
 
