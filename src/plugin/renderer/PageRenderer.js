@@ -45,8 +45,8 @@ export class PageRenderer
       const headEl = $('head');
 
       // Append stylesheet to the head element.
-      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-components.css" />`));
-      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-theme.css" />`));
+      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-components.css" layer="theme-dmt" />`));
+      headEl.append($(`<link rel="stylesheet" href="${basePath}assets/dmt/dmt-theme.css" layer="theme-dmt" />`));
 
       // Append DMT components script to the head element.
       headEl.append($(`<script src="${basePath}assets/dmt/dmt-components.js" type="module" />`));
@@ -109,35 +109,19 @@ export class PageRenderer
          inlineScript.text('document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";');
       }
 
-      // Wrap the title header in a flex box to allow additional elements to be added right aligned. -----------------
+      // Remove unused default toolbard links and main search --------------------------------------------------------
 
-      const titleEl = $('.tsd-page-title h1');
+      $('div#tsd-toolbar-links').remove();
 
-      titleEl.wrap('<div class="dmt-title-header-flex"></div>');
+      $('button#tsd-search-trigger').remove();
 
-      // Replace default main search with DMT main search ------------------------------------------------------------
-
-      // Empty default theme search div to make space for the DMT search component.
-      const tsdSearchEl = $($('#tsd-search-field').parent());
-      tsdSearchEl.attr('id', 'dmt-search-main');
-      tsdSearchEl.empty();
-
-      // Remove default theme search results.
-      $('ul.results').remove();
+      $('dialog#tsd-search').remove();
 
       // Replace default toolbar links with DMT toolbar links --------------------------------------------------------
 
-      // Empty and assign a new ID to default theme toolbar links.
-      const tsdToolbarEl = $($('#tsd-toolbar-links').parent());
+      // Assign a new ID to default theme toolbar links.
+      const tsdToolbarEl = $('.tsd-toolbar-contents');
       tsdToolbarEl.attr('id', 'dmt-toolbar');
-      tsdToolbarEl.empty();
-
-      // Clone title anchor and append to #dmt-toolbar.
-      const tsdTitleEl = $('#tsd-search a.title');
-      tsdToolbarEl.append(tsdTitleEl.clone());
-
-      // Remove old anchor.
-      tsdTitleEl.remove();
 
       // Add `.no-children` class to `.tsd-parameters` that have no children. ----------------------------------------
       // This is to allow removing styles from empty lists.

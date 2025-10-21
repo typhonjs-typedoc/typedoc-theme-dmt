@@ -1,5 +1,7 @@
 <script>
-   import { getContext }   from 'svelte';
+   import {
+      getContext,
+      tick }               from 'svelte';
 
    import { slideFade }    from '#runtime/svelte/transition';
 
@@ -27,21 +29,32 @@
 
       globalThis.location.href = href;
    }
+
+   // Watch for store changes and scroll selected `li` into view after DOM updated.
+   $: if (resultsEl && $storeCurrentId)
+   {
+      tick().then(() =>
+      {
+         const li = resultsEl.querySelector(`li.selected`);
+         if (li) { li.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' }); }
+      });
+   }
 </script>
 
-<ul bind:this={resultsEl} transition:animateTransition|global={{ duration: 100 }}>
-{#each results as result (result.id)}
-   <!-- svelte-ignore a11y-click-events-have-key-events -->
-   <li class={result.classes}
-       class:selected={result.id === $storeCurrentId}
-       on:click={() => onClick(result.href)}
-       role=menuitem>
-      {#if result.kind}
-         <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${result.kind}`}></use></svg>
-      {/if}
-      <span class=parent>{@html result.name}</span>
-   </li>
-{/each}
+<ul bind:this={resultsEl}
+    transition:animateTransition|global={{ duration: 100 }}>
+   {#each results as result (result.id)}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <li class={result.classes}
+          class:selected={result.id === $storeCurrentId}
+          on:click={() => onClick(result.href)}
+          role=menuitem>
+         {#if result.kind}
+            <svg class=tsd-kind-icon viewBox="0 0 24 24"><use href={`#icon-${result.kind}`}></use></svg>
+         {/if}
+         <span class=parent>{@html result.name}</span>
+      </li>
+   {/each}
 </ul>
 
 <style>
@@ -74,16 +87,16 @@
    }
 
    ul {
-      position: absolute;
-      top: calc(var(--dmt-header-height) - 2px);
-      width: calc(100% - 4px);
-      margin: 0 0 0 -4px;
+      width: calc(100% - 12px);
+      margin: 0 0 0 4px;
       padding: 0;
       list-style: none;
+      line-height: 30px;
       box-shadow: var(--dmt-container-floating-box-shadow);
       border: var(--dmt-container-floating-border);
       border-bottom-left-radius: 0.5rem;
       border-bottom-right-radius: 0.5rem;
-      overflow: hidden;
+      overflow: hidden auto;
+      max-height: 75vh;
    }
 </style>

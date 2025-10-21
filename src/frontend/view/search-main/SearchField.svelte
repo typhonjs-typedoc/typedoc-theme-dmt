@@ -24,6 +24,7 @@
 
    const {
       basePath,
+      i18n,
       showModuleIcon,
       searchOptions,
       settingStores,
@@ -47,9 +48,23 @@
 
    const animateTransition = $storeThemeAnimate ? slideFade : () => void 0;
 
+   // When the query string has some input, but results are empty use `invalidQuery` to apply an inline color of red.
+   let invalidQuery = false;
+
    // Debounce queries by 250ms.
-   const debouncedSearchQuery = Timing.debounce(
-    (query, options) => results = processMainSearchQuery(query, options), 250);
+   const debouncedSearchQuery = Timing.debounce((query, options) =>
+   {
+      results = processMainSearchQuery(query, options);
+
+      invalidQuery = query.length && !results?.length;
+
+      // When results change reset current index / ID.
+      if (results?.length)
+      {
+         currentIndex = -1;
+         storeCurrentId.set(void 0);
+      }
+   }, 250);
 
    const queryOptions = {
       basePath,
@@ -79,15 +94,6 @@
    // Runs a 250ms debounced query updating `results`.
    $: debouncedSearchQuery($storeQuery, { ...queryOptions });
 
-   // When results change reset current index / ID.
-   $: if (results?.length) {
-      currentIndex = -1;
-      storeCurrentId.set(void 0);
-   }
-
-   // When the query string has some input, but results are empty use `invalidQuery` to apply an inline color of red.
-   $: invalidQuery = $storeQuery.length && !results?.length;
-
    /**
     * Detects navigation input modifying current selected ID.
     *
@@ -100,21 +106,15 @@
          case 'ArrowDown':
             if (results.length === 0) { return; }
 
-            if (currentIndex < results.length - 1)
-            {
-               storeCurrentId.set(results[++currentIndex].id);
-               event.preventDefault();
-            }
+            if (currentIndex < results.length - 1) { storeCurrentId.set(results[++currentIndex].id); }
+            event.preventDefault();
             break;
 
          case 'ArrowUp':
             if (results.length === 0) { return; }
 
-            if (currentIndex > 0)
-            {
-               storeCurrentId.set(results[--currentIndex].id);
-               event.preventDefault();
-            }
+            if (currentIndex > 0) { storeCurrentId.set(results[--currentIndex].id); }
+            event.preventDefault();
             break;
 
          case 'Enter':
@@ -161,29 +161,49 @@
    }
 </script>
 
-<svelte:window on:pointerdown={handlePointerdown} />
+<svelte:window on:pointerdown={handlePointerdown} on:blur={() => $storeSearchVisible = false} />
 
-<input bind:this={inputEl}
-       bind:value={$storeQuery}
-       style:color={invalidQuery ? 'red' : null}
-       style:border-color={invalidQuery ? 'red' : null}
-       type=search
-       id=dmt-search-field
-       aria-label=Search
-       on:keydown={handleKeydown}
-       transition:animateTransition={{ duration: 200 }} />
+<div id=dmt-search-field
+     transition:animateTransition={{ axis: 'x', duration: 120 }}>
+   <input bind:this={inputEl}
+          bind:value={$storeQuery}
+          style:color={invalidQuery ? 'red' : null}
+          style:border-color={invalidQuery ? 'red' : null}
+          type=search
+          placeholder={i18n.theme_search_placeholder}
+          aria-label={i18n.theme_search}
+          on:keydown={handleKeydown}
+          autocomplete=off />
 
-{#if results.length}
-   <SearchResults {results} bind:resultsEl />
-{/if}
+   {#if results.length}
+      <SearchResults {results} bind:resultsEl />
+   {/if}
+</div>
+
 
 <style lang=scss>
    /* Provide a global override for non-specific default theme CSS. */
-   #dmt-search-field, :global(#tsd-search .field input) {
-      position: relative;
+   #dmt-search-field {
+      // Offset for absolute positioning of search input element for search button.
+      --dmt-search-offset: 50px;
+
+      position: absolute;
+      display: flex;
+      flex-direction: column;
       z-index: 10;
-      width: 100%;
+
+      right: 40px;
+      top: 3px;
+
+      width: calc(100vw - 1rem - var(--dmt-search-offset));
+      box-sizing: border-box;
+   }
+
+   /* Provide a global override for non-specific default theme CSS. */
+   input {
       height: 35px;
+      padding-left: 0.5rem;
+      width: 100%;
 
       border: 1px solid var(--color-accent);
       border-radius: 0.5em;
@@ -191,12 +211,12 @@
       color: var(--color-text);
       font-size: 16px; /* For Safari / iOS to prevent zooming into input */
       outline: 2px solid transparent;
-      right: 4px;
+   }
 
-      /* revert unused */
-      top: 0;
-      padding: revert;
-      opacity: 1;
-      background: revert;
+   @media (max-width: 769px) {
+      #dmt-search-field {
+         // Offset for absolute positioning of search input element for search button + mobile overflow button.
+         --dmt-search-offset: 80px;
+      }
    }
 </style>

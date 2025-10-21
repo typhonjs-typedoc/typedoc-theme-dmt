@@ -5,7 +5,9 @@ import { fileURLToPath }      from 'node:url';
 import { packAndDeflateB64 }  from '#runtime/data/format/msgpack/compress';
 import { isObject }           from '#runtime/util/object';
 
-import { ReflectionKind }     from 'typedoc';
+import {
+   i18n,
+   ReflectionKind }           from 'typedoc';
 
 import { NavigationIndex }    from './navigation/NavigationIndex.js';
 
@@ -55,12 +57,23 @@ export class GlobalResources
 
       const pageIndex = {};
 
-      if (fs.existsSync(path.join(event.outputDirectory, 'hierarchy.html'))) { pageIndex.hierarchy = 'hierarchy.html'; }
+      // As of TypeDoc 0.28.x the hierarchy page is always generated, so check if there are any implemented /
+      // extended interfaces or classes.
+
+      /** @type {import('typedoc').DeclarationReflection[]} */
+      const allClasses = event.project.getReflectionsByKind(ReflectionKind.ClassOrInterface);
+      const hasHierarchy = allClasses.some((refl) => refl.implementedBy || refl.extendedBy);
+
+      if (hasHierarchy && fs.existsSync(path.join(event.outputDirectory, 'hierarchy.html')))
+      {
+         pageIndex.hierarchy = 'hierarchy.html';
+      }
 
       if (fs.existsSync(path.join(event.outputDirectory, 'modules.html')))
       {
          pageIndex.modules = 'modules.html';
       }
+
       // TypeDoc 0.26.6 - when markdown files are added a synthetic module is added and `modules.html` does not exist.
       else if (fs.existsSync(path.join(event.outputDirectory, 'modules', 'index.html')))
       {
@@ -77,6 +90,7 @@ export class GlobalResources
 
       /** @type {DMTComponentDataBCMP} */
       const data = {
+         i18n: this.#copyI18nData(),
          iconLinks: {
             service: this.#processIconLinksService(event, options),
             user: this.#processIconLinksUser(event, options)
@@ -94,6 +108,31 @@ export class GlobalResources
 
       fs.writeFileSync(path.join(event.outputDirectory, 'assets', 'dmt', 'dmt-component-data.js'),
        `globalThis.dmtComponentDataBCMP = '${packAndDeflateB64(data)}';`);
+   }
+
+   /**
+    * @returns {Record<string, string>} Copy front-end i18n strings.
+    */
+   static #copyI18nData()
+   {
+      return {
+         // aria-label
+         theme_search: i18n.theme_search() ?? 'Search',
+         theme_menu: i18n.theme_menu() ?? 'Menu',
+         theme_permalink: i18n.theme_permalink() ?? 'Permalink',
+         theme_folder: i18n.theme_folder() ?? 'Folder',
+
+         // Used by the frontend JS
+         theme_copy: i18n.theme_copy() ?? 'Copy',
+         theme_copied: i18n.theme_copied() ?? 'Copied!',
+         theme_normally_hidden: i18n.theme_normally_hidden() ??
+          'This member is normally hidden due to your filter settings.',
+         theme_hierarchy_expand: i18n.theme_hierarchy_expand() ?? 'Expand',
+         theme_hierarchy_collapse: i18n.theme_hierarchy_collapse() ?? 'Collapse',
+         theme_search_index_not_available: i18n.theme_search_index_not_available() ??
+          'The search index is not available',
+         theme_search_placeholder: i18n.theme_search_placeholder() ?? 'Search the docs',
+      };
    }
 
    /**
@@ -163,7 +202,7 @@ export class GlobalResources
          else
          {
             alteredData = false;
-            app.logger.error(
+            app.logger.warn(
              `[typedoc-theme-default-modern] Failed to remove default theme search and navigation initialization in 'main.js' asset.`);
          }
 
@@ -176,7 +215,7 @@ export class GlobalResources
          else
          {
             alteredData2 = false;
-            app.logger.error(
+            app.logger.warn(
              `[typedoc-theme-default-modern] Failed to remove default theme Accordion component registration in 'main.js' asset.`);
          }
 

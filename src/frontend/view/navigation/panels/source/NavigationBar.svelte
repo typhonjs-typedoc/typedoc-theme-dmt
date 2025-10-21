@@ -148,7 +148,7 @@
 
       align-items: center;
       gap: 0.5rem;
-      padding: 0.25rem 1rem 0.25rem 0;
+      padding: 0.25rem 0.5rem 0.25rem 0.35rem;
       height: fit-content;
       width: inherit;
       background: var(--color-background);

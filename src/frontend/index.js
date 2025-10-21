@@ -54,7 +54,8 @@ const navigation = new Navigation({
 
 const toolbar = new Toolbar({
    target: document.querySelector('#dmt-toolbar'),
-   context: componentContext
+   context: componentContext,
+   anchor: document.querySelector('#tsd-toolbar-menu-trigger')
 });
 
 // Stores references to DMT Svelte components.
@@ -68,9 +69,11 @@ globalThis.dmtComponents = {
 if (dmtComponentData.searchOptions)
 {
    loadMainSearchData();
+
    globalThis.dmtComponents.searchMain = new SearchMain({
-      target: document.querySelector('#dmt-search-main'),
-      context: componentContext
+      target: document.querySelector('#dmt-toolbar'),
+      context: componentContext,
+      anchor: document.querySelector('#tsd-toolbar-menu-trigger'),
    });
 }
 

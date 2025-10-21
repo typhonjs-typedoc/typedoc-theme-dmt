@@ -19,8 +19,8 @@ The DMT is slated for future mainlining into the TypeDoc default theme.
 ```json
 {
    "devDependencies": {
-      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.3.0",
-      "typedoc": "^0.27.3"
+      "@typhonjs-typedoc/typedoc-theme-dmt": "^0.4.0",
+      "typedoc": "^0.28.0"
    }
 }
 ```

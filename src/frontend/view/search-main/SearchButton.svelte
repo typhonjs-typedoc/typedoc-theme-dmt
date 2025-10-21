@@ -18,6 +18,7 @@
       margin: 0 3px 3px 3px;
       width: 33px;
       height: 33px;
+      opacity: 0.8;
 
       background: transparent;
       border-radius: 50%;
