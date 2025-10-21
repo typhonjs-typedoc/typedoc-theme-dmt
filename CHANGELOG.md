@@ -1,4 +1,9 @@
 # Changelog
+## 0.4.0 release (major)
+- Support for TypeDoc `0.28.0+`.
+- Various fixes for TypeDoc 0.28.x layout changes.
+- Various UX fixes around search functionality & other UX corner cases.
+
 ## 0.3.1 release (minor)
 - Fixes [issue #5](https://github.com/typhonjs-typedoc/typedoc-theme-dmt/issues/5) for correct scrolling to current doc
   reflection in the navigation panel.
