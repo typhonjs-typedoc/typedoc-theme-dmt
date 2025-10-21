@@ -167,6 +167,7 @@
     overflow-x: hidden;
     box-sizing: border-box;
     width: 100%;
+    scrollbar-gutter: stable;
   }
 
   .col-content {
@@ -208,6 +209,7 @@
     // Overrides TypeDoc styles.
     margin-top: 0;
     max-height: unset;
+    scrollbar-gutter: stable;
 
     padding-left: 0.1rem; // For outline
     top: 0;
@@ -221,6 +223,16 @@
     .tsd-nested-navigation {
       margin-left: 2.5rem;
     }
+  }
+
+  // Remove margin from `Index` header.
+  .tsd-index-summary {
+    margin: 0;
+  }
+
+  // All function / property headers; reduce top margin.
+  .tsd-panel > h1, .tsd-panel > h2, .tsd-panel > h3 {
+    margin: 0.5rem -1.5rem 0.75rem -1.5rem;
   }
 
   .page-menu {
@@ -248,6 +260,11 @@
   #tsd-toolbar-menu-trigger {
     line-height: 2.25;
     height: 32px;
+  }
+
+  main footer {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
 
   /* Content style additions ------------------------------------------------------------------------------------------ */
@@ -309,11 +326,25 @@
     flex-direction: column;
     gap: 0.75rem;
 
+    // All children sections except the source index.
+    > section:not(.source-index) {
+      margin: 0 0.45rem 0 0.3rem;
+    }
+
     > section:first-child {
       margin-top: 0.75rem;
 
       // The source index / navigation tree has no margin top when first child.
       &.source-index {
+        margin-top: 0;
+      }
+    }
+  }
+
+  // Reset margin top as `page-menu` is above but not in `nav` element.
+  @media (width < 1200px) {
+    nav.tsd-navigation {
+      > section:first-child {
         margin-top: 0;
       }
     }
@@ -392,7 +423,7 @@
   /* Main Container --------------------------------------------------------------------------------------------------- */
 
   .container {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     margin: 0 auto;
 
     // Add border radius to signature blocks.
@@ -552,16 +583,23 @@
     }
   }
 
+  @media (min-width: 1200px) {
+    .container-main {
+      // Widen right column.
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2.5fr) minmax(0, 24rem);
+    }
+  }
+
   // For 4k / large screen sizes. Cap grid columns then expand left margin and right padding to center content while
   // keeping the main container scrollbar pinned to the far right side of the screen.
   @media (min-width: 2190px) {
     .page-menu {
-      max-width: 350px;
+      max-width: 375px;
     }
 
     .container-main {
-      grid-template-columns: minmax(0, 520px) minmax(0, 1300px) 1fr;
-      padding-left: calc((100% - 2190px) / 2);
+      grid-template-columns: minmax(0, 510px) minmax(0, 1270px) 1fr;
+      padding-left: calc((100% - 2190px + 1rem) / 2);
     }
   }
 
@@ -576,8 +614,6 @@
     // When displayed on the left
     .page-menu {
       margin-bottom: 0.75rem;
-      padding-left: 0;
-      padding-right: 1rem;
       position: static;     // Must remove sticky!
     }
 
@@ -608,7 +644,7 @@
       background: var(--dmt-container-background);
       border: var(--dmt-container-border);
       border-radius: var(--dmt-container-border-radius);
-      box-shadow: var(--dmt-container-box-shadow-floating);
+      box-shadow: var(--dmt-container-floating-box-shadow);
       padding: var(--dmt-container-padding);
 
       margin: 0;
@@ -633,7 +669,7 @@
       background: var(--dmt-container-background);
       border: var(--dmt-container-border);
       border-radius: var(--dmt-container-border-radius);
-      box-shadow: var(--dmt-container-box-shadow-floating);
+      box-shadow: var(--dmt-container-floating-box-shadow);
       overflow: hidden;
       padding: var(--dmt-container-padding);
 
@@ -642,6 +678,7 @@
         overflow-x: hidden;
         overflow-y: auto;
         height: calc(100% - var(--dmt-header-height)); // Take into consideration header height and sticky position.
+        scrollbar-gutter: stable;
 
         ul {
           padding: 0.25rem 0 0.25rem 0.5rem;

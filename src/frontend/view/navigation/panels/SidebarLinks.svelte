@@ -34,17 +34,8 @@
       box-shadow: var(--dmt-container-box-shadow);
       padding: 0.25rem;
 
-      // Provide a top margin when full page; removed when width < 1200px.
-      margin: 0.75rem 1rem 0 0;
-
       &:focus-visible {
          outline: transparent;
-      }
-   }
-
-   @media (width < 1200px) {
-      section.dmt-sidebar-links {
-         margin-top: 0;
       }
    }
 </style>

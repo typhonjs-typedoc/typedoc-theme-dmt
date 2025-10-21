@@ -34,7 +34,7 @@
    </section>
 {/if}
 
-<style>
+<style lang=scss>
    hr {
       border-top: unset;
       border-left: unset;
@@ -51,7 +51,6 @@
       border: var(--dmt-container-border);
       border-radius: var(--dmt-container-border-radius);
       box-shadow: var(--dmt-container-box-shadow);
-      margin: 0 1rem 0 0;
       padding-bottom: 0.25rem;
    }
 </style>
