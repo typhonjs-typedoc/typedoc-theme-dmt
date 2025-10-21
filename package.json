@@ -1,6 +1,6 @@
 {
   "name": "@typhonjs-typedoc/typedoc-theme-dmt",
-  "version": "0.4.0-next.1",
+  "version": "0.4.0-next.2",
   "description": "Provides a modern and customizable UX augmentation to the default TypeDoc theme bringing enhanced features and usability.",
   "license": "MPL-2.0",
   "type": "module",
@@ -72,6 +72,7 @@
   "browserslist": [">5%", "not IE 11"],
   "scripts": {
     "eslint": "eslint .",
-    "build": "rollup -c && sass --no-source-map ./styles/dmt-theme.scss ./dist/assets/dmt-theme.css && postcss ./dist/assets/dmt-theme.css --no-map -p sass -u autoprefixer postcss-preset-env cssnano -o ./dist/assets/dmt-theme.css"
+    "build": "rollup -c && sass --no-source-map ./styles/dmt-theme.scss ./dist/assets/dmt-theme.css && postcss ./dist/assets/dmt-theme.css --no-map -p sass -u autoprefixer postcss-preset-env cssnano -o ./dist/assets/dmt-theme.css",
+    "prepublishOnly": "npm run eslint && npm run build"
   }
 }
